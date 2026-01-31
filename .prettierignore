@@ -1,0 +1,15 @@
+# Don't format source text files
+books/
+data/
+
+# Don't format database
+db/
+
+# Don't format Python cache
+__pycache__/
+
+# Note: research/ is in .gitignore but we WANT to format it
+# You can format files in this folder by running a command like:
+# npx prettier --ignore-path .prettierignore --write research/somefile.md
+#
+# This file overrides .gitignore for Prettier
