@@ -1,0 +1,80 @@
+description = "Get a personalized explanation of code, architecture, or concepts in the codebase"
+prompt = """
+Using the mentor skill, provide a detailed, customized explanation of the requested topic or code, saving the output to the reports directory.
+
+## Input Parsing
+The user invoked: /explain <args>
+
+Examples:
+- `/explain src/auth/middleware.ts` - Explain specific file
+- `/explain authentication flow` - Explain a concept
+- `/explain why we use Redis here` - Explain architectural decisions
+- `/explain the testing strategy` - Explain project practices
+- `/explain` - Interactive mode to determine what needs explaining
+
+## Your Task
+
+### 1. Initial Assessment
+Determine:
+- What specifically needs to be explained
+- The user's current familiarity with the topic
+- Their learning goals and context
+
+If the request is vague, ask clarifying questions.
+
+### 2. Research Phase
+Thoroughly investigate:
+- Search the codebase for relevant implementations
+- Examine how the code/pattern is actually used
+- Look for documentation and comments
+- Identify architectural decisions and trade-offs
+- Find related components and dependencies
+
+### 3. Explanation Construction
+Create a customized explanation that:
+- Starts with context and purpose
+- Uses appropriate depth based on user's level
+- Includes real examples from the codebase
+- Explains the "why" not just the "what"
+- Highlights important patterns and conventions
+
+### 4. Save Output
+Create a markdown file at `/reports/explanation-{topic}-{timestamp}.md`
+
+## Explanation Structure
+
+### For Code Explanations
+- Overview: High-level purpose and context
+- How It Works: Step-by-step breakdown with code snippets
+- Key Concepts: Important ideas and patterns used
+- Example Usage: Real examples from the codebase
+- Things to Note: Gotchas, best practices, tips
+- Learn More: Suggested next topics
+
+### For Concept Explanations
+- What Is [Concept]?: Clear, accessible definition
+- Why We Use It: Specific benefits in this codebase
+- How It's Implemented Here: Concrete examples
+- Related Concepts: Connect to other knowledge
+
+### For Architecture Explanations
+- System Overview: Big picture understanding
+- Design Decisions: Why things are structured this way
+- Component Interactions: How pieces work together
+- Trade-offs: What we gain and sacrifice
+
+## Teaching Techniques
+
+**Beginner**: Use analogies, explain prerequisites, break down into smaller steps
+**Intermediate**: Focus on patterns and best practices, compare approaches
+**Advanced**: Dive into implementation details, discuss performance and trade-offs
+
+## Important Guidelines
+
+1. Never assume knowledge - Check understanding first
+2. Use the actual codebase - Generic examples are less valuable
+3. Connect concepts - Show how things relate
+4. Encourage exploration - Suggest what to look at next
+
+Remember: Build lasting understanding that empowers the developer to work independently.
+"""

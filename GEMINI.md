@@ -57,7 +57,8 @@ As this is a repository for Gemini CLI artifacts rather than a traditional softw
 ## Working with Artifacts
 
 When creating or modifying Gemini CLI artifacts in this repository:
-- Ensure command files have proper YAML frontmatter with name, description, and pattern
+- Command files use TOML format with `description` and `prompt` fields
+- Use `<args>` placeholder in prompts to capture user arguments
 - Skill files must have YAML frontmatter with name and description fields
 - Test commands and skills locally before committing changes
 - Reference skills in commands using natural language (e.g., "Using the architect skill...")

@@ -1,15 +1,9 @@
 description = "Analyze configuration management and environment settings to identify security risks and improvement opportunities"
 prompt = """
----
-name: configuration-review
-description: Analyze configuration management and environment settings to identify security risks and improvement opportunities
-pattern: /configuration-review(?:\s+(.+))?
----
-
 Using the configuration-manager skill, prepare a configuration review report. You must analyze configuration management practices, environment variables, secrets handling, and settings organization in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Input Parsing
-The user invoked: /configuration-review {optional_scope}
+The user invoked: /configuration-review <args>
 
 Valid scopes:
 - **No argument**: Analyze the entire project

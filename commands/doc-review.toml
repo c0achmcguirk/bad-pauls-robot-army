@@ -1,15 +1,9 @@
 description = "Analyze documentation needs and create a documentation improvement plan"
 prompt = """
----
-name: doc-review
-description: Analyze documentation needs and create a documentation improvement plan
-pattern: /doc-review(?:\s+(.+))?
----
-
 Using the code-documentor skill, prepare a documentation review report. You must analyze the documentation needs of the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Input Parsing
-The user invoked: /doc-review {optional_scope}
+The user invoked: /doc-review <args>
 
 Valid scopes:
 - **No argument**: Analyze the entire project

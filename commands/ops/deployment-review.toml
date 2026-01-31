@@ -1,15 +1,9 @@
 description = "Analyze deployment processes and create a deployment improvement plan"
 prompt = """
----
-name: deployment-review
-description: Analyze deployment processes and create a deployment improvement plan
-pattern: /deployment-review(?:\s+(.+))?
----
-
 Using the deployment-specialist skill, prepare a deployment review report. You must analyze deployment processes, CI/CD pipelines, and release management practices in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Input Parsing
-The user invoked: /deployment-review {optional_scope}
+The user invoked: /deployment-review <args>
 
 Valid scopes:
 - **No argument**: Analyze the entire project

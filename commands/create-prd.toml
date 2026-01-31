@@ -1,11 +1,5 @@
 description = "Create a comprehensive product requirements document for features within the current project/codebase"
 prompt = """
----
-name: create-prd
-description: Create a comprehensive product requirements document for features within the current project/codebase
-pattern: /create-prd(?:\s+(.+))?
----
-
 Using the product-manager skill, help create a comprehensive product requirements document (PRD) for a new feature or enhancement within the current project/codebase.
 
 ## Context

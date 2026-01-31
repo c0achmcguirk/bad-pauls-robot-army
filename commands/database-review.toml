@@ -1,15 +1,9 @@
 description = "Analyze database design and create a database optimization plan"
 prompt = """
----
-name: database-review
-description: Analyze database design and create a database optimization plan
-pattern: /database-review(?:\s+(.+))?
----
-
 Using the database-designer skill, prepare a database review report. You must analyze database schemas, query patterns, and data architecture in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Input Parsing
-The user invoked: /database-review {optional_scope}
+The user invoked: /database-review <args>
 
 Valid scopes:
 - **No argument**: Analyze the entire project

@@ -1,15 +1,9 @@
 description = "Comprehensive code evolution analysis through git history, PRs, and collaborative development patterns"
 prompt = """
----
-name: code-history-detailed
-description: Comprehensive code evolution analysis through git history, PRs, and collaborative development patterns
-pattern: /code-history-detailed(?:\s+(.+))?
----
-
 Using the code-historian skill, analyze the code history and evolution patterns. You must create a comprehensive, detailed historical analysis report WITHOUT making any changes.
 
 ## Input Parsing
-The user invoked: /code-history-detailed {optional_scope}
+The user invoked: /code-history-detailed <args>
 
 Valid scopes:
 - **No argument**: Analyze the entire project's history

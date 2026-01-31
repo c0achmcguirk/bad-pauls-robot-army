@@ -1,15 +1,9 @@
 description = "Analyze code for accessibility compliance and create an a11y improvement plan"
 prompt = """
----
-name: accessibility-review
-description: Analyze code for accessibility compliance and create an a11y improvement plan
-pattern: /accessibility-review(?:\s+(.+))?
----
-
 Using the accessibility-specialist skill, prepare an accessibility review report. You must analyze the codebase for WCAG compliance, identify accessibility barriers, and create a comprehensive a11y improvement plan WITHOUT making any changes.
 
 ## Input Parsing
-The user invoked: /accessibility-review {optional_scope}
+The user invoked: /accessibility-review <args>
 
 Valid scopes:
 - **No argument**: Analyze the entire project

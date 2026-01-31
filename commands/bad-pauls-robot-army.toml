@@ -1,11 +1,5 @@
 description = "Display the comprehensive guide to Bad Paul's Robot Army capabilities"
 prompt = """
----
-name: bad-pauls-robot-army
-description: Display the comprehensive guide to Bad Paul's Robot Army capabilities
-pattern: /bad-pauls-robot-army
----
-
 # Bad Paul's Robot Army - Command Reference
 
 Your elite development force - a comprehensive suite of specialized AI skills and commands for Gemini CLI.

@@ -1,0 +1,143 @@
+description = "Analyze logging and observability practices and create an improvement plan"
+prompt = """
+Using the logging-master skill, prepare a logging and observability review report. Analyze logging practices, observability gaps, and monitoring setup in the codebase and create a comprehensive plan WITHOUT making any changes.
+
+## Input Parsing
+The user invoked: /logging-review <args>
+
+Valid scopes:
+- **No argument**: Analyze the entire project
+- **File/directory path**: Scope analysis to that specific path
+- **"current changes"**: Analyze uncommitted changes (use `git status` and `git diff`)
+- **"recent changes"**: Analyze recent commits (use `git log` and `git diff`)
+- **"PR #123"**: Analyze a specific pull request (use `gh pr view` and `gh pr diff`)
+
+## Your Task
+1. First, understand the codebase and identify logging and observability practices
+2. Analyze logging coverage, quality, and monitoring setup
+3. Create a prioritized logging improvement plan
+4. Save your plan as a markdown file in the /reports directory
+
+## Analysis Steps
+1. **Logging Coverage Assessment**
+   - Identify logging framework and configuration
+   - Check log level usage (DEBUG, INFO, WARN, ERROR)
+   - Analyze logging consistency across modules
+   - Find gaps in error handling and logging
+   - Assess business logic logging coverage
+
+2. **Log Quality Review**
+   - Check for structured logging (JSON format)
+   - Verify correlation/trace IDs for request tracking
+   - Identify sensitive data in logs (passwords, tokens, PII)
+   - Review log message clarity and usefulness
+   - Check for excessive or insufficient logging
+
+3. **Observability Infrastructure**
+   - Review monitoring and alerting setup
+   - Check metrics collection and dashboards
+   - Analyze distributed tracing implementation
+   - Assess log aggregation and search capabilities
+   - Verify health checks and status endpoints
+
+4. **Performance and Operations**
+   - Evaluate logging performance impact
+   - Check log rotation and retention policies
+   - Review log storage and indexing strategy
+   - Assess debugging and troubleshooting workflows
+   - Check compliance and audit logging
+
+## Output Format
+Create a markdown file at `/reports/logging-review-{scope}-{timestamp}.md` with:
+
+```markdown
+# Logging and Observability Review Plan
+Generated: {timestamp}
+Scope: {full_path_or_entire_project}
+
+## Executive Summary
+Brief overview of current logging maturity and critical gaps
+
+## Logging Findings
+### Critical Issues
+- Issue: Critical logging gap or problem
+- Issue: Security/compliance violation
+
+### High Priority Issues
+- Observability gap: Details and impact
+- Logging quality issue: Details
+
+### Medium Priority Issues
+- Best practice violation: Details
+- Improvement opportunity: Details
+
+## Current State Analysis
+### Logging Framework and Configuration
+- Framework used: [framework name]
+- Configuration location: [path]
+- Log levels configured: [levels]
+- Output destinations: [console, files, services]
+
+### Log Coverage Assessment
+- Components with good logging: [list]
+- Components lacking logging: [list]
+- Error handling coverage: [assessment]
+- Business logic coverage: [assessment]
+
+### Log Quality
+- Structured format used: [Yes/No]
+- Correlation IDs present: [Yes/No/Partial]
+- Sensitive data risks: [High/Medium/Low]
+- Message clarity: [Good/Fair/Poor]
+
+### Observability Infrastructure
+- Monitoring tools: [list]
+- Log aggregation: [tool/service]
+- Dashboards: [available/missing]
+- Alerting: [configured/missing]
+- Distributed tracing: [implemented/missing]
+
+## Improvement Plan
+### Immediate Actions (Critical)
+1. Fix critical logging security issues
+2. Add missing error logging for critical paths
+
+### Short-term
+1. Implement structured logging format
+2. Add correlation IDs for request tracing
+3. Configure proper log levels
+4. Remove sensitive data from logs
+
+### Medium-term
+1. Set up centralized log aggregation
+2. Implement monitoring dashboards
+3. Add distributed tracing
+4. Establish log retention policies
+
+## Monitoring and Alerting Strategy
+- Key metrics to track
+- Alert thresholds
+- Dashboard requirements
+
+## Recommendations
+### Tools and Technologies
+- Logging framework recommendation
+- Log aggregation tool
+- Monitoring platform
+
+### Best Practices to Implement
+- Structured logging standards
+- Log level guidelines
+- Sensitive data handling
+```
+
+Remember: DO NOT make any changes. Only analyze and report.
+
+## CRITICAL: Report Generation
+
+**YOU MUST CREATE THE REPORT FILE.** This is not optional.
+
+1. Create the report file using the Write tool
+2. Fill in ALL sections with real findings
+3. Provide the full path to the user when done
+"""

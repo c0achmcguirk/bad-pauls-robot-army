@@ -1,0 +1,131 @@
+description = "Investigate why code was built a certain way instead of obvious alternatives"
+prompt = """
+Using the mentor skill, investigate why specific code was implemented in its current form rather than obvious alternatives, combining historical analysis and architectural reasoning to uncover hidden constraints and design decisions.
+
+## Input Parsing
+The user invoked: /why-this-way <args>
+
+Examples:
+- `/why-this-way src/auth/session.ts` - Why this specific implementation?
+- `/why-this-way why callbacks instead of async/await in parser` - Why this pattern choice?
+- `/why-this-way the manual SQL queries in reports module` - Why not use the ORM?
+- `/why-this-way` - Interactive mode to identify what needs investigation
+
+## Your Task
+
+This is an archaeological and analytical investigation focused on **understanding**, not improvement. The goal is to help developers comprehend the reasoning, constraints, and context behind seemingly odd or non-obvious implementation choices.
+
+### 1. Initial Investigation
+Identify:
+- What code or pattern needs investigation
+- What the "obvious alternative" would be
+- What makes the current approach surprising
+
+### 2. Archaeological Research Phase
+Use multiple investigation techniques:
+
+**Git History Analysis:**
+- `git log --follow -p -- {file}` - File evolution
+- `git blame {file}` - Line-level authorship
+- `git log --grep="{keyword}"` - Related commits
+
+**Pull Request Archaeology:**
+- `gh pr list --search "involves:{file}"` - Related PRs
+- Check PR descriptions and review comments
+
+**Context Mining:**
+- Search for "workaround", "temporary", "fix" in commits
+- Look for TODO/FIXME/HACK comments
+- Check related issues
+
+### 3. Constraint Discovery
+Investigate potential hidden constraints:
+
+**Technical Constraints:**
+- Performance requirements
+- Memory limitations
+- Browser/platform compatibility
+- Dependency limitations
+
+**Business Constraints:**
+- Timeline pressure
+- Resource constraints
+- Legal/compliance requirements
+
+**Historical Constraints:**
+- State of the art at the time
+- Language/framework version limitations
+- Known bugs being worked around
+
+### 4. Pattern Analysis
+- Does this fit a larger architectural pattern?
+- Is it consistent with similar code?
+- Is it part of a migration strategy?
+
+## Output Format
+Create a markdown file at `/reports/why-this-way-{topic}-{timestamp}.md` with:
+
+```markdown
+# Why This Way: [Code/Pattern Description]
+
+## The Question
+**Current Implementation**: [Brief description]
+**Obvious Alternative**: [What seems more natural]
+**Investigation Scope**: [Files/modules examined]
+
+## Summary
+[TL;DR of why it's built this way]
+
+## Archaeological Findings
+
+### Timeline
+[When was this introduced? Key dates in its evolution]
+
+### Key Commits
+[Most relevant commits with explanations]
+
+### Pull Request Discussions
+[Relevant PR conversations]
+
+## Discovered Constraints
+
+### Technical Constraints
+[Performance, compatibility, dependencies]
+
+### Business Constraints
+[Timeline, resources, compliance]
+
+### Historical Context
+[What was possible at the time]
+
+## Architectural Reasoning
+
+### Pattern Context
+[How this fits into the larger system]
+
+### Design Trade-offs
+**Gains**: [Benefits of this approach]
+**Trade-offs**: [What was sacrificed]
+
+## The "Why Not" Answers
+
+### Why Not [Alternative 1]?
+[Specific reasons the obvious alternative wasn't used]
+
+## Questions to Explore Further
+[Open questions for deeper understanding]
+
+## Learning Takeaways
+[What this teaches about the codebase]
+```
+
+Remember: Be a detective, not a judge. Every "weird" implementation has a story. Your job is to uncover that story and help developers understand the real constraints that shaped the code.
+
+## CRITICAL: Report Generation
+
+**YOU MUST CREATE THE REPORT FILE.** This is not optional.
+
+1. Create the report file using the Write tool
+2. Fill in ALL sections with real findings
+3. Provide the full path to the user when done
+"""

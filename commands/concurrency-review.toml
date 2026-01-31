@@ -1,15 +1,9 @@
 description = "Analyze concurrent programming patterns and create a concurrency improvement plan"
 prompt = """
----
-name: concurrency-review
-description: Analyze concurrent programming patterns and create a concurrency improvement plan
-pattern: /concurrency-review(?:\s+(.+))?
----
-
 Using the concurrency-expert skill, prepare a concurrency review report. You must analyze threading patterns, async operations, and parallel processing in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Input Parsing
-The user invoked: /concurrency-review {optional_scope}
+The user invoked: /concurrency-review <args>
 
 Valid scopes:
 - **No argument**: Analyze the entire project

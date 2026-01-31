@@ -1,15 +1,9 @@
 description = "Analyze API design and create an API improvement plan"
 prompt = """
----
-name: api-review
-description: Analyze API design and create an API improvement plan
-pattern: /api-review(?:\s+(.+))?
----
-
 Using the api-designer skill, prepare an API review report. You must analyze API design patterns, RESTful practices, and interface consistency in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Input Parsing
-The user invoked: /api-review {optional_scope}
+The user invoked: /api-review <args>
 
 Valid scopes:
 - **No argument**: Analyze the entire project

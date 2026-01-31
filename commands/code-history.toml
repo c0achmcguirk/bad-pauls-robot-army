@@ -1,15 +1,9 @@
 description = "Quick analysis of code evolution and key patterns"
 prompt = """
----
-name: code-history
-description: Quick analysis of code evolution and key patterns
-pattern: /code-history(?:\s+(.+))?
----
-
 Using the code-historian skill, analyze the code history and evolution patterns. You must create a concise, executive-level historical analysis report WITHOUT making any changes.
 
 ## Input Parsing
-The user invoked: /code-history {optional_scope}
+The user invoked: /code-history <args>
 
 Valid scopes:
 - **No argument**: Analyze the entire project's history

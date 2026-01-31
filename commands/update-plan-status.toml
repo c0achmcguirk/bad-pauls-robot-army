@@ -1,0 +1,132 @@
+description = "Check plan completion status by verifying issues, PRs, and actual implementation"
+prompt = """
+Verify the completion status of a plan by checking associated issues, pull requests, and validating that functionality has been implemented and tested.
+
+## Input Parsing
+The user invoked: /update-plan-status <args>
+- Path should point to a plan file (typically in /plans directory)
+- If no path provided, list available plan files and ask user to specify
+
+## Your Task
+1. Read the specified plan file
+2. Find all issues created from this plan
+3. Check status of each issue and its associated PR
+4. **Validate actual implementation** by examining the codebase
+5. **Verify test coverage** for implemented features
+6. Generate comprehensive status report
+7. Update the plan file with completion status
+
+## Workflow
+
+### 1. Plan File Analysis
+- Read plan to understand expected outcomes
+- Extract all tasks/requirements
+- Identify success criteria for each task
+
+### 2. Issue Discovery
+**If GitHub available:**
+- Search: `gh issue list --search "in:body {plan_file_name}" --state all`
+- For each issue: number, title, state, labels, linked PR
+
+**If local files:**
+- Search `/issues/*.md` for `source_plan: {plan_file_path}` in frontmatter
+- Check status field, PR reference, completion timestamp
+
+### 3. Pull Request Verification
+For each issue with associated PR:
+- Check if merged, closed without merge, or still open
+- Check review status (approved/changes requested/pending)
+
+### 4. Implementation Validation (CRITICAL)
+For each task:
+1. **Identify what should exist** based on task description
+2. **Search codebase** to verify implementation:
+   - Use Grep to find relevant code
+   - Use Glob to find expected files
+   - Read key files to verify functionality
+3. **Verify tests exist** for new functionality
+4. **Validate integration** with existing systems
+
+### 5. Status Categorization
+- **✅ Complete**: Issue closed, PR merged, functionality exists and is tested
+- **⚠️ Partially Complete**: PR merged but missing tests or incomplete
+- **🚧 In Progress**: Issue open or PR pending review
+- **❌ Not Started**: No issue created or no work done
+- **⛔ Blocked**: Blocked by dependencies or failing checks
+
+### 6. Status Report Generation
+Create report at `/reports/plan-status-{plan_name}-{timestamp}.md`:
+
+```markdown
+# Plan Status Report: {plan_file_name}
+Generated: {timestamp}
+
+## Overall Status
+- Total Tasks: {count}
+- ✅ Complete: {count} ({percentage}%)
+- ⚠️ Partially Complete: {count}
+- 🚧 In Progress: {count}
+- ❌ Not Started: {count}
+- ⛔ Blocked: {count}
+
+## Detailed Task Status
+
+### ✅ Complete
+1. **{task_title}**
+   - Issue: #{number} (Closed)
+   - PR: #{number} (Merged)
+   - Implementation: Verified at {file_path}
+   - Tests: ✓ {test_count} tests found
+
+### ⚠️ Partially Complete
+[Items with issues...]
+
+### 🚧 In Progress
+[Open work...]
+
+### ❌ Not Started
+[Missing items...]
+
+## Recommendations
+- High Priority Actions
+- Quality Improvements Needed
+- Next Steps
+
+## Implementation Verification Details
+- Missing Tests
+- Incomplete Implementations
+- Documentation Gaps
+```
+
+### 7. Update Plan File
+Add status section to the plan file:
+```markdown
+## Implementation Status
+Last updated: {timestamp}
+
+### Completion Summary
+- Overall: {percentage}% complete
+- Tasks Complete: {count}/{total}
+
+### Outstanding Items
+- {item_1}
+- {item_2}
+```
+
+## Success Criteria
+A task is only **✅ Complete** when ALL are true:
+1. Issue is closed
+2. PR is merged
+3. Expected functionality exists in codebase
+4. Tests exist for new functionality
+5. Tests are passing
+6. Documentation is updated (if applicable)
+
+This rigorous verification ensures "done" actually means "done and tested".
+
+## Important Notes
+- This command is **read-only** (doesn't modify issues/PRs)
+- Provides objective assessment based on evidence
+- Actual implementation check is critical - don't just rely on ticket status
+- Missing tests = partial completion, not full completion
+"""

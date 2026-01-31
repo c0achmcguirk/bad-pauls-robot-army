@@ -1,11 +1,5 @@
 description = "Approach code with fresh curiosity and learning mindset"
 prompt = """
----
-name: beginners-mind
-description: Approach code with fresh curiosity and learning mindset
-pattern: /beginners-mind(?:\s+(.+))?
----
-
 Using the mentor skill, approach the specified topic or code area with genuine curiosity and a learning mindset. Generate a thoughtful list of questions to explore and understand the topic deeply, saving the output to the reports directory.
 
 ## Input Parsing

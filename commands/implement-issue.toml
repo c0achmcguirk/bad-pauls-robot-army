@@ -1,0 +1,115 @@
+description = "Automatically implement a GitHub issue by pulling it down, solving it, and creating a PR"
+prompt = """
+Automatically implement a GitHub issue by pulling it down, solving it with the appropriate specialist skill, and creating a PR with the solution.
+
+## Usage
+/implement-issue <args>
+
+## Examples
+- `/implement-issue 5` - Implement GitHub issue #5 or local issue file `/issues/5.md`
+- `/implement-issue https://github.com/owner/repo/issues/5` - Implement from URL
+- `/implement-issue issues/5.md` - Implement local issue file
+
+## Workflow
+
+### 1. Issue Retrieval
+- Check if GitHub is available via `gh auth status`
+- **If GitHub available**: Fetch with `gh issue view {number}`
+- **If local files**: Read from `/issues/{number}.md`
+- Parse for requirements, success criteria, recommended skill
+
+### 2. Branch Creation (if using GitHub)
+- Create branch named `issue-{number}-{slug}`
+- Switch to the new branch
+- Ensure branch is up to date with main
+
+### 3. Skill Selection
+Look for skill recommendations in the issue body:
+- Pattern: `@skill-{name}` or skill specified in frontmatter
+- Fall back to analyzing issue labels and content
+
+**Skill Mapping:**
+| Issue Labels/Keywords | Selected Skill |
+|----------------------|----------------|
+| security | security-master |
+| performance | performance-optimizer |
+| architecture | architect |
+| documentation | code-documentor |
+| test, testing | test-automator |
+| refactor | refactorer |
+| modernize, upgrade | code-modernizer |
+| build, ci/cd | build-master |
+| config | configuration-manager |
+| bug, fix | debugger |
+| error, exception | exception-handling-master |
+| logging | logging-master |
+| tooling | toolsmith |
+| i18n | internationalization-specialist |
+| a11y, accessibility | accessibility-specialist |
+
+### 4. Implementation
+- Invoke the selected skill with issue context
+- Skill performs implementation autonomously
+
+### 5. Validation
+Before creating PR, validate:
+- All changes are syntactically correct
+- Project builds successfully
+- All tests pass
+- Linting passes
+- No merge conflicts
+
+### 6. Commit and Push
+- Stage all changes
+- Create descriptive commit message referencing issue
+- Push branch to remote (if using GitHub)
+
+### 7. Completion
+**If using GitHub:**
+- Create PR with title: "Fix #{issue_number}: {issue_title}"
+- Body MUST include reference to source issue
+- Update issue with comment linking to PR
+
+**If using local files:**
+- Update `/issues/{number}.md` frontmatter status
+- Add completion timestamp
+- Add PR reference if applicable
+
+## Local Issue File Format
+```markdown
+---
+number: 5
+title: "Create plugin validation system"
+labels:
+  - feature
+  - testing
+priority: High
+skill: test-automator
+dependencies: []
+status: open
+created_at: 2024-10-01T10:00:00Z
+---
+
+## Task Overview
+[Description...]
+
+## Success Criteria
+- [ ] Criteria 1
+- [ ] Criteria 2
+
+## Recommended Skill
+@skill-test-automator
+```
+
+## Error Handling
+- Issue not found: Prompts for valid issue number
+- No skill identified: Asks user to specify
+- Build/test failures: Reports errors and asks for guidance
+- Merge conflicts: Attempts automatic resolution or asks for help
+
+## Notes
+- This command embodies the full DevOps cycle
+- Reduces manual work from hours to minutes
+- Ensures consistent quality through validation
+- Maintains traceability between issues and PRs
+"""
