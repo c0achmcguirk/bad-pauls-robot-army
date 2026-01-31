@@ -1,0 +1,11 @@
+{
+"toolsEnabled": true,
+"experimental": {
+"skills": true
+},
+"toolPermissions": {
+"allow": ["read_file", "write_file", "list_directory", "run_shell_command", "activate_skill"],
+"command_allow_list": ["git", "ls", "tree", "npm", "cargo"]
+},
+"theme": "dark"
+}
