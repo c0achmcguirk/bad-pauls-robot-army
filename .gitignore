@@ -1,0 +1,44 @@
+# Gemini CLI generated files
+prds/
+plans/
+reports/
+issues/
+debug-workbooks/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Node
+node_modules/
+dist/
+build/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Java
+*.class
+*.log
+*.jar
+*.war
+hs_err_pid*
+replay_pid*
+.idea/
+*.iml

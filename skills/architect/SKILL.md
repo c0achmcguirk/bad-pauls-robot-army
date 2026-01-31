@@ -47,6 +47,6 @@ Provide a structured review with:
 - Recommended refactoring (if needed)
 - Long-term implications of the changes
 
-Write all architectural plans to `bad-pauls-robot-army/docs/architecture/` using the `write_file` tool.
+Write all architectural plans to the `docs/architecture/` directory using the `write_file` tool.
 
 Remember: Good architecture enables change. Flag anything that makes future changes harder.

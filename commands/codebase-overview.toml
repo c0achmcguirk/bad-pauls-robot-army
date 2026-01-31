@@ -1,14 +1,12 @@
-description = "Ported command from Bad Dave's Robot Army."
+description = "Generate a comprehensive, beginner-friendly overview of the entire codebase"
 prompt = """
-!{git status}
-
 ---
 name: codebase-overview
 description: Generate a comprehensive, beginner-friendly overview of the entire codebase
 pattern: /codebase-overview(?:\s+(.+))?
 ---
 
-Using @agent-mentor create a comprehensive overview of the codebase tailored to the user's experience level, saving the output to the reports directory.
+Using the mentor skill, create a comprehensive overview of the codebase tailored to the user's experience level, saving the output to the reports directory.
 
 ## Input Parsing
 The user invoked: /codebase-overview {optional_focus}

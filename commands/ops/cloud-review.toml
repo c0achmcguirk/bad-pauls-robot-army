@@ -1,14 +1,12 @@
-description = "Ported command from Bad Dave's Robot Army."
+description = "Analyze AWS cloud architecture and create a cloud optimization plan"
 prompt = """
-!{uptime}
-
 ---
 name: cloud-review
 description: Analyze AWS cloud architecture and create a cloud optimization plan
 pattern: /cloud-review(?:\s+(.+))?
 ---
 
-Using @agent-cloud-developer prepare a cloud architecture review report. You must analyze AWS cloud patterns, scalability, and cost optimization opportunities in the codebase and create a comprehensive plan WITHOUT making any changes.
+Using the cloud-developer skill, prepare a cloud architecture review report. You must analyze AWS cloud patterns, scalability, and cost optimization opportunities in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Input Parsing
 The user invoked: /cloud-review {optional_scope}

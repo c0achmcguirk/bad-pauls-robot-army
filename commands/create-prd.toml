@@ -1,4 +1,4 @@
-description = "Ported command from Bad Dave's Robot Army."
+description = "Create a comprehensive product requirements document for features within the current project/codebase"
 prompt = """
 ---
 name: create-prd
@@ -6,7 +6,7 @@ description: Create a comprehensive product requirements document for features w
 pattern: /create-prd(?:\s+(.+))?
 ---
 
-Using @agent-product-manager, help create a comprehensive product requirements document (PRD) for a new feature or enhancement within the current project/codebase.
+Using the product-manager skill, help create a comprehensive product requirements document (PRD) for a new feature or enhancement within the current project/codebase.
 
 ## Context
 This command is for creating PRDs for features that will be implemented in the EXISTING project/codebase you're currently working in. This is NOT for creating entirely new products from scratch, but rather for planning new features, enhancements, or modules within the current project context.

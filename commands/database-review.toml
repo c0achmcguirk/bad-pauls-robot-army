@@ -1,4 +1,4 @@
-description = "Ported command from Bad Dave's Robot Army."
+description = "Analyze database design and create a database optimization plan"
 prompt = """
 ---
 name: database-review
@@ -6,7 +6,7 @@ description: Analyze database design and create a database optimization plan
 pattern: /database-review(?:\s+(.+))?
 ---
 
-Using @agent-database-designer prepare a database review report. You must analyze database schemas, query patterns, and data architecture in the codebase and create a comprehensive plan WITHOUT making any changes.
+Using the database-designer skill, prepare a database review report. You must analyze database schemas, query patterns, and data architecture in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Input Parsing
 The user invoked: /database-review {optional_scope}

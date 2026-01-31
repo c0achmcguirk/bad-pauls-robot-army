@@ -1,14 +1,12 @@
-description = "Ported command from Bad Dave's Robot Army."
+description = "Analyze build systems and CI/CD pipelines to identify optimization opportunities"
 prompt = """
-!{git status}
-
 ---
 name: build-review
 description: Analyze build systems and CI/CD pipelines to identify optimization opportunities
 pattern: /build-review(?:\s+(.+))?
 ---
 
-Using @agent-build-master prepare a comprehensive build and CI/CD review report. You must analyze build performance, dependency management, pipeline efficiency, and deployment processes WITHOUT making any changes.
+Using the build-master skill, prepare a comprehensive build and CI/CD review report. You must analyze build performance, dependency management, pipeline efficiency, and deployment processes WITHOUT making any changes.
 
 ## Input Parsing
 The user invoked: /build-review {optional_scope}

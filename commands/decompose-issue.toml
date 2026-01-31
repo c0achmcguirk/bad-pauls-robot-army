@@ -1,4 +1,4 @@
-description = "Ported command from Bad Dave's Robot Army."
+description = "Break down a large GitHub issue into smaller, manageable sub-issues with appropriate linkages and dependencies."
 prompt = """
 # decompose-issue
 
@@ -99,7 +99,7 @@ This is part of #4: Implement user authentication system
 - [ ] {criterion_2}
 
 ## Recommended Specialist
-@agent-database-designer
+database-designer skill
 ```
 
 The parent issue is updated with:
@@ -118,8 +118,8 @@ status: open
 This issue has been broken down into the following sub-tasks:
 
 ### Implementation Tasks
-- [ ] #12: Implement user model and database schema - @agent-database-designer
-- [ ] #13: Create authentication service layer - @agent-architect
+- [ ] #12: Implement user model and database schema - database-designer skill
+- [ ] #13: Create authentication service layer - architect skill
 ...
 ```
 
@@ -185,7 +185,7 @@ This is part of #parent_number: {parent_title}
 - Blocks: #{blocked_issue_number} (if applicable)
 
 ## Recommended Specialist
-@agent-{specialist_name}
+{specialist_name} skill
 
 ## Parent Issue Context
 {relevant_context_from_parent}
@@ -205,15 +205,15 @@ After decomposition, the parent issue is updated with:
 This issue has been broken down into the following sub-tasks:
 
 ### Implementation Tasks
-- [ ] #12: {title} - @agent-name
-- [ ] #13: {title} - @agent-name
-- [ ] #14: {title} - @agent-name
+- [ ] #12: {title} - skill-name
+- [ ] #13: {title} - skill-name
+- [ ] #14: {title} - skill-name
 
 ### Testing Tasks
-- [ ] #15: {title} - @agent-test-automator
+- [ ] #15: {title} - test-automator skill
 
 ### Documentation Tasks
-- [ ] #16: {title} - @agent-code-documentor
+- [ ] #16: {title} - code-documentor skill
 
 ### Dependencies
 ```mermaid
@@ -239,16 +239,16 @@ graph TD
 
 | Sub-task Type | Assigned Specialist |
 |--------------|-------------------|
-| API endpoints | @agent-architect |
-| Database changes | @agent-configuration-manager |
-| UI components | @agent-accessibility-specialist |
-| Testing | @agent-test-automator |
-| Documentation | @agent-code-documentor |
-| Performance | @agent-performance-optimizer |
-| Security | @agent-security-master |
-| Refactoring | @agent-refactorer |
-| Bug fixes | @agent-debugger |
-| Build/Deploy | @agent-build-master |
+| API endpoints | architect skill |
+| Database changes | configuration-manager skill |
+| UI components | accessibility-specialist skill |
+| Testing | test-automator skill |
+| Documentation | code-documentor skill |
+| Performance | performance-optimizer skill |
+| Security | security-master skill |
+| Refactoring | refactorer skill |
+| Bug fixes | debugger skill |
+| Build/Deploy | build-master skill |
 
 ## Options
 
@@ -266,12 +266,12 @@ Analyzing issue #4: Refactor sync script into modular functions
 ✓ Creating sub-issues...
 
 Created sub-issues:
-├── #32: Extract file comparison functions (assigned: @agent-refactorer)
-├── #33: Create validation module (assigned: @agent-test-automator)
-├── #34: Implement error handling module (assigned: @agent-exception-handling-master)
-├── #35: Create logging functions (assigned: @agent-logging-master)
-├── #36: Write unit tests for modules (assigned: @agent-test-automator)
-└── #37: Update documentation (assigned: @agent-code-documentor)
+├── #32: Extract file comparison functions (assigned: refactorer skill)
+├── #33: Create validation module (assigned: test-automator skill)
+├── #34: Implement error handling module (assigned: exception-handling-master skill)
+├── #35: Create logging functions (assigned: logging-master skill)
+├── #36: Write unit tests for modules (assigned: test-automator skill)
+└── #37: Update documentation (assigned: code-documentor skill)
 
 ✓ Updated parent issue #4 with sub-task checklist
 ✓ Added dependency relationships

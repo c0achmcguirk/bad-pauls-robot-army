@@ -1,0 +1,86 @@
+description = "Display the comprehensive guide to Bad Paul's Robot Army capabilities"
+prompt = """
+---
+name: bad-pauls-robot-army
+description: Display the comprehensive guide to Bad Paul's Robot Army capabilities
+pattern: /bad-pauls-robot-army
+---
+
+# Bad Paul's Robot Army - Command Reference
+
+Your elite development force - a comprehensive suite of specialized AI skills and commands for Gemini CLI.
+
+## Available Commands
+
+### Review & Analysis Commands
+- `/accessibility-review` - WCAG compliance and a11y analysis
+- `/api-review` - RESTful API design and consistency review
+- `/database-review` - Schema, query, and data architecture analysis
+- `/concurrency-review` - Thread safety and async patterns
+- `/doc-review` - Documentation coverage and gaps
+
+### Code Intelligence Commands
+- `/code-history` - Quick analysis of code evolution patterns
+- `/code-history-detailed` - Comprehensive git history analysis
+- `/codebase-overview` - Beginner-friendly codebase overview
+- `/beginners-mind` - Generate exploration questions for learning
+
+### Development Workflow Commands
+- `/create-prd` - Create product requirements documents
+- `/decompose-issue` - Break down large issues into sub-tasks
+
+### Operations Commands
+- `/build-review` - Build system and CI/CD pipeline analysis
+- `/deployment-review` - Deployment process review
+- `/cloud-review` - Cloud infrastructure analysis
+- `/configuration-review` - Configuration management review
+- `/tooling-review` - Developer tooling analysis
+
+### Architecture Commands
+- `/arch-review` - Strict architectural review on staged changes
+
+## Available Skills
+
+All commands leverage specialized skills that can also be activated directly:
+
+| Skill | Expertise |
+|-------|-----------|
+| accessibility-specialist | WCAG, ARIA, assistive technology |
+| api-designer | REST API design, versioning |
+| architect | System design, SOLID principles |
+| build-master | CI/CD, build optimization |
+| cloud-developer | AWS, cloud architecture |
+| code-documentor | Technical documentation |
+| code-historian | Git history, code evolution |
+| concurrency-expert | Thread safety, async patterns |
+| configuration-manager | Config, secrets, environments |
+| database-designer | Schema design, query optimization |
+| debugger | Troubleshooting, root cause analysis |
+| deployment-specialist | Zero-downtime releases |
+| exception-handling-master | Error handling, resilience |
+| logging-master | Observability, logging strategies |
+| mentor | Teaching, codebase explanation |
+| performance-optimizer | Bottleneck analysis, optimization |
+| product-manager | PRD creation, requirements |
+| refactorer | Code restructuring, design improvement |
+| security-master | Security vulnerabilities, secure coding |
+| test-automator | Testing strategies, coverage |
+| toolsmith | Developer experience, tooling |
+
+## Usage
+
+Run any command with optional scope:
+```
+/accessibility-review              # Analyze entire project
+/accessibility-review src/         # Analyze specific directory
+/accessibility-review current changes  # Analyze uncommitted changes
+/accessibility-review PR #123      # Analyze a specific PR
+```
+
+## Installation
+
+See the README.md for installation instructions.
+
+---
+**Welcome to Bad Paul's Robot Army, Commander!**
+"""

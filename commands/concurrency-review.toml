@@ -1,4 +1,4 @@
-description = "Ported command from Bad Dave's Robot Army."
+description = "Analyze concurrent programming patterns and create a concurrency improvement plan"
 prompt = """
 ---
 name: concurrency-review
@@ -6,7 +6,7 @@ description: Analyze concurrent programming patterns and create a concurrency im
 pattern: /concurrency-review(?:\s+(.+))?
 ---
 
-Using @agent-concurrency-expert prepare a concurrency review report. You must analyze threading patterns, async operations, and parallel processing in the codebase and create a comprehensive plan WITHOUT making any changes.
+Using the concurrency-expert skill, prepare a concurrency review report. You must analyze threading patterns, async operations, and parallel processing in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Input Parsing
 The user invoked: /concurrency-review {optional_scope}

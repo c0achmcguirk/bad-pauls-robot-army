@@ -1,14 +1,12 @@
-description = "Ported command from Bad Dave's Robot Army."
+description = "Analyze configuration management and environment settings to identify security risks and improvement opportunities"
 prompt = """
-!{git status}
-
 ---
 name: configuration-review
 description: Analyze configuration management and environment settings to identify security risks and improvement opportunities
 pattern: /configuration-review(?:\s+(.+))?
 ---
 
-Using @agent-configuration-manager prepare a configuration review report. You must analyze configuration management practices, environment variables, secrets handling, and settings organization in the codebase and create a comprehensive plan WITHOUT making any changes.
+Using the configuration-manager skill, prepare a configuration review report. You must analyze configuration management practices, environment variables, secrets handling, and settings organization in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Input Parsing
 The user invoked: /configuration-review {optional_scope}

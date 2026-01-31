@@ -1,14 +1,12 @@
-description = "Ported command from Bad Dave's Robot Army."
+description = "Comprehensive code evolution analysis through git history, PRs, and collaborative development patterns"
 prompt = """
-!{git status}
-
 ---
 name: code-history-detailed
 description: Comprehensive code evolution analysis through git history, PRs, and collaborative development patterns
 pattern: /code-history-detailed(?:\s+(.+))?
 ---
 
-Using @agent-code-historian analyze the code history and evolution patterns. You must create a comprehensive, detailed historical analysis report WITHOUT making any changes.
+Using the code-historian skill, analyze the code history and evolution patterns. You must create a comprehensive, detailed historical analysis report WITHOUT making any changes.
 
 ## Input Parsing
 The user invoked: /code-history-detailed {optional_scope}

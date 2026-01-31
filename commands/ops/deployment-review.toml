@@ -1,14 +1,12 @@
-description = "Ported command from Bad Dave's Robot Army."
+description = "Analyze deployment processes and create a deployment improvement plan"
 prompt = """
-!{git status}
-
 ---
 name: deployment-review
 description: Analyze deployment processes and create a deployment improvement plan
 pattern: /deployment-review(?:\s+(.+))?
 ---
 
-Using @agent-deployment-specialist prepare a deployment review report. You must analyze deployment processes, CI/CD pipelines, and release management practices in the codebase and create a comprehensive plan WITHOUT making any changes.
+Using the deployment-specialist skill, prepare a deployment review report. You must analyze deployment processes, CI/CD pipelines, and release management practices in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Input Parsing
 The user invoked: /deployment-review {optional_scope}

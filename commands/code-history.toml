@@ -1,14 +1,12 @@
-description = "Ported command from Bad Dave's Robot Army."
+description = "Quick analysis of code evolution and key patterns"
 prompt = """
-!{git status}
-
 ---
 name: code-history
 description: Quick analysis of code evolution and key patterns
 pattern: /code-history(?:\s+(.+))?
 ---
 
-Using @agent-code-historian analyze the code history and evolution patterns. You must create a concise, executive-level historical analysis report WITHOUT making any changes.
+Using the code-historian skill, analyze the code history and evolution patterns. You must create a concise, executive-level historical analysis report WITHOUT making any changes.
 
 ## Input Parsing
 The user invoked: /code-history {optional_scope}
