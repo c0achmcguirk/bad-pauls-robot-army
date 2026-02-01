@@ -1,9 +1,15 @@
-description = "Convert a review plan into GitHub issues for tracking"
+description = "Convert a review plan into trackable issues for systematic implementation"
 prompt = """
-Convert a plan file into GitHub issues for systematic implementation. Each task becomes a GitHub issue with appropriate labels and skill recommendations.
+Convert a plan file into trackable issues for systematic implementation. Each task becomes an issue with appropriate labels and skill recommendations.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of workspace-tools.
+If issue_tracking is not configured, create local issue files instead.
 
 ## Input Parsing
-The user invoked: /tasks-from-plan <args>
+The user invoked: /tasks-from-plan {{args}}
 - Path should point to a plan file (typically in /plans directory)
 - If no path provided, list available plan files and ask user to specify
 
@@ -11,8 +17,8 @@ The user invoked: /tasks-from-plan <args>
 1. Read the specified plan file
 2. Parse the plan to identify discrete tasks
 3. Group tasks by priority/phase
-4. Create GitHub issues for each actionable task
-5. Create any required labels BEFORE creating issues
+4. Create issues for each actionable task using workspace-tools configuration
+5. Create any required labels BEFORE creating issues (if supported)
 6. DO NOT implement any tasks - only create tracking issues
 
 ## Issue Creation Strategy
@@ -84,7 +90,7 @@ Generated from: [{plan_file_name}]({path_to_plan_file})
 ```
 
 ## Local Issue File Format
-When GitHub is not available, create `/issues/{number}.md` with YAML frontmatter:
+When issue_tracking is not configured, create `/issues/{number}.md` with YAML frontmatter:
 ```markdown
 ---
 number: 1
@@ -106,14 +112,15 @@ source_plan: plans/security-review.md
 1. Validate plan file exists and is valid
 2. Parse all actionable items
 3. Group by priority or phase
-4. Check if GitHub is available (`gh auth status`)
-5. **If GitHub**: Use `gh issue create` for each task
-6. **If local**: Create `/issues/{number}.md` files
-7. Provide summary report
+4. Consult workspace-tools for issue_tracking capabilities
+5. **If issue_tracking configured**: Use the `create_issue` tool for each task
+6. **If not configured**: Create `/issues/{number}.md` files
+7. Provide summary report with issue references (using `reference_format` from workspace-tools)
 
 ## Important Notes
 - DO NOT attempt to implement any tasks
 - Focus only on creating well-structured tracking issues
 - Ensure each issue is self-contained with enough context
 - Add cross-references between related issues
+- Use the `reference_format` from workspace-tools when mentioning issues
 """

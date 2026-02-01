@@ -1,31 +1,38 @@
-description = "Break down a large GitHub issue into smaller, manageable sub-issues with appropriate linkages and dependencies."
+description = "Break down a large issue into smaller, manageable sub-issues with appropriate linkages and dependencies."
 prompt = """
 # decompose-issue
 
-Break down a large GitHub issue into smaller, manageable sub-issues with appropriate linkages and dependencies.
+Break down a large issue into smaller, manageable sub-issues with appropriate linkages and dependencies.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of workspace-tools.
+If a capability is not configured, inform the user and continue with available capabilities.
 
 ## Usage
 ```
-/decompose-issue {issue_number_or_url_or_file}
+/decompose-issue {issue_number_or_file}
 ```
 
 ## Examples
-- `/decompose-issue 4` - Decompose GitHub issue #4 or local issue file `/issues/4.md`
-- `/decompose-issue https://github.com/owner/repo/issues/4` - Decompose issue from GitHub URL
+- `/decompose-issue 4` - Decompose issue #4 (format depends on workspace-tools config)
 - `/decompose-issue issues/4.md` - Decompose local issue file
 
+The issue reference format is defined in workspace-tools (`issue_tracking.reference_format`).
+Examples: `#4` (GitHub), `b/4` (Internal), `PROJECT-4` (Jira)
+
 ## Description
-This command analyzes a complex issue and intelligently breaks it down into smaller, atomic tasks that can each be implemented in a single PR. It maintains traceability through GitHub issue linking and dependency tracking.
+This command analyzes a complex issue and intelligently breaks it down into smaller, atomic tasks that can each be implemented in a single change request. It maintains traceability through issue linking and dependency tracking.
 
 ## Workflow
 
 ### 1. Issue Retrieval
-- First, check if GitHub is available by testing `gh auth status`
-- **If GitHub is available:**
-  - Fetch the parent issue using `gh issue view {number}`
-- **If GitHub is NOT available or input is a file path:**
-  - Read the issue from `/issues/{number}.md`
-  - Parse YAML frontmatter for metadata
+Consult workspace-tools for issue_tracking capabilities:
+- Use the configured `availability_check` to verify access (if defined)
+- Use the configured `fetch_issue` tool with the issue ID
+- **If issue_tracking not configured**: Read from `/issues/{number}.md`
+- Parse YAML frontmatter for metadata
 
 ### 2. Issue Analysis
 - Analyze scope and complexity
@@ -42,29 +49,27 @@ The command uses several strategies to identify sub-tasks:
 
 ### 4. Sub-Issue Creation
 For each identified sub-task:
-- Create descriptive title prefixed with parent issue number
+- Create descriptive title prefixed with parent issue reference
 - Include context from parent issue
 - Define clear scope and success criteria
 - Assign appropriate specialist agent
 - Set priority based on dependencies
 - Add labels inherited from parent plus specific ones
-- **If using GitHub:**
-  - Use `gh issue create` for each sub-task
-- **If using local files:**
-  - Find next available issue number
-  - Create `/issues/{number}.md` with YAML frontmatter
-  - Include parent reference in metadata
+
+Consult workspace-tools for issue_tracking capabilities:
+- Use the configured `create_issue` tool for each sub-task
+- **If create_issue not configured**: Create `/issues/{number}.md` with YAML frontmatter
 
 ### 5. Linking and Dependencies
-- Add "Part of #parent" reference in each sub-issue
+- Add "Part of {parent_reference}" in each sub-issue (use `reference_format` from workspace-tools)
 - Create dependency comments showing order
 - Update parent issue with checklist of sub-issues
-- **If using GitHub:**
-  - Add "has-subtasks" label to parent
-  - Create milestone if appropriate
-- **If using local files:**
-  - Update parent file's frontmatter with `has_subtasks: true`
-  - Update parent file's body with sub-issue checklist
+- Add "has-subtasks" label/tag to parent if supported
+- Create milestone if appropriate
+
+**If issue_tracking not configured:**
+- Update parent file's frontmatter with `has_subtasks: true`
+- Update parent file's body with sub-issue checklist
 
 ## Local Issue File Format
 
@@ -85,7 +90,7 @@ status: open
 ---
 
 ## Overview
-This is part of #4: Implement user authentication system
+This is part of {parent_reference}: {parent_title}
 
 ## Scope
 {specific_scope_for_this_subtask}
@@ -118,8 +123,8 @@ status: open
 This issue has been broken down into the following sub-tasks:
 
 ### Implementation Tasks
-- [ ] #12: Implement user model and database schema - database-designer skill
-- [ ] #13: Create authentication service layer - architect skill
+- [ ] {ref}12: Implement user model and database schema - database-designer skill
+- [ ] {ref}13: Create authentication service layer - architect skill
 ...
 ```
 
@@ -129,45 +134,45 @@ This issue has been broken down into the following sub-tasks:
 ```
 Parent: Implement user authentication system
 Sub-issues:
-├── #12: Implement user model and database schema
-├── #13: Create authentication service layer
-├── #14: Build login/logout API endpoints
-├── #15: Add session management
-├── #16: Implement password reset flow
-├── #17: Add authentication middleware
-├── #18: Create authentication UI components
-└── #19: Write authentication tests
+├── {ref}12: Implement user model and database schema
+├── {ref}13: Create authentication service layer
+├── {ref}14: Build login/logout API endpoints
+├── {ref}15: Add session management
+├── {ref}16: Implement password reset flow
+├── {ref}17: Add authentication middleware
+├── {ref}18: Create authentication UI components
+└── {ref}19: Write authentication tests
 ```
 
 ### Complex Refactoring
 ```
 Parent: Refactor monolithic service into microservices
 Sub-issues:
-├── #20: Extract user service
-├── #21: Extract payment service
-├── #22: Extract notification service
-├── #23: Implement service communication
-├── #24: Update deployment configuration
-└── #25: Migrate existing data
+├── {ref}20: Extract user service
+├── {ref}21: Extract payment service
+├── {ref}22: Extract notification service
+├── {ref}23: Implement service communication
+├── {ref}24: Update deployment configuration
+└── {ref}25: Migrate existing data
 ```
 
 ### Performance Optimization
 ```
 Parent: Optimize application performance
 Sub-issues:
-├── #26: Profile and identify bottlenecks
-├── #27: Optimize database queries
-├── #28: Implement caching layer
-├── #29: Add lazy loading
-├── #30: Optimize bundle size
-└── #31: Add performance monitoring
+├── {ref}26: Profile and identify bottlenecks
+├── {ref}27: Optimize database queries
+├── {ref}28: Implement caching layer
+├── {ref}29: Add lazy loading
+├── {ref}30: Optimize bundle size
+└── {ref}31: Add performance monitoring
 ```
 
 ## Sub-Issue Template
 
 ```markdown
 ## Overview
-This is part of #parent_number: {parent_title}
+This is part of {parent_reference}: {parent_title}
 
 ## Scope
 {specific_scope_for_this_subtask}
@@ -181,8 +186,8 @@ This is part of #parent_number: {parent_title}
 - [ ] {criterion_2}
 
 ## Dependencies
-- Depends on: #{other_issue_number} (if applicable)
-- Blocks: #{blocked_issue_number} (if applicable)
+- Depends on: {other_issue_reference} (if applicable)
+- Blocks: {blocked_issue_reference} (if applicable)
 
 ## Recommended Specialist
 {specialist_name} skill
@@ -205,23 +210,23 @@ After decomposition, the parent issue is updated with:
 This issue has been broken down into the following sub-tasks:
 
 ### Implementation Tasks
-- [ ] #12: {title} - skill-name
-- [ ] #13: {title} - skill-name
-- [ ] #14: {title} - skill-name
+- [ ] {ref}12: {title} - skill-name
+- [ ] {ref}13: {title} - skill-name
+- [ ] {ref}14: {title} - skill-name
 
 ### Testing Tasks
-- [ ] #15: {title} - test-automator skill
+- [ ] {ref}15: {title} - test-automator skill
 
 ### Documentation Tasks
-- [ ] #16: {title} - code-documentor skill
+- [ ] {ref}16: {title} - code-documentor skill
 
 ### Dependencies
 ```mermaid
 graph TD
-    A[#12] --> B[#13]
-    B --> C[#14]
-    C --> D[#15]
-    C --> E[#16]
+    A[{ref}12] --> B[{ref}13]
+    B --> C[{ref}14]
+    C --> D[{ref}15]
+    C --> E[{ref}16]
 ```
 
 **Note**: This issue is now tracked through its sub-issues. It will be closed automatically when all sub-issues are completed.
@@ -260,29 +265,27 @@ graph TD
 ## Example Output
 
 ```
-Analyzing issue #4: Refactor sync script into modular functions
+Analyzing issue {ref}4: Refactor sync script into modular functions
 ✓ Issue complexity: High (estimated 5-8 days)
 ✓ Identified 6 logical sub-tasks
 ✓ Creating sub-issues...
 
 Created sub-issues:
-├── #32: Extract file comparison functions (assigned: refactorer skill)
-├── #33: Create validation module (assigned: test-automator skill)
-├── #34: Implement error handling module (assigned: exception-handling-master skill)
-├── #35: Create logging functions (assigned: logging-master skill)
-├── #36: Write unit tests for modules (assigned: test-automator skill)
-└── #37: Update documentation (assigned: code-documentor skill)
+├── {ref}32: Extract file comparison functions (assigned: refactorer skill)
+├── {ref}33: Create validation module (assigned: test-automator skill)
+├── {ref}34: Implement error handling module (assigned: exception-handling-master skill)
+├── {ref}35: Create logging functions (assigned: logging-master skill)
+├── {ref}36: Write unit tests for modules (assigned: test-automator skill)
+└── {ref}37: Update documentation (assigned: code-documentor skill)
 
-✓ Updated parent issue #4 with sub-task checklist
+✓ Updated parent issue {ref}4 with sub-task checklist
 ✓ Added dependency relationships
 ✓ Created milestone: "Sync Script Refactoring"
-
-View parent issue: https://github.com/owner/repo/issues/4
 ```
 
 ## Benefits
 
-- **Manageable PRs**: Each sub-issue results in a focused PR
+- **Manageable Change Requests**: Each sub-issue results in a focused CR/PR
 - **Parallel Work**: Independent sub-tasks can be worked on simultaneously
 - **Clear Progress**: Checklist in parent shows overall progress
 - **Better Estimates**: Smaller tasks are easier to estimate
@@ -292,6 +295,6 @@ View parent issue: https://github.com/owner/repo/issues/4
 ## Notes
 - Use this when an issue would result in 200+ lines of changes
 - Particularly useful for architectural changes
-- Helps maintain clean git history with atomic commits
-- Enables better code review with smaller PRs
+- Helps maintain clean version control history with atomic commits
+- Enables better code review with smaller change requests
 """

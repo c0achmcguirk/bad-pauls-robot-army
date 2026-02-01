@@ -3,7 +3,7 @@ prompt = """
 Using the mentor skill, provide a detailed, customized explanation of the requested topic or code, saving the output to the reports directory.
 
 ## Input Parsing
-The user invoked: /explain <args>
+The user invoked: /explain {{args}}
 
 Examples:
 - `/explain src/auth/middleware.ts` - Explain specific file

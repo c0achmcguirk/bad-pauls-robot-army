@@ -2,32 +2,39 @@ description = "Analyze build systems and CI/CD pipelines to identify optimizatio
 prompt = """
 Using the build-master skill, prepare a comprehensive build and CI/CD review report. You must analyze build performance, dependency management, pipeline efficiency, and deployment processes WITHOUT making any changes.
 
+## Tool Configuration
+
+**IMPORTANT**: Consult the workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of workspace-tools.
+If a capability is not configured, inform the user and continue with available capabilities.
+
 ## Input Parsing
-The user invoked: /build-review <args>
+The user invoked: /build-review {{args}}
 
 Valid scopes:
 - **No argument**: Analyze the entire project's build system
 - **File/directory path**: Scope analysis to that specific path
-- **"current changes"**: Analyze uncommitted changes (use `git status` and `git diff`)
-- **"recent changes"**: Analyze recent commits (use `git log` and `git diff`)
-- **"PR #123"**: Analyze a specific pull request (use `gh pr view` and `gh pr diff`)
+- **"current changes"**: Analyze uncommitted changes (use source_control `status` and `diff_uncommitted` capabilities)
+- **"recent changes"**: Analyze recent commits (use source_control `log` capability)
+- **Change request reference**: Analyze a specific PR/CL (use change_requests `view` and `diff` capabilities)
 
 ### Scope Resolution
+Consult workspace-tools for source_control and change_requests capabilities:
+
 1. If scope is "current changes":
-   - Use `git status` to identify changed files
-   - Use `git diff` to see uncommitted changes
+   - Use the `status` capability to identify changed files
+   - Use the `diff_uncommitted` capability to see uncommitted changes
    - Focus analysis on build-related changes only
 
 2. If scope is "recent changes":
-   - Use `git log --oneline -10` to see recent commits
-   - Use `git diff HEAD~5..HEAD` or appropriate range
+   - Use the `log` capability to see recent commits
    - Analyze build system changes from recent development
 
-3. If scope starts with "PR":
-   - Extract PR number from the scope
-   - Use `gh pr view {number}` to get PR details
-   - Use `gh pr diff {number}` to get the changes
-   - Focus on build files changed in the PR
+3. If scope matches the change_requests `reference_format`:
+   - Extract the change request ID from the scope
+   - Use change_requests `view` capability to get details
+   - Use change_requests `diff` capability to get the changes
+   - Focus on build files changed in the change request
 
 4. If scope is a path:
    - Verify the path exists

@@ -2,15 +2,21 @@ description = "Analyze logging and observability practices and create an improve
 prompt = """
 Using the logging-master skill, prepare a logging and observability review report. Analyze logging practices, observability gaps, and monitoring setup in the codebase and create a comprehensive plan WITHOUT making any changes.
 
+## Tool Configuration
+
+**IMPORTANT**: Consult the workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of workspace-tools.
+If a capability is not configured, inform the user and continue with available capabilities.
+
 ## Input Parsing
-The user invoked: /logging-review <args>
+The user invoked: /logging-review {{args}}
 
 Valid scopes:
 - **No argument**: Analyze the entire project
 - **File/directory path**: Scope analysis to that specific path
-- **"current changes"**: Analyze uncommitted changes (use `git status` and `git diff`)
-- **"recent changes"**: Analyze recent commits (use `git log` and `git diff`)
-- **"PR #123"**: Analyze a specific pull request (use `gh pr view` and `gh pr diff`)
+- **"current changes"**: Analyze uncommitted changes (use source_control `status` and `diff_uncommitted` capabilities)
+- **"recent changes"**: Analyze recent commits (use source_control `log` capability)
+- **Change request reference**: Analyze a specific PR/CL (use change_requests `view` and `diff` capabilities)
 
 ## Your Task
 1. First, understand the codebase and identify logging and observability practices

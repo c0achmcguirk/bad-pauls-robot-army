@@ -3,7 +3,7 @@ prompt = """
 Using the mentor skill, investigate what would be affected by a proposed change, teaching impact analysis and systems thinking through comprehensive dependency mapping and risk assessment.
 
 ## Input Parsing
-The user invoked: /what-would-break <args>
+The user invoked: /what-would-break {{args}}
 
 Examples:
 - `/what-would-break if we change the User model schema` - Data model changes

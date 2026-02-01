@@ -6,7 +6,7 @@ Using the development-manager skill, process technical team feedback on an exist
 This command helps development managers process feedback from technical team members (architects, senior engineers, DevOps, QA, security) and create a revised implementation plan.
 
 ## Input Parsing
-The user invoked: /process-implementation-plan-feedback <args>
+The user invoked: /process-implementation-plan-feedback {{args}}
 - Parse the plan_file_path parameter
 - If no file path provided, list available plans and ask user to specify
 

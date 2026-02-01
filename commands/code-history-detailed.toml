@@ -1,48 +1,57 @@
-description = "Comprehensive code evolution analysis through git history, PRs, and collaborative development patterns"
+description = "Comprehensive code evolution analysis through version history, change requests, and collaborative development patterns"
 prompt = """
 Using the code-historian skill, analyze the code history and evolution patterns. You must create a comprehensive, detailed historical analysis report WITHOUT making any changes.
 
+## Tool Configuration
+
+**IMPORTANT**: Consult the workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of workspace-tools.
+If source_control is not configured, inform the user that code history analysis requires source control tools.
+
 ## Input Parsing
-The user invoked: /code-history-detailed <args>
+The user invoked: /code-history-detailed {{args}}
 
 Valid scopes:
 - **No argument**: Analyze the entire project's history
 - **File/directory path**: Track evolution of specific file or directory
 - **"file.js author:name"**: Focus on specific author's changes to a file
 - **"last 30 days"**: Analyze recent history within timeframe
-- **"PR #123"**: Analyze history related to a specific PR
+- **Change request reference**: Analyze history related to a specific PR/CL (format from workspace-tools)
 - **"hotspots"**: Identify most frequently changed files
 - **"co-changes"**: Find files that change together
 
 ### Scope Resolution
+Consult workspace-tools for source_control capabilities:
+
 1. If scope is a file or directory path:
-   - Use `git log --follow --stat -- <path>` to track changes
-   - Use `git blame <path>` for line-level authorship
+   - Use the `log_file` capability to track changes
+   - Use the `blame` capability for line-level authorship
    - Identify all commits affecting this path
 
 2. If scope includes "author:":
    - Extract author name
-   - Use `git log --author="<name>"` to filter commits
+   - Use the `log` capability with author filter
    - Focus on that author's contributions
 
 3. If scope includes time period:
    - Parse timeframe (e.g., "last 30 days", "since 2024-01-01")
-   - Use `git log --since="<date>"` to filter by date
+   - Use the `log` capability with date filter
    - Analyze recent evolution patterns
 
-4. If scope is "PR #N":
-   - Use `gh pr view <N>` to get PR details
-   - Use `gh pr diff <N>` to see changes
-   - Use `git log --grep="<PR reference>"` to find related commits
+4. If scope is a change request reference:
+   - Check workspace-tools for the `change_requests.reference_format`
+   - Use change_requests `view` capability to get details
+   - Use change_requests `diff` capability to see changes
+   - Use source_control `log` to find related commits
 
 5. If scope is "hotspots":
-   - Use `git log --all --numstat --format="%H"` to count changes per file
+   - Use the `log` capability to count changes per file
    - Identify top 20 most frequently modified files
    - Analyze change frequency and patterns
 
 6. If scope is "co-changes":
    - Analyze commits to find files frequently changed together
-   - Use `git log --name-only --pretty=format:"%H"` to group files by commit
+   - Use the `log` capability to group files by commit
    - Calculate co-change frequency matrix
 
 7. If no scope provided:
@@ -50,7 +59,7 @@ Valid scopes:
    - Identify key contributors, hotspots, and patterns
 
 ## Your Task
-1. Gather git history data using appropriate git and gh commands
+1. Gather history data using the configured source_control and change_requests tools
 2. Analyze patterns in code evolution
 3. Identify collaboration patterns and frequently co-changed files
 4. Create a comprehensive historical analysis report
@@ -59,7 +68,7 @@ Valid scopes:
 ## Analysis Steps
 1. **Data Collection**
    - Extract commit history with authors, dates, and messages
-   - Gather PR data using gh cli
+   - Gather change request data if change_requests is configured
    - Identify file modification patterns
    - Track authorship and contributions
 
@@ -87,11 +96,11 @@ Valid scopes:
    - Correlate hotspots with bug fixes
    - Flag potential technical debt areas
 
-6. **PR Pattern Analysis**
-   - Analyze PR size and scope patterns
+6. **Change Request Pattern Analysis** (if change_requests configured)
+   - Analyze change request size and scope patterns
    - Track feature development cycles
    - Identify review patterns
-   - Correlate PRs with commit history
+   - Correlate change requests with commit history
 
 ## Output Format
 Create a markdown file at `/reports/code-history-{scope}-{timestamp}.md` with:
@@ -108,7 +117,7 @@ Brief overview of code evolution patterns and key findings
 ## Timeline
 ### Major Events
 - YYYY-MM-DD: {significant change description} (commit: abc123)
-- YYYY-MM-DD: {feature introduction} (PR #456)
+- YYYY-MM-DD: {feature introduction} ({cr_reference})
 - YYYY-MM-DD: {refactoring event} (commit: def789)
 
 ### Evolution Visualization
@@ -158,19 +167,21 @@ Brief overview of code evolution patterns and key findings
 - Co-change patterns reveal module boundaries
 - High coupling between X and Y suggests refactoring opportunity
 
-## Pull Request Analysis
-### PR Statistics
-- Total PRs: X
-- Average PR size: Y files changed
+## Change Request Analysis
+(If change_requests configured in workspace-tools)
+
+### Statistics
+- Total Change Requests: X
+- Average size: Y files changed
 - Average review time: Z hours
 
-### Notable PRs
-- **PR #123** (2024-06-15): Major refactoring of auth system
+### Notable Change Requests
+- **{cr_reference}** (2024-06-15): Major refactoring of auth system
   - Files: 15 changed
   - Impact: Touched multiple modules
 
-### PR Patterns
-- Feature PRs typically involve 5-8 files
+### Patterns
+- Feature changes typically involve 5-8 files
 - Bug fixes usually touch 1-3 files
 - Refactorings can affect 10+ files
 
@@ -205,18 +216,21 @@ Brief overview of code evolution patterns and key findings
 3. {Finding with supporting data}
 
 ## Appendix
-### Command Reference
-```bash
-# Commands used for this analysis
-git log --all --since="X" --format="%h|%an|%at|%s"
-gh pr list --state merged --limit 100
-```
+### Tools Used
+Based on workspace-tools configuration:
+- Source control: {source_control.type}
+- Change requests: {change_requests.type if configured}
 
 ### Data Sources
-- Git commits: X analyzed
-- Pull requests: Y analyzed
+- Commits: X analyzed
+- Change requests: Y analyzed (if applicable)
 - Date range: {start} to {end}
 ```
+
+## Missing Capabilities
+If source_control is not configured in workspace-tools:
+- Inform the user that code history analysis requires source control tools
+- Suggest they configure source_control in their workspace-tools skill
 
 Remember: DO NOT make any changes. Only analyze and report. Focus on building insights from historical data to inform future development decisions.
 """

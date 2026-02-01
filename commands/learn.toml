@@ -3,7 +3,7 @@ prompt = """
 Using the mentor skill, create a customized learning path based on the user's goals and current knowledge level, saving the output to the reports directory.
 
 ## Input Parsing
-The user invoked: /learn <args>
+The user invoked: /learn {{args}}
 
 Examples:
 - `/learn this codebase` - Overall codebase familiarization

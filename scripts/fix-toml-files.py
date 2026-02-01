@@ -3,7 +3,7 @@
 Fix TOML files for Gemini CLI compatibility.
 
 Removes Claude Code-specific YAML frontmatter from prompt fields and
-replaces {optional_scope} with <args> for Gemini CLI argument handling.
+replaces {optional_scope} with {{args}} for Gemini CLI argument handling.
 """
 
 import re
@@ -28,8 +28,8 @@ def fix_toml_content(content: str) -> str:
     # Remove the frontmatter, keeping the prompt = """ part
     content = frontmatter_pattern.sub(r'\1\n', content)
 
-    # Replace {optional_scope} with <args> for Gemini CLI argument handling
-    content = content.replace('{optional_scope}', '<args>')
+    # Replace {optional_scope} with {{args}} for Gemini CLI argument handling
+    content = content.replace('{optional_scope}', '{{args}}')
 
     return content
 

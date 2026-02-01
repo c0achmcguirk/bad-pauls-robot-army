@@ -3,7 +3,7 @@ prompt = """
 Using the mentor skill, analyze whether specific code aligns with established codebase patterns, conventions, and architectural principles.
 
 ## Input Parsing
-The user invoked: /does-this-clash <args>
+The user invoked: /does-this-clash {{args}}
 
 Examples:
 - `/does-this-clash src/services/new-feature.ts` - Check if new code fits patterns

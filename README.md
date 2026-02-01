@@ -28,6 +28,43 @@ This repository includes **18 commands** and **21 specialized skills** organized
 -   **Operations Commands**: Build, deployment, cloud, configuration, and tooling reviews.
 -   **21 Specialized Skills**: Including architect, mentor, debugger, security-master, and more.
 
+## Organizational Customization
+
+This toolkit is designed to work with different source control systems, issue trackers, and internal tools. All tool mappings are configured in a single skill file: `skills/workspace-tools/SKILL.md`.
+
+### Quick Setup
+
+1. After installation, edit `~/.gemini-cli/skills/workspace-tools/SKILL.md`
+2. The file has two sections:
+   - **Active Configuration**: Tools that commands will actually use
+   - **Templates (NOT ACTIVE)**: Examples you can copy and customize
+
+### Example: Switching to Mercurial + Internal Issue Tracker
+
+1. In the `workspace-tools/SKILL.md` file, replace the "Source Control: Git" section with the "Source Control: Mercurial/Fig" template
+2. Replace the "Issue Tracking: GitHub" section with the "Issue Tracking: Internal Issue Tracker" template
+3. Customize the tool names to match your MCP tools
+
+### What You Can Configure
+
+| Capability | Default | Example Alternatives |
+|------------|---------|---------------------|
+| Source Control | Git (`git diff`, `git log`) | Mercurial, Perforce |
+| Issue Tracking | GitHub (`gh issue view`) | Jira, Internal (`b/123`), Linear |
+| Change Requests | GitHub PRs | Gerrit CLs, Phabricator |
+| Knowledge Base | Not configured | Internal search tools |
+| Code Search | Not configured | Internal code search |
+
+### Graceful Degradation
+
+When a capability isn't configured:
+- Commands will NOT hallucinate alternative tools
+- Users receive a clear message about what's missing
+- Commands continue with available capabilities
+- For issue tracking, falls back to local `/issues/` files
+
+For detailed instructions, see `skills/workspace-tools/SKILL.md`.
+
 ##  License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
