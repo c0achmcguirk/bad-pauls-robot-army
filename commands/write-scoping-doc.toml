@@ -1,0 +1,302 @@
+description = "Investigate a technical proposal and produce a scoping document for leadership decision-making"
+prompt = """
+Using the technical-scoper skill, investigate a technical proposal, evaluate options, and produce a comprehensive scoping document that helps leadership decide whether to commit resources.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of workspace-tools.
+If a capability is not configured, inform the user and continue with available capabilities.
+
+## Input Parsing
+The user invoked: /write-scoping-doc {{args}}
+
+Examples:
+- `/write-scoping-doc How might we enable the feature described in issue 1234` - Scope a feature from an issue
+- `/write-scoping-doc I want to see what it would take to add an API integration with FooService` - Evaluate an integration
+- `/write-scoping-doc Converting codebase from JavaScript to TypeScript` - Scope a migration
+- `/write-scoping-doc replace Elasticsearch with Typesense for search` - Evaluate a technology swap
+- `/write-scoping-doc` - Interactive mode to gather proposal details
+
+If no input is provided, ask the user what proposal they would like to investigate.
+
+## Your Task
+
+This is a **phased investigation** that produces a decision-support document for technical leadership. Do not skip phases or rush to conclusions. The goal is to give leadership the information they need to make a confident go/no-go decision.
+
+---
+
+### Phase 1: Deep Investigation
+
+Before forming any opinions, thoroughly investigate the current state. This phase is about gathering facts.
+
+**Codebase Analysis:**
+- Identify the files, modules, and systems relevant to the proposal
+- Map the current architecture in the affected area
+- Search for existing patterns, abstractions, and conventions that relate to the proposal
+- Assess code quality and technical debt in the affected area
+
+**History and Context:**
+Consult workspace-tools for source control and issue tracking capabilities:
+- Use the `log` and `log_file` capabilities to understand how the affected code has evolved
+- Use the `blame` capability to identify who has been actively working in this area
+- Use `search_issues` to find related issues, feature requests, or bug reports
+- Check for prior art — has anyone attempted something similar before?
+
+**Data and Evidence:**
+- Look for metrics, logs, or performance data that support the problem statement
+- Identify any existing documentation, RFCs, or design docs related to the proposal
+- Note any user feedback, support tickets, or incident reports that validate the need
+
+**Ownership and Expertise:**
+- Identify which teams or individuals have deep context in the affected area
+- Note any bus-factor risks (single points of knowledge)
+- Identify people who should be consulted to get more understanding
+
+---
+
+### Phase 2: Options Analysis
+
+Based on your Phase 1 findings, identify **at least 2 (preferably 3)** realistic approaches to accomplishing the proposal.
+
+**Solution Preference (from most to least preferred):**
+1. **Leverage existing patterns** — Use what the codebase already does well
+2. **Incremental extension** — Low-churn changes, no new dependencies
+3. **Proven external solution** — Well-maintained library or service with strong adoption
+4. **Novel internal solution** — New pattern or abstraction purpose-built for this need
+5. **Tactical shortcut** — Minimal scope with known limitations and explicit tech debt
+
+This ordering is a guideline, not a rule. A lower-ranked option may be the right choice when the evaluation criteria favor it.
+
+**For each option, document:**
+- **Summary**: What the approach is, in 2-3 sentences
+- **How it works**: High-level architecture and key changes required
+- **Effort estimate**: Engineering-weeks as a range (optimistic / expected / pessimistic), broken down by workstream (e.g., backend, frontend, infrastructure, testing, migration)
+- **Advantages**: Why this approach is attractive
+- **Drawbacks**: What you give up or what gets harder
+- **Risks**: What could go wrong, with likelihood (Low/Medium/High) and impact (Low/Medium/High), plus mitigation
+- **Dependencies**: What this approach requires (other teams, infrastructure, external services)
+
+After presenting all options, state which you **recommend** and why. Be explicit about the trade-offs you are accepting.
+
+---
+
+### Phase 3: Reconsider and Deepen
+
+After completing Phase 2, pause and ask yourself:
+
+- Did any option surface a technology, library, or approach that needs more research?
+- Are there open questions that could change the recommendation?
+- Did the investigation reveal that the problem is different from what was initially proposed?
+- Is the scope larger or smaller than initially expected?
+
+If additional research is needed:
+- Investigate the specific area (e.g., research an external library's API, review its maintenance status, check documentation that helps estimate onboarding effort)
+- Update the relevant option with your findings
+- Adjust effort estimates and risk assessments accordingly
+
+If no additional research is needed, proceed to Phase 4.
+
+---
+
+### Phase 4: Write the Scoping Document
+
+Produce the final document. Every section must contain real findings from your investigation — do not use placeholder text.
+
+## Output Format
+Create a markdown file at `/reports/scoping-doc-{topic}-{timestamp}.md` with:
+
+```markdown
+# Scoping Document: {Proposal Title}
+
+**Author**: Technical Scoper Agent
+**Date**: {timestamp}
+**Status**: Draft — Pending Review
+
+---
+
+## TL;DR
+
+{2-3 sentences: What is the proposal, what do you recommend, and what is the expected effort. This should be enough for a busy executive to understand the bottom line.}
+
+## Executive Summary
+
+{A concise summary (3-5 paragraphs) covering:
+- What problem this proposal addresses
+- The expected impact of doing this work
+- What options you found and what you recommend
+- Resourcing: number of engineers, engineering-weeks, and wall-clock time
+- Any big unknowns that could materially affect the proposal}
+
+## Problem Statement
+
+{Describe the problem this proposal aims to solve. Ground every claim in evidence. A problem statement without evidence is just an opinion.}
+
+### Supporting Evidence
+- {Citation 1: e.g., "3 million active users affected — source: http://some/url/doc#activeUsers"}
+- {Citation 2: e.g., "Issue #1234 — 47 reports of timeout errors in the last quarter"}
+- {Citation 3: e.g., "Current p99 latency of 2.3s — source: monitoring dashboard"}
+
+## Proposal
+
+{Lay out a high-level proposal for solving this problem. Choose the best option from your Phase 2 analysis. A broad overview paragraph followed by bullet points for the key elements of the work.}
+
+### Value Proposition
+{Who benefits from this proposal and why? Frame in terms leadership cares about: user impact, developer velocity, operational cost, risk reduction, or revenue.}
+
+### Target Users
+{Who is affected by this work? Internal teams, external users, specific user segments, or a combination?}
+
+## Architecture Overview
+
+{Describe the current architecture in the affected area and the high-level changes needed to support this proposal. Include enough detail for a technical leader to understand the starting point and the delta. Use ASCII diagrams or mermaid syntax if helpful.}
+
+### Key Dependencies
+
+{A list of libraries, APIs, teams, infrastructure, or technology stacks needed for this work. For each dependency, describe the scope of the added dependency in terms leadership can understand.}
+
+- {e.g., "We will need a new integration with BarService using ABCLibrary. This pattern is used throughout our organization but requires ~2 weeks for onboarding."}
+- {e.g., "By using BazPlatform.getItems(), we can deprecate calls to FooService.fetchAllThings(), removing a dependency."}
+- {e.g., "We currently call 2 RPCs from FooService; this proposal adds 3 more."}
+
+## Options Analysis
+
+### Option 1: {Name} (Recommended)
+
+**Approach**: {2-3 sentence summary}
+
+**How it works**:
+{Describe the architecture, key changes, and integration points}
+
+**Effort Estimate**:
+| Workstream | Optimistic | Expected | Pessimistic |
+|-----------|-----------|----------|-------------|
+| {e.g., Backend} | {X} eng-weeks | {Y} eng-weeks | {Z} eng-weeks |
+| {e.g., Frontend} | {X} eng-weeks | {Y} eng-weeks | {Z} eng-weeks |
+| {e.g., Testing & QA} | {X} eng-weeks | {Y} eng-weeks | {Z} eng-weeks |
+| {e.g., Migration} | {X} eng-weeks | {Y} eng-weeks | {Z} eng-weeks |
+| **Total** | **{X}** eng-weeks | **{Y}** eng-weeks | **{Z}** eng-weeks |
+
+**Advantages**:
+- {Advantage 1}
+- {Advantage 2}
+
+**Drawbacks**:
+- {Drawback 1}
+- {Drawback 2}
+
+**Risks**:
+| Risk | Likelihood | Impact | Mitigation |
+|------|-----------|--------|------------|
+| {Risk 1} | {Low/Med/High} | {Low/Med/High} | {Mitigation} |
+| {Risk 2} | {Low/Med/High} | {Low/Med/High} | {Mitigation} |
+
+**Dependencies**:
+- {Dependency 1: scope and what it means for the team}
+- {Dependency 2}
+
+### Option 2: {Name}
+
+{Same structure as Option 1}
+
+### Option 3: {Name}
+
+{Same structure as Option 1. Include only if a third option is meaningfully different.}
+
+### Recommendation
+
+{State your recommendation clearly. Explain why you prefer this option over the others. Be explicit about what trade-offs you are accepting. If the recommendation is conditional (e.g., "Option 1 if we have 3 engineers, Option 2 if we only have 1"), say so.}
+
+## High-Level Effort Estimate
+
+{Summarize the recommended option's effort estimate for easy reference.}
+
+**Recommended Option**: {Name}
+**Expected Total Effort**: {X}-{Y} engineering-weeks
+**Engineers Needed**: {N}
+**Expected Wall-Clock Duration**: {W} weeks (at {N} engineers)
+
+### Effort Breakdown by Workstream
+| Workstream | Expected Effort | Notes |
+|-----------|----------------|-------|
+| {Workstream 1} | {X} eng-weeks | {Brief note} |
+| {Workstream 2} | {X} eng-weeks | {Brief note} |
+| **Total** | **{X} eng-weeks** | |
+
+### Work Planning
+{Describe how the work can be parallelized. Which workstreams must be sequential? Which can run in parallel once a dependency is complete?}
+
+### Estimation Confidence
+{State your confidence level (Low / Medium / High) and explain what drives the uncertainty. For example: "Medium confidence — the migration effort depends on data volume, which we have not measured yet."}
+
+## Risks and Mitigations
+
+{Consolidate the top risks, focused on the recommended approach.}
+
+| # | Risk | Likelihood | Impact | Mitigation |
+|---|------|-----------|--------|------------|
+| 1 | {Risk} | {L/M/H} | {L/M/H} | {Mitigation strategy} |
+| 2 | {Risk} | {L/M/H} | {L/M/H} | {Mitigation strategy} |
+| 3 | {Risk} | {L/M/H} | {L/M/H} | {Mitigation strategy} |
+
+## Alternatives Considered
+
+{Brief summary of why the non-recommended options were not chosen. For each, note what it replaces in the proposal and why it was rejected.}
+
+- **{Option Name}**: Not recommended because {reason}. {Pros that might make it worth reconsidering under different circumstances.}
+- **{Option Name}**: Not recommended because {reason}.
+
+## Open Questions
+
+{Questions that remain unanswered and could materially affect the recommendation or effort estimate. For each, note who might be able to answer it.}
+
+1. **{Short memorable label}**: {Question} — {Suggested owner or team to consult}
+2. **{Short memorable label}**: {Question} — {Suggested owner or team to consult}
+3. **{Short memorable label}**: {Question} — {Suggested owner or team to consult}
+
+## Next Steps
+
+{If the recommendation is approved, what happens next? Be specific about actions and who should be involved.}
+
+1. {Next step 1: e.g., "Resolve open question #1 by meeting with the Platform team"}
+2. {Next step 2: e.g., "Create a PRD using /create-prd for the recommended option"}
+3. {Next step 3: e.g., "Prototype the migration path in a time-boxed spike (1 week)"}
+4. {Next step 4: e.g., "Staff the project with N engineers from team X"}
+
+## References
+
+- {Link or path to relevant code, documentation, issues, or external resources consulted}
+- {Link or path}
+- {Link or path}
+```
+
+## CRITICAL: Report Generation
+
+**YOU MUST CREATE THE REPORT FILE.** This is not optional.
+
+1. Complete ALL four phases before writing the report
+2. Create the report file using the Write tool
+3. Fill in ALL sections with real findings from your investigation — no placeholder text
+4. Provide the full path to the user when done
+5. Offer to refine any sections based on feedback
+
+## Important Guidelines
+
+### Investigation Quality
+- **Evidence over opinion**: Every claim in the scoping doc should be traceable to code, data, or history
+- **Intellectual honesty**: If you cannot estimate something confidently, say so and explain why
+- **No premature conclusions**: Complete Phase 1 before forming opinions in Phase 2
+- **Reconsider**: Phase 3 exists because first impressions are often wrong
+
+### Estimation Practices
+- Use **ranges**, not point estimates (optimistic / expected / pessimistic)
+- Include **buffer** for unknowns (20-30% on top of expected estimates)
+- Break down by **workstream**, not by phase — this helps leadership understand what kinds of engineers are needed
+- State your **confidence level** explicitly
+
+### Audience Awareness
+- The primary audience is **technical leadership** — people who can read code but want strategic framing
+- Lead with the recommendation, not the investigation journey
+- Use tables for structured comparisons — they are scannable
+- Keep the TL;DR genuinely brief — 2-3 sentences maximum
+"""
