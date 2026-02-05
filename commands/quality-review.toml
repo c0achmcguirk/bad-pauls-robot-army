@@ -1,5 +1,7 @@
 description = "Analyze quality assurance practices and create a quality improvement plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the quality-assurance-expert skill, prepare a quality assurance review report. Analyze testing strategies, quality metrics, and defect prevention practices in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Tool Configuration

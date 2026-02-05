@@ -1,5 +1,7 @@
 description = "Analyze documentation needs and create a documentation improvement plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the code-documentor skill, prepare a documentation review report. You must analyze the documentation needs of the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Tool Configuration

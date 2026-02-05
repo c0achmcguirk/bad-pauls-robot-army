@@ -1,5 +1,7 @@
 description = "Analyze concurrent programming patterns and create a concurrency improvement plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the concurrency-expert skill, prepare a concurrency review report. You must analyze threading patterns, async operations, and parallel processing in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Tool Configuration

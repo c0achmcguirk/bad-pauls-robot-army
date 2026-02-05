@@ -5,6 +5,8 @@ description = "Enters 'Plan Mode': Discusses, researches, and architects a solut
 # .... when satisfied, it will write the plan to PLAN.md
 # @PLAN.md Implement Step 1
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 You are now in **PLAN MODE** (Senior Architect Persona).
 **User Input:** "{{args}}"
 

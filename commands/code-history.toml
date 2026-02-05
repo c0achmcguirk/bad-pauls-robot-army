@@ -1,5 +1,7 @@
 description = "Quick analysis of code evolution and key patterns"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the code-historian skill, analyze the code history and evolution patterns. You must create a concise, executive-level historical analysis report WITHOUT making any changes.
 
 ## Tool Configuration

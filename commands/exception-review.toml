@@ -1,5 +1,7 @@
 description = "Analyze exception handling patterns and application resilience"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the exception-handling-master skill, prepare an exception handling review report. Analyze exception handling patterns, error recovery mechanisms, and application resilience in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Tool Configuration

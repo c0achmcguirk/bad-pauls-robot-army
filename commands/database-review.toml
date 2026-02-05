@@ -1,5 +1,7 @@
 description = "Analyze database design and create a database optimization plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the database-designer skill, prepare a database review report. You must analyze database schemas, query patterns, and data architecture in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Tool Configuration

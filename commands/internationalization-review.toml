@@ -1,5 +1,7 @@
 description = "Analyze code for i18n readiness and create a localization plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the internationalization-specialist skill, prepare an i18n review report. Analyze the codebase for internationalization readiness, identify localization requirements, and create a comprehensive i18n implementation plan WITHOUT making any changes.
 
 ## Tool Configuration

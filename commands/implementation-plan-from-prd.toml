@@ -1,5 +1,7 @@
 description = "Create a comprehensive implementation plan from a Product Requirements Document"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the development-manager skill, create a comprehensive implementation plan from a Product Requirements Document (PRD) for features within the current project/codebase.
 
 ## Context

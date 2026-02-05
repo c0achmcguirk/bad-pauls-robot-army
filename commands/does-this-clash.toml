@@ -1,5 +1,7 @@
 description = "Analyze whether code fits with established codebase patterns and conventions"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the mentor skill, analyze whether specific code aligns with established codebase patterns, conventions, and architectural principles.
 
 ## Input Parsing

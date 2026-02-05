@@ -1,5 +1,7 @@
 description = "Process technical team feedback on an implementation plan and create an updated version"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the development-manager skill, process technical team feedback on an existing implementation plan and create an updated version that incorporates their input while maintaining technical coherence.
 
 ## Context

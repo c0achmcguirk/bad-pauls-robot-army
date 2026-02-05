@@ -1,5 +1,7 @@
 description = "Analyze logging and observability practices and create an improvement plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the logging-master skill, prepare a logging and observability review report. Analyze logging practices, observability gaps, and monitoring setup in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Tool Configuration

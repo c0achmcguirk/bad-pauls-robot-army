@@ -1,5 +1,7 @@
 description = "Convert a review plan into trackable issues for systematic implementation"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Convert a plan file into trackable issues for systematic implementation. Each task becomes an issue with appropriate labels and skill recommendations.
 
 ## Tool Configuration

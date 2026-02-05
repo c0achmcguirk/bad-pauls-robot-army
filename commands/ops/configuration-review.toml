@@ -1,5 +1,7 @@
 description = "Analyze configuration management and environment settings to identify security risks and improvement opportunities"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the configuration-manager skill, prepare a configuration review report. You must analyze configuration management practices, environment variables, secrets handling, and settings organization in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Tool Configuration

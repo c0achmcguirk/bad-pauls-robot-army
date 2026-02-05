@@ -1,5 +1,7 @@
 description = "Create a personalized learning path for mastering the codebase or specific technologies"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the mentor skill, create a customized learning path based on the user's goals and current knowledge level, saving the output to the reports directory.
 
 ## Input Parsing

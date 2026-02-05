@@ -1,5 +1,7 @@
 description = "Analyze security vulnerabilities and create a security improvement plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the security-master skill, prepare a security review report. Analyze security vulnerabilities and risks in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Tool Configuration

@@ -1,5 +1,7 @@
 description = "Automatically implement an issue by fetching it, solving it, and creating a change request"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Automatically implement an issue by fetching it, solving it with the appropriate specialist skill, and creating a change request with the solution.
 
 ## Tool Configuration

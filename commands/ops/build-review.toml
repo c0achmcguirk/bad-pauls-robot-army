@@ -1,5 +1,7 @@
 description = "Analyze build systems and CI/CD pipelines to identify optimization opportunities"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the build-master skill, prepare a comprehensive build and CI/CD review report. You must analyze build performance, dependency management, pipeline efficiency, and deployment processes WITHOUT making any changes.
 
 ## Tool Configuration

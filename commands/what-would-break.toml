@@ -1,5 +1,7 @@
 description = "Analyze the blast radius of a potential change to understand dependencies and impact"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the mentor skill, investigate what would be affected by a proposed change, teaching impact analysis and systems thinking through comprehensive dependency mapping and risk assessment.
 
 ## Input Parsing

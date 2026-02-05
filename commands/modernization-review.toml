@@ -1,5 +1,7 @@
 description = "Analyze code for modernization opportunities and create an update plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the code-modernizer skill, prepare a modernization review report. Analyze the codebase for outdated patterns, deprecated features, and modernization opportunities to create a comprehensive upgrade plan WITHOUT making any changes.
 
 ## Tool Configuration

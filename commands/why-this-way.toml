@@ -1,5 +1,7 @@
 description = "Investigate why code was built a certain way instead of obvious alternatives"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the mentor skill, investigate why specific code was implemented in its current form rather than obvious alternatives, combining historical analysis and architectural reasoning to uncover hidden constraints and design decisions.
 
 ## Input Parsing

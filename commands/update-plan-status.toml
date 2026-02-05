@@ -1,5 +1,7 @@
 description = "Check plan completion status by verifying issues, change requests, and actual implementation"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Verify the completion status of a plan by checking associated issues, change requests, and validating that functionality has been implemented and tested.
 
 ## Tool Configuration

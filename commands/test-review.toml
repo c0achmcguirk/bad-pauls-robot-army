@@ -1,5 +1,7 @@
 description = "Analyze test coverage and create a testing improvement plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the test-automator skill, prepare a testing review report. Analyze the test coverage and testing practices in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Tool Configuration

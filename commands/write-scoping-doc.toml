@@ -1,5 +1,7 @@
 description = "Investigate a technical proposal and produce a scoping document for leadership decision-making"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the technical-scoper skill, investigate a technical proposal, evaluate options, and produce a comprehensive scoping document that helps leadership decide whether to commit resources.
 
 ## Tool Configuration

@@ -1,5 +1,7 @@
 description = "Display the comprehensive guide to Bad Paul's Robot Army capabilities"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 # Bad Paul's Robot Army - Command Reference
 
 Your elite development force - a comprehensive suite of specialized AI skills and commands for Gemini CLI.

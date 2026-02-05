@@ -1,5 +1,7 @@
 description = "Break down a large issue into smaller, manageable sub-issues with appropriate linkages and dependencies."
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 # decompose-issue
 
 Break down a large issue into smaller, manageable sub-issues with appropriate linkages and dependencies.

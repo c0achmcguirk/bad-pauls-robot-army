@@ -1,5 +1,7 @@
 description = "Analyze developer tooling and workflow to create an improvement plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the toolsmith skill, prepare a tooling review report. You must analyze the developer experience, tooling, and workflows to create a comprehensive improvement plan WITHOUT making any changes.
 
 ## Tool Configuration

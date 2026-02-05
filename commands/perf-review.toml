@@ -1,5 +1,7 @@
 description = "Analyze performance bottlenecks and create an optimization plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the performance-optimizer skill, prepare a performance review report. Analyze performance bottlenecks and optimization opportunities in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Tool Configuration

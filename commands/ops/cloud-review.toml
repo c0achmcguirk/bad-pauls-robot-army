@@ -1,5 +1,7 @@
 description = "Analyze AWS cloud architecture and create a cloud optimization plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the cloud-developer skill, prepare a cloud architecture review report. You must analyze AWS cloud patterns, scalability, and cost optimization opportunities in the codebase and create a comprehensive plan WITHOUT making any changes.
 
 ## Tool Configuration

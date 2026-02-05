@@ -1,5 +1,7 @@
 description = "Generate a comprehensive, beginner-friendly overview of the entire codebase"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the mentor skill, create a comprehensive overview of the codebase tailored to the user's experience level, saving the output to the reports directory.
 
 ## Input Parsing

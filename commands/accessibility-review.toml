@@ -1,5 +1,7 @@
 description = "Analyze code for accessibility compliance and create an a11y improvement plan"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the accessibility-specialist skill, prepare an accessibility review report. You must analyze the codebase for WCAG compliance, identify accessibility barriers, and create a comprehensive a11y improvement plan WITHOUT making any changes.
 
 ## Tool Configuration

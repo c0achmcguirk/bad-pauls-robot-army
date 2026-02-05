@@ -1,5 +1,7 @@
 description = "Process stakeholder feedback on a PRD and create an updated version"
 prompt = """
+First, activate the 'workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
 Using the product-manager skill, process stakeholder feedback on an existing Product Requirements Document (PRD) and create an updated version that incorporates their input while maintaining document coherence and tracking changes.
 
 ## Context
