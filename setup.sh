@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# setup.sh - Quick setup for Bad Paul's Robot Army
+# setup.sh - Quick setup for Poliver's Bot Army
 # This script ensures the necessary directories exist and makes scripts executable.
 
 set -euo pipefail
@@ -10,7 +10,7 @@ BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}▶ Setting up Bad Paul's Robot Army...${NC}"
+echo -e "${BLUE}▶ Setting up Poliver's Bot Army...${NC}"
 echo
 
 # --- Create local script directory if it doesn't exist ---

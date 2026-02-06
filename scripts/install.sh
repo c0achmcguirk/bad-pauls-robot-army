@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# install.sh - Install Bad Paul's Robot Army commands and skills for Gemini CLI.
+# install.sh - Install Poliver's Bot Army commands and skills for Gemini CLI.
 #
 # This script copies the command and skill files from this repository into the
 # user's Gemini CLI configuration directory (~/.gemini/).
@@ -46,7 +46,7 @@ error() {
 show_help() {
     echo "Usage: $(basename "$0") [options]"
     echo ""
-    echo "Installs Bad Paul's Robot Army for Gemini CLI."
+    echo "Installs Poliver's Bot Army for Gemini CLI."
     echo ""
     echo "Options:"
     echo "  -d, --dry-run    Show what would be installed without making changes."
@@ -74,7 +74,7 @@ GEMINI_SKILLS_DIR="$GEMINI_BASE_DIR/skills"
 
 # --- Installation ---
 
-log "Starting installation of Bad Paul's Robot Army..."
+log "Starting installation of Poliver's Bot Army..."
 
 # 1. Create target directories if they don't exist
 if [[ "$DRY_RUN" == "false" ]]; then
@@ -95,15 +95,15 @@ log "Installing commands..."
 if [[ "$DRY_RUN" == "true" ]]; then
     echo "Dry run: The following commands would be installed to $GEMINI_COMMANDS_DIR:"
     # Exclude copying the arch review.toml file
-    find "$REPO_COMMANDS_DIR" -type f -name "*.toml" -not -path "*arch/review.toml*" -print | sed "s|^$REPO_COMMANDS_DIR/|  - |"
-    echo "  - arch/review.toml" # Manually add it to the list
+    find "$REPO_COMMANDS_DIR" -type f -name "*.toml" -not -path "*arch/pba-review.toml*" -print | sed "s|^$REPO_COMMANDS_DIR/|  - |"
+    echo "  - arch/pba-review.toml" # Manually add it to the list
 else
     # Copy all .toml files, preserving directory structure, but exclude the arch review.toml file for now
-    rsync -av --prune-empty-dirs --include="*/" --include="*.toml" --exclude="*" --exclude="arch/review.toml" "$REPO_COMMANDS_DIR/" "$GEMINI_COMMANDS_DIR/"
+    rsync -av --prune-empty-dirs --include="*/" --include="*.toml" --exclude="*" --exclude="arch/pba-review.toml" "$REPO_COMMANDS_DIR/" "$GEMINI_COMMANDS_DIR/"
     
     # Ensure the arch directory exists and copy the review.toml file
     mkdir -p "$GEMINI_COMMANDS_DIR/arch"
-    cp "$REPO_COMMANDS_DIR/arch/review.toml" "$GEMINI_COMMANDS_DIR/arch/review.toml"
+    cp "$REPO_COMMANDS_DIR/arch/pba-review.toml" "$GEMINI_COMMANDS_DIR/arch/pba-review.toml"
 
     success "All commands installed."
 fi
@@ -120,7 +120,7 @@ else
 fi
 echo ""
 
-success "Bad Paul's Robot Army has been successfully installed!"
+success "Poliver's Bot Army has been successfully installed!"
 if [[ "$DRY_RUN" == "true" ]]; then
     warn "This was a dry run. No files were actually changed."
 fi

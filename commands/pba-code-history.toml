@@ -1,0 +1,164 @@
+description = "Quick analysis of code evolution and key patterns"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Using the pba-code-historian skill, analyze the code history and evolution patterns. You must create a concise, executive-level historical analysis report WITHOUT making any changes.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the pba-workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of pba-workspace-tools.
+If source_control is not configured, inform the user that code history analysis requires source control tools.
+
+## Input Parsing
+The user invoked: /code-history {{args}}
+
+Valid scopes:
+- **No argument**: Analyze the entire project's history
+- **File/directory path**: Track evolution of specific file or directory
+- **"file.js author:name"**: Focus on specific author's changes to a file
+- **"last 30 days"**: Analyze recent history within timeframe
+- **Change request reference**: Analyze history related to a specific PR/CL (format from pba-workspace-tools)
+- **"hotspots"**: Identify most frequently changed files
+- **"co-changes"**: Find files that change together
+
+### Scope Resolution
+Consult pba-workspace-tools for source_control capabilities:
+
+1. If scope is a file or directory path:
+   - Use the `log_file` capability to track changes
+   - Identify all commits affecting this path
+
+2. If scope includes "author:":
+   - Extract author name
+   - Use the `log` capability with author filter
+
+3. If scope includes time period:
+   - Parse timeframe (e.g., "last 30 days", "since 2024-01-01")
+   - Use the `log` capability with date filter
+
+4. If scope is a change request reference:
+   - Check pba-workspace-tools for the `change_requests.reference_format`
+   - Use change_requests `view` capability to get details
+   - Use source_control `log` to find related commits
+
+5. If scope is "hotspots":
+   - Use the `log` capability to count changes per file
+   - Identify top 10-15 most frequently modified files
+
+6. If scope is "co-changes":
+   - Analyze commits to find files frequently changed together
+   - Use the `log` capability to group files by commit
+
+7. If no scope provided:
+   - Analyze overall project history
+   - Identify key contributors, hotspots, and patterns
+
+## Your Task
+1. Gather essential history data using the configured source_control tools
+2. Analyze key patterns in code evolution
+3. Identify critical insights and trends
+4. Create a **SUCCINCT** executive summary report
+5. Save your report as a markdown file in the /reports directory
+
+## Analysis Priorities
+Focus on the most important insights:
+1. **Timeline**: Major milestones and turning points only
+2. **Authorship**: Top contributors and ownership patterns
+3. **Hotspots**: Most frequently changed files (top 10-15)
+4. **Co-changes**: Key file clusters that change together
+5. **Key Findings**: 3-5 critical insights only
+
+## Output Format
+Create a markdown file at `/reports/code-history-{scope}-{timestamp}.md` with:
+
+```markdown
+# Code History Analysis (Executive Summary)
+Generated: {timestamp}
+Scope: {scope_description}
+Analysis Period: {date_range}
+
+## Quick Stats
+- Total commits analyzed: X
+- Contributors: Y
+- Date range: {start} to {end}
+- Files analyzed: Z
+
+## Timeline Highlights
+### Major Milestones
+- YYYY-MM-DD: {significant change} (commit: abc123)
+- YYYY-MM-DD: {major refactoring} (commit: def789)
+- YYYY-MM-DD: {architecture shift} (commit: ghi012)
+
+## Key Contributors
+| Author | Commits | Files | Impact |
+|--------|---------|-------|--------|
+| Alice  | 150     | 45    | High   |
+| Bob    | 120     | 38    | High   |
+| Carol  | 80      | 25    | Medium |
+
+**Ownership Summary**: {1-2 sentence summary of who owns what}
+
+## Hotspots (Top 10-15)
+| File | Changes | Authors | Status |
+|------|---------|---------|--------|
+| src/auth.js | 45 | 3 | High churn |
+| src/api.js | 38 | 2 | High churn |
+| config.js | 32 | 4 | High churn |
+
+**Hotspot Insight**: {1-2 sentences about what hotspots reveal}
+
+## Co-change Patterns
+**Key Clusters**:
+1. **Auth System**: auth.js, user.js, session.js (23 co-changes)
+2. **API Layer**: api.js, routes.js, middleware.js (18 co-changes)
+3. **Data Layer**: db.js, models.js, migrations.js (15 co-changes)
+
+**Architectural Insight**: {1-2 sentences about module boundaries}
+
+## Key Findings
+1. **{Finding Title}**: {1-2 sentence explanation with data}
+2. **{Finding Title}**: {1-2 sentence explanation with data}
+3. **{Finding Title}**: {1-2 sentence explanation with data}
+4. **{Finding Title}**: {1-2 sentence explanation with data}
+5. **{Finding Title}**: {1-2 sentence explanation with data}
+
+## Development Velocity
+- Average commits/week: {X}
+- Peak activity period: {when}
+- Current trend: {increasing/stable/decreasing}
+
+## Risk Indicators
+- High churn files: {count}
+- Bus factor concerns: {areas with single owner}
+- Technical debt areas: {hotspots with many bug fixes}
+
+---
+For detailed analysis, use: `/code-history-detailed {scope}`
+```
+
+## Important Guidelines
+
+### Keep It Concise
+- **Executive Summary Focus**: This is for quick insights, not comprehensive analysis
+- **Top N Only**: Show top 10-15 hotspots, not all files
+- **3-5 Key Findings**: Not 10-20
+- **Brief Explanations**: 1-2 sentences maximum per point
+- **Actionable**: Focus on what matters for decision-making
+
+### Data-Driven
+- Include specific numbers and dates
+- Show trends, not just current state
+- Highlight risks and opportunities
+
+### Visual Clarity
+- Use tables for structured data
+- Keep sections short and scannable
+
+### Missing Capabilities
+If source_control is not configured in pba-workspace-tools:
+- Inform the user that code history analysis requires source control tools
+- Suggest they configure source_control in their pba-workspace-tools skill
+
+Remember: This is the "executive briefing" version. Leaders want key insights fast. For comprehensive analysis, they can use `/code-history-detailed`.
+"""

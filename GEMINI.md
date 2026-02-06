@@ -1,4 +1,4 @@
-# Bad Paul's Robot Army - Global Context
+# Poliver's Bot Army - Global Context
 
 This file provides guidance to Gemini CLI when working with code in this repository.
 
@@ -21,27 +21,27 @@ This repository serves as a collection of Gemini CLI artifacts including:
 │   ├── arch/              # Architecture review commands
 │   └── ops/               # Operations/DevOps commands
 ├── skills/                # Skill definitions (SKILL.md files)
-│   ├── accessibility-specialist/
-│   ├── api-designer/
-│   ├── architect/
-│   ├── build-master/
-│   ├── cloud-developer/
-│   ├── code-documentor/
-│   ├── code-historian/
-│   ├── concurrency-expert/
-│   ├── configuration-manager/
-│   ├── database-designer/
-│   ├── debugger/
-│   ├── deployment-specialist/
-│   ├── exception-handling-master/
-│   ├── logging-master/
-│   ├── mentor/
-│   ├── performance-optimizer/
-│   ├── product-manager/
-│   ├── refactorer/
-│   ├── security-master/
-│   ├── test-automator/
-│   └── toolsmith/
+│   ├── pba-accessibility-specialist/
+│   ├── pba-api-designer/
+│   ├── pba-architect/
+│   ├── pba-build-master/
+│   ├── pba-cloud-developer/
+│   ├── pba-code-documentor/
+│   ├── pba-code-historian/
+│   ├── pba-concurrency-expert/
+│   ├── pba-configuration-manager/
+│   ├── pba-database-designer/
+│   ├── pba-debugger/
+│   ├── pba-deployment-specialist/
+│   ├── pba-exception-handling-master/
+│   ├── pba-logging-master/
+│   ├── pba-mentor/
+│   ├── pba-performance-optimizer/
+│   ├── pba-product-manager/
+│   ├── pba-refactorer/
+│   ├── pba-security-master/
+│   ├── pba-test-automator/
+│   └── pba-toolsmith/
 └── scripts/               # Installation and utility scripts
 ```
 

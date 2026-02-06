@@ -1,0 +1,131 @@
+description = "Automatically implement an issue by fetching it, solving it, and creating a change request"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Automatically implement an issue by fetching it, solving it with the appropriate specialist skill, and creating a change request with the solution.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the pba-workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of pba-workspace-tools.
+If a capability is not configured, inform the user and continue with available capabilities.
+
+## Usage
+/pba-implement-issue {{args}}
+
+## Examples
+- `/pba-implement-issue 5` - Implement issue #5 (format depends on pba-workspace-tools config)
+- `/pba-implement-issue issues/5.md` - Implement local issue file
+
+The issue reference format is defined in pba-workspace-tools (`issue_tracking.reference_format`).
+Examples: `#5` (GitHub), `b/5` (Internal), `PROJECT-5` (Jira)
+
+## Workflow
+
+### 1. Issue Retrieval
+Consult pba-workspace-tools for issue_tracking capabilities:
+- Use the configured `availability_check` to verify access (if defined)
+- Use the configured `fetch_issue` tool with the issue ID
+- **If issue_tracking not configured**: Read from `/issues/{number}.md`
+- Parse for requirements, success criteria, recommended skill
+
+### 2. Branch/Changelist Creation
+Consult pba-workspace-tools for source_control capabilities:
+- Create a branch or changelist for this work
+- Naming convention: `issue-{number}-{slug}` (adapt to your VCS)
+- Ensure working copy is up to date with main/trunk
+
+### 3. Skill Selection
+Look for skill recommendations in the issue body:
+- Pattern: `@skill-{name}` or skill specified in frontmatter
+- Fall back to analyzing issue labels and content
+
+**Skill Mapping:**
+| Issue Labels/Keywords | Selected Skill |
+|----------------------|----------------|
+| security | pba-security-master |
+| performance | pba-performance-optimizer |
+| architecture | pba-architect |
+| documentation | pba-code-documentor |
+| test, testing | pba-test-automator |
+| refactor | pba-refactorer |
+| modernize, upgrade | pba-code-modernizer |
+| build, ci/cd | pba-build-master |
+| config | pba-configuration-manager |
+| bug, fix | pba-debugger |
+| error, exception | pba-exception-handling-master |
+| logging | pba-logging-master |
+| tooling | pba-toolsmith |
+| i18n | pba-internationalization-specialist |
+| a11y, accessibility | pba-accessibility-specialist |
+
+### 4. Implementation
+- Invoke the selected skill with issue context
+- Skill performs implementation autonomously
+
+### 5. Validation
+Before creating change request, validate:
+- All changes are syntactically correct
+- Project builds successfully
+- All tests pass
+- Linting passes
+- No merge conflicts
+
+### 6. Commit and Push
+Consult pba-workspace-tools for source_control capabilities:
+- Stage all changes using the configured tools
+- Create descriptive commit message referencing issue (use `issue_tracking.reference_format`)
+- Push/upload changes to remote
+
+### 7. Completion
+Consult pba-workspace-tools for change_requests capabilities:
+- Use the configured `create` tool to create a change request/PR
+- Title format: "Fix {issue_reference}: {issue_title}"
+- Body MUST include reference to source issue
+- Link the change request to the issue if your tools support it
+
+**If change_requests not configured:**
+- Update `/issues/{number}.md` frontmatter status
+- Add completion timestamp
+- Note that manual change request creation is needed
+
+## Local Issue File Format
+```markdown
+---
+number: 5
+title: "Create plugin validation system"
+labels:
+  - feature
+  - testing
+priority: High
+skill: test-automator
+dependencies: []
+status: open
+created_at: 2024-10-01T10:00:00Z
+---
+
+## Task Overview
+[Description...]
+
+## Success Criteria
+- [ ] Criteria 1
+- [ ] Criteria 2
+
+## Recommended Skill
+@skill-test-automator
+```
+
+## Error Handling
+- Issue not found: Prompts for valid issue number
+- No skill identified: Asks user to specify
+- Build/test failures: Reports errors and asks for guidance
+- Merge conflicts: Attempts automatic resolution or asks for help
+- **Capability not configured**: Inform user which capability is missing and suggest they update pba-workspace-tools
+
+## Notes
+- This command embodies the full DevOps cycle
+- Reduces manual work from hours to minutes
+- Ensures consistent quality through validation
+- Maintains traceability between issues and change requests
+- Adapts to your organization's tools via pba-workspace-tools skill
+"""

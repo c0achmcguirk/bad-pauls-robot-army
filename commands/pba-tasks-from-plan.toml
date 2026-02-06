@@ -1,0 +1,128 @@
+description = "Convert a review plan into trackable issues for systematic implementation"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Convert a plan file into trackable issues for systematic implementation. Each task becomes an issue with appropriate labels and skill recommendations.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the pba-workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of pba-workspace-tools.
+If issue_tracking is not configured, create local issue files instead.
+
+## Input Parsing
+The user invoked: /pba-tasks-from-plan {{args}}
+- Path should point to a plan file (typically in /plans directory)
+- If no path provided, list available plan files and ask user to specify
+
+## Your Task
+1. Read the specified plan file
+2. Parse the plan to identify discrete tasks
+3. Group tasks by priority/phase
+4. Create issues for each actionable task using pba-workspace-tools configuration
+5. Create any required labels BEFORE creating issues (if supported)
+6. DO NOT implement any tasks - only create tracking issues
+
+## Issue Creation Strategy
+
+### For Each Task:
+1. **Title**: Concise, actionable task description
+2. **Body**: Include:
+   - Task details from the plan
+   - Priority level (Critical/High/Medium/Low)
+   - Phase/timeline information
+   - Recommended specialist skill for implementation
+   - Success criteria if specified
+   - Dependencies on other tasks
+   - **Source Plan section with link to plan file**
+3. **Labels**: Add appropriate labels:
+   - Priority (priority-critical, priority-high, priority-medium, priority-low)
+   - Type (security, performance, architecture, etc.)
+   - Phase (phase-1, phase-2, etc.)
+
+## Skill Mapping for Tasks
+
+| Task Type | Recommended Skill |
+|-----------|------------------|
+| Security fixes | pba-security-master |
+| Performance optimization | pba-performance-optimizer |
+| Architecture changes | pba-architect |
+| Documentation | pba-code-documentor |
+| Testing improvements | pba-test-automator |
+| Refactoring | pba-refactorer |
+| Modernization | pba-code-modernizer |
+| Build/CI/CD | pba-build-master |
+| Configuration | pba-configuration-manager |
+| Debugging/fixes | pba-debugger |
+| Error handling | pba-exception-handling-master |
+| Logging | pba-logging-master |
+| Developer tooling | pba-toolsmith |
+| Internationalization | pba-internationalization-specialist |
+| Accessibility | pba-accessibility-specialist |
+
+## Issue Template
+```markdown
+## Task Overview
+{task_description}
+
+## Priority
+{Critical/High/Medium/Low}
+
+## Phase
+{phase_number_and_name}
+
+## Implementation Details
+{detailed_requirements_from_plan}
+
+## Success Criteria
+- [ ] {criterion_1}
+- [ ] {criterion_2}
+
+## Dependencies
+- {list_any_prerequisite_tasks}
+
+## Recommended Skill
+This task should be handled by {skill_name} for optimal implementation.
+
+## Source Plan
+Generated from: [{plan_file_name}]({path_to_plan_file})
+
+## Notes
+- Review type: {review_type}
+```
+
+## Local Issue File Format
+When issue_tracking is not configured, create `/issues/{number}.md` with YAML frontmatter:
+```markdown
+---
+number: 1
+title: Fix SQL injection vulnerability
+labels:
+  - priority-critical
+  - security
+priority: Critical
+phase: Phase 1
+skill: security-master
+dependencies: []
+status: open
+source_plan: plans/security-review.md
+---
+[Issue body...]
+```
+
+## Execution Steps
+1. Validate plan file exists and is valid
+2. Parse all actionable items
+3. Group by priority or phase
+4. Consult pba-workspace-tools for issue_tracking capabilities
+5. **If issue_tracking configured**: Use the `create_issue` tool for each task
+6. **If not configured**: Create `/issues/{number}.md` files
+7. Provide summary report with issue references (using `reference_format` from pba-workspace-tools)
+
+## Important Notes
+- DO NOT attempt to implement any tasks
+- Focus only on creating well-structured tracking issues
+- Ensure each issue is self-contained with enough context
+- Add cross-references between related issues
+- Use the `reference_format` from pba-workspace-tools when mentioning issues
+"""

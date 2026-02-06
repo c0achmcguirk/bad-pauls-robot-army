@@ -1,11 +1,11 @@
-# Bad Paul's Robot Army - Makefile
+# Poliver's Bot Army - Makefile
 # Provides convenient shortcuts for managing the Robot Army installation.
 
 .PHONY: help install setup dry-run
 
 # Default target - show help
 help:
-	@echo "Bad Paul's Robot Army - Installation Commands"
+	@echo "Poliver's Bot Army - Installation Commands"
 	@echo ""
 	@echo "Usage: make [target]"
 	@echo ""

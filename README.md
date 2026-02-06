@@ -1,4 +1,4 @@
-# Bad Paul's Robot Army
+# Poliver's Bot Army
 
 Your elite development force - a comprehensive suite of specialized AI skills
 and commands for Gemini CLI that supercharge your development workflow. This
@@ -43,11 +43,11 @@ into:
 
 This toolkit is designed to work with different source control systems, issue
 trackers, and internal tools. All tool mappings are configured in a single skill
-file: `skills/workspace-tools/SKILL.md`.
+file: `skills/pba-workspace-tools/SKILL.md`.
 
 ### Quick Setup
 
-1. After installation, edit `~/.gemini/skills/workspace-tools/SKILL.md`
+1. After installation, edit `~/.gemini/skills/pba-workspace-tools/SKILL.md`
 2. The file has two sections:
    - **Active Configuration**: Tools that commands will actually use
    - **Templates (NOT ACTIVE)**: Examples you can copy and customize
@@ -79,7 +79,7 @@ When a capability isn't configured:
 - Commands continue with available capabilities
 - For issue tracking, falls back to local `/issues/` files
 
-For detailed instructions, see `skills/workspace-tools/SKILL.md`.
+For detailed instructions, see `skills/pba-workspace-tools/SKILL.md`.
 
 ## License
 
@@ -124,5 +124,5 @@ The core logic is in `scripts/install.sh`. It intelligently copies the command
 
 ---
 
-**Welcome to Bad Paul's Robot Army, Commander. Your forces await your orders!**
+**Welcome to Poliver's Bot Army, Commander. Your forces await your orders!**
 🫡

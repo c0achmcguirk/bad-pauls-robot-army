@@ -1,0 +1,150 @@
+description = "Analyze performance bottlenecks and create an optimization plan"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Using the pba-performance-optimizer skill, prepare a performance review report. Analyze performance bottlenecks and optimization opportunities in the codebase and create a comprehensive plan WITHOUT making any changes.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the pba-workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of pba-workspace-tools.
+If a capability is not configured, inform the user and continue with available capabilities.
+
+## Input Parsing
+The user invoked: /perf-review {{args}}
+
+Valid scopes:
+- **No argument**: Analyze the entire project
+- **File/directory path**: Scope analysis to that specific path
+- **"current changes"**: Analyze uncommitted changes (use source_control `status` and `diff_uncommitted` capabilities)
+- **"recent changes"**: Analyze recent commits (use source_control `log` capability)
+- **Change request reference**: Analyze a specific PR/CL (use change_requests `view` and `diff` capabilities)
+
+## Your Task
+1. First, understand the codebase and identify performance bottlenecks
+2. Analyze optimization opportunities
+3. Create a prioritized performance improvement plan
+4. Save your plan as a markdown file in the /reports directory
+
+## Analysis Steps
+1. **Performance Analysis**
+   - Identify algorithmic complexity issues
+   - Find inefficient data structures
+   - Detect unnecessary computations
+   - Look for memory leaks
+   - Check for blocking operations
+   - Analyze database queries
+
+2. **Resource Usage Review**
+   - Memory consumption patterns
+   - CPU utilization
+   - I/O operations
+   - Network calls
+   - Caching opportunities
+
+3. **Scalability Assessment**
+   - Concurrent operation handling
+   - Load distribution
+   - Resource pooling
+   - Batch processing opportunities
+
+## Output Format
+Create a markdown file at `/reports/perf-review-{scope}-{timestamp}.md` with:
+
+```markdown
+# Performance Review Plan
+Generated: {timestamp}
+Scope: {full_path_or_entire_project}
+
+## Executive Summary
+Brief overview of performance state and critical findings
+
+## Performance Bottlenecks
+### Critical Issues (Severe Impact)
+- Algorithm X: O(n²) complexity in hot path
+- Memory leak: In component Y
+- Blocking I/O: In service Z
+
+### High Priority Issues
+- Inefficient query: In function A
+- Missing cache: For operation B
+- Redundant computation: In loop C
+
+### Medium Priority Issues
+- Suboptimal data structure: In module D
+- Unnecessary allocations: In method E
+
+## Performance Metrics
+### Current State
+- Average response time: X ms
+- Memory usage: Y MB
+- CPU utilization: Z%
+- Key bottlenecks: List
+
+### Target State
+- Response time: < X ms
+- Memory usage: < Y MB
+- CPU utilization: < Z%
+
+## Optimization Plan
+### Quick Wins
+1. Add caching for X
+2. Optimize query Y
+3. Remove redundant computation Z
+
+### Major Optimizations
+1. Refactor algorithm A to O(n log n)
+2. Implement connection pooling
+3. Add batch processing for B
+
+### Architectural Changes
+1. Introduce async processing
+2. Implement data partitioning
+3. Add load balancing
+
+## Implementation Strategy
+### Phase 1: Low-hanging Fruit
+- Cache frequently accessed data
+- Optimize database queries
+- Remove obvious inefficiencies
+
+### Phase 2: Algorithm Improvements
+- Replace inefficient algorithms
+- Optimize data structures
+- Implement better search strategies
+
+### Phase 3: System-level Changes
+- Add horizontal scaling
+- Implement caching layer
+- Optimize resource usage
+
+## Risk Assessment
+### Safe Optimizations
+- Adding caches
+- Query optimization
+- Code cleanup
+
+### Moderate Risk
+- Algorithm changes
+- Data structure modifications
+
+### High Risk
+- Architectural changes
+- Async refactoring
+
+## Estimated Impact
+- Quick wins: 20-30% improvement
+- Major optimizations: 40-60% improvement
+- Full plan: 70-80% improvement
+```
+
+Remember: DO NOT make any changes. Only analyze and report.
+
+## CRITICAL: Report Generation
+
+**YOU MUST CREATE THE REPORT FILE.** This is not optional.
+
+1. Create the report file using the Write tool
+2. Fill in ALL sections with real findings
+3. Provide the full path to the user when done
+"""

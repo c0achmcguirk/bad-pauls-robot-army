@@ -1,0 +1,90 @@
+description = "Process technical team feedback on an implementation plan and create an updated version"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Using the pba-development-manager skill, process technical team feedback on an existing implementation plan and create an updated version that incorporates their input while maintaining technical coherence.
+
+## Context
+This command helps development managers process feedback from technical team members (architects, senior engineers, DevOps, QA, security) and create a revised implementation plan.
+
+## Input Parsing
+The user invoked: /process-implementation-plan-feedback {{args}}
+- Parse the plan_file_path parameter
+- If no file path provided, list available plans and ask user to specify
+
+## Your Task
+Gather technical feedback, analyze it, and create an updated implementation plan.
+
+### Step 1: Read and Understand the Original Plan
+- Read the implementation plan
+- Understand current architecture, phases, and technical decisions
+- Note risk assessments and mitigation strategies
+- Review resource allocations and timelines
+
+### Step 2: Gather Technical Feedback
+Ask for feedback:
+1. **Structured feedback**: Team member name, role, section, nature of feedback
+2. **Code review comments**: Architecture concerns, technology suggestions
+3. **Multiple inputs**: Collect from different technical roles
+
+### Step 3: Categorize and Analyze Feedback
+- **Critical Technical Issues**: Security, architecture flaws, blockers
+- **Performance & Scalability**: Optimization concerns
+- **Alternative Approaches**: Different technical solutions
+- **Resource & Timeline**: Estimation adjustments
+- **Risk Identification**: New risks, mitigation improvements
+- **Technical Debt**: Shortcut concerns
+- **Testing & Quality**: QA concerns
+
+### Step 4: Process and Integrate Feedback
+For each item:
+1. **Accept and Integrate**: Modify architecture, timelines, risks
+2. **Defer to Later Phase**: Document in "Future Optimizations"
+3. **Decline with Technical Justification**: Explain, suggest alternatives
+4. **Flag for Architecture Review**: Deeper discussion needed
+
+### Step 5: Resolve Technical Conflicts
+When team members provide conflicting approaches:
+- Document each approach with pros/cons
+- Analyze based on architecture, performance, maintainability
+- Recommend resolution with technical justification
+
+### Step 6: Update Plan Sections
+- Technical Architecture
+- Development Phases
+- Resource Allocation
+- Risk Assessment
+- Testing Strategy
+- Implementation Tickets
+
+### Step 7: Recalculate Timeline and Resources
+- Recalculate critical path
+- Adjust phase durations
+- Update resource requirements
+- Ensure buffers remain appropriate
+
+## Output Format
+Create two files:
+
+### 1. Updated Implementation Plan
+Save at `/plans/implementation-plan-{product-name}-v{version}-{timestamp}.md`
+
+### 2. Technical Change Log
+Save at `/plans/changelog-implementation-{product-name}-{timestamp}.md` with:
+- Executive Summary of Changes
+- Architecture & Design Changes
+- Timeline & Resource Adjustments
+- Risk Assessment Updates
+- Testing Strategy Improvements
+- Deferred Improvements
+- Declined Suggestions
+- Technical Conflict Resolutions
+- Updated Metrics
+
+## Important Notes
+- Maintain technical accuracy and feasibility
+- Preserve architectural principles unless explicitly changed
+- Keep estimates realistic based on team capabilities
+- Document all technical decisions for future reference
+- Consider security and performance implications
+"""

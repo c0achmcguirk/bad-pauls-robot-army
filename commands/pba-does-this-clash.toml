@@ -1,0 +1,135 @@
+description = "Analyze whether code fits with established codebase patterns and conventions"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Using the pba-mentor skill, analyze whether specific code aligns with established codebase patterns, conventions, and architectural principles.
+
+## Input Parsing
+The user invoked: /does-this-clash {{args}}
+
+Examples:
+- `/does-this-clash src/services/new-feature.ts` - Check if new code fits patterns
+- `/does-this-clash PR #123` - Review PR for pattern consistency
+- `/does-this-clash this commit` - Check recent changes
+- `/does-this-clash` - Interactive mode to identify what to check
+
+## Your Task
+
+This is a **pattern consistency analysis**, not subjective taste critique. The goal is to help developers write code that fits naturally into the existing codebase by identifying where their code diverges from established conventions.
+
+### Core Philosophy
+
+**Focus on observable patterns, not opinions.** This tool:
+- Compares code against documented or repeated patterns in the codebase
+- Identifies inconsistencies that might confuse future maintainers
+- Teaches codebase conventions through concrete examples
+- Invites discussion when violations might be intentional
+
+### 1. Identify What to Analyze
+- What code needs consistency checking
+- What kind of code is it (service, component, utility)
+- Is this a new pattern or fitting into existing patterns
+
+### 2. Pattern Discovery Phase
+Map the existing patterns:
+
+**Architectural Patterns:**
+- Folder structure conventions
+- Layering patterns
+- Dependency flow
+
+**Code Style Patterns:**
+- Naming conventions (files, classes, functions)
+- Function patterns (async, arrow functions)
+- Error handling patterns
+
+**Data Access Patterns:**
+- ORM usage, query builders
+- Repository patterns
+
+**Testing Patterns:**
+- Test structure (describe/it)
+- Mocking patterns
+
+### 3. Consistency Analysis
+Compare the target code against discovered patterns:
+- ✅ Aligned (Follows Pattern)
+- ⚠️ Divergent (Different Approach)
+- ❌ Contradictory (Conflicts with Pattern)
+
+### 4. Context Investigation
+Before flagging divergence, investigate if there's a reason:
+- Is this part of a migration?
+- Are there external constraints?
+- Is similar code using a new pattern?
+
+## Output Format
+Create a markdown file at `/reports/pattern-consistency-{scope}-{timestamp}.md` with:
+
+```markdown
+# Pattern Consistency Analysis: [Code Reference]
+
+## What Was Analyzed
+**Scope**: [File/Module/PR being checked]
+**Type**: [Service/Component/Util/Test]
+**Purpose**: [What this code does]
+
+## Summary
+**Overall Consistency**: Well-aligned / Some divergence / Significant conflicts
+**Key Findings**: [Top observations]
+
+## Established Codebase Patterns
+
+### Architectural Organization
+[How the codebase is organized]
+
+### Naming Conventions
+[File, class, function naming patterns]
+
+### Error Handling
+[How errors are handled]
+
+### Testing Patterns
+[How tests are structured]
+
+## Your Code Analysis
+
+### Aligned Areas
+[What follows the patterns]
+
+### Divergent Areas
+[What differs from patterns, with examples]
+
+## Pattern Summary
+
+### Alignment Score: X/10
+
+**Aligned**: [List]
+**Divergent**: [List]
+**Conflicting**: [List]
+
+### Impact Assessment
+**High Impact**: [Changes to fix soon]
+**Medium Impact**: [Should fix]
+**Low Impact**: [Nice to have]
+
+## Recommendations
+[Priority-ordered suggestions for alignment]
+
+## If You Choose to Diverge
+[Guidance for intentional divergence - document why, be consistent within module]
+
+## Learning Takeaways
+[About pattern consistency and when to follow vs. diverge]
+```
+
+Remember: Frame as learning, not criticism. Consistency is valuable, but not sacred. Help make choices intentionally rather than accidentally.
+
+## CRITICAL: Report Generation
+
+**YOU MUST CREATE THE REPORT FILE.** This is not optional.
+
+1. Create the report file using the Write tool
+2. Fill in ALL sections with real findings
+3. Provide the full path to the user when done
+"""

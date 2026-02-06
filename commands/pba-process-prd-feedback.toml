@@ -1,0 +1,80 @@
+description = "Process stakeholder feedback on a PRD and create an updated version"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Using the pba-product-manager skill, process stakeholder feedback on an existing Product Requirements Document (PRD) and create an updated version that incorporates their input while maintaining document coherence and tracking changes.
+
+## Context
+This command helps product managers systematically process feedback from stakeholders (engineering, design, business, customers) and create a revised PRD that addresses concerns, incorporates suggestions, and documents decisions.
+
+## Input Parsing
+The user invoked: /process-prd-feedback {{args}}
+- Parse the prd_file_path parameter
+- If no file path provided, list available PRDs and ask user to specify
+
+## Your Task
+Gather stakeholder feedback, analyze it, and create an updated PRD version.
+
+### Step 1: Read and Understand the Original PRD
+- Read the PRD file
+- Understand current scope, requirements, and constraints
+- Note areas marked as "open questions"
+
+### Step 2: Gather Stakeholder Feedback
+Ask the user to provide feedback:
+1. **Structured feedback**: Stakeholder name, section, nature of feedback, priority
+2. **Unstructured feedback**: Raw comments, emails, meeting notes
+3. **Multiple inputs**: Collect from different stakeholders, note conflicts
+
+### Step 3: Categorize and Analyze Feedback
+- **Critical Changes**: Must be addressed (blockers, compliance, feasibility)
+- **Important Enhancements**: Should be incorporated
+- **Minor Suggestions**: Nice to have
+- **Clarifications**: Need more detail
+- **Conflicts**: Contradictory feedback
+
+### Step 4: Process and Integrate Feedback
+For each item:
+1. **Accept and Integrate**: Modify PRD sections, update acceptance criteria
+2. **Defer to Future Phase**: Document in "Future Enhancements"
+3. **Decline with Rationale**: Explain why, suggest alternatives
+4. **Request Clarification**: Prepare specific questions
+
+### Step 5: Resolve Conflicts
+When stakeholders provide conflicting feedback:
+- Document both perspectives
+- Analyze trade-offs
+- Recommend resolution based on product vision, user impact, feasibility
+
+### Step 6: Update PRD Sections
+- Executive Summary
+- Requirements
+- User Stories
+- Success Metrics
+- Timeline
+- Risks
+- Dependencies
+
+## Output Format
+Create two files:
+
+### 1. Updated PRD
+Save at `/prds/prd-{product-name}-v{version}-{timestamp}.md`
+
+### 2. Change Log
+Save at `/prds/changelog-{product-name}-{timestamp}.md` with:
+- Executive Summary of Changes
+- Accepted Changes (with rationale)
+- Deferred Items
+- Declined Feedback (with rationale)
+- Conflict Resolutions
+- Outstanding Questions
+- Next Steps
+
+## Important Notes
+- Maintain document quality and readability
+- Preserve original product vision unless explicitly changed
+- Keep requirements specific and measurable
+- Document all decisions for future reference
+- Be diplomatic when documenting declined feedback
+"""
