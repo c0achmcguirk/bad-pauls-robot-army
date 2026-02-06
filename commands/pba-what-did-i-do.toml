@@ -1,0 +1,330 @@
+description = "Gather cross-functional activity from all configured tools and produce a newsletter-style impact report framed in business value"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Using the pba-impact-reporter skill, gather activity data from every configured tool source, analyze it for business impact, and produce a newsletter-style report that frames technical work in terms of business value.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the pba-workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of pba-workspace-tools.
+If a capability is not configured, note it in the Sources Consulted section of the report and continue with available capabilities.
+
+## Input Parsing
+
+The user invoked: /what-did-i-do {{args}}
+
+This command supports multiple invocation modes. Parse `{{args}}` to determine the scope:
+
+### Mode 1: Time Period
+- `/what-did-i-do this week` — Activity from the current calendar week (Monday to now)
+- `/what-did-i-do last week` — Activity from the previous calendar week
+- `/what-did-i-do last 30 days` — Activity from the past 30 days
+- `/what-did-i-do since 2026-01-15` — Activity since a specific date
+- `/what-did-i-do today` — Activity from today
+- `/what-did-i-do yesterday` — Activity from yesterday
+
+**Data gathering strategy**: Use date filters on ALL configured tools. For git, use `--since` and `--until`. For issue tracking and change requests, filter by updated/closed date within the period.
+
+### Mode 2: Project Scope
+- `/what-did-i-do on project-name` — Activity across the named project
+- `/what-did-i-do on my-service` — Activity in a specific service or repository
+
+**Data gathering strategy**: Identify the project by name. If the current repository matches, scope git queries to this repo. Search issues and change requests with the project name as a filter. If multiple repositories are involved, note this and focus on the current one unless tools allow cross-repo queries.
+
+### Mode 3: Code Path Scope
+- `/what-did-i-do in src/auth/` — Activity within a specific directory or file path
+- `/what-did-i-do in lib/payments/` — Activity in a code path
+
+**Data gathering strategy**: Use `git log -- {path}` to get commits touching the path. Use `git diff` to understand the scope of changes. Search issues and change requests for references to files in the path. This mode produces a more focused, technically-detailed report.
+
+### Mode 4: Issue/Ticket Scope
+- `/what-did-i-do on PROJ-1234` — Activity related to a specific issue or ticket
+- `/what-did-i-do on #42` — Activity related to a GitHub issue
+
+**Data gathering strategy**: Fetch the issue using the configured issue tracking capability. Find all commits referencing the issue (search commit messages). Find all change requests referencing the issue. Build a narrative around the lifecycle of that specific piece of work.
+
+### Mode 5: Interactive (No Arguments)
+- `/what-did-i-do` — No arguments provided
+
+If no arguments are provided, ask the user the following questions to determine scope:
+
+1. "What time period should I cover?" (Suggest: this week, last week, last 30 days, or a specific date range)
+2. "Should I focus on a specific project, code path, or issue? Or should I look at everything?" (Suggest: everything, a project name, a directory path, or a ticket number)
+3. "Who is the audience for this report?" (Suggest: your manager, a skip-level, a cross-functional stakeholder, or yourself)
+
+Use the answers to determine the scope and tailor the tone. For a skip-level audience, be more concise and more business-focused. For "yourself," include more technical detail.
+
+**Do not proceed with data gathering until scope is determined.**
+
+## Your Task
+
+This is a **phased workflow** that gathers data, analyzes it, and produces a polished impact report. Do not skip phases or combine them. Each phase has a distinct purpose.
+
+---
+
+### Phase 1: Data Gathering
+
+Systematically query every configured capability in pba-workspace-tools. The goal is to collect raw activity data — do not analyze or filter yet.
+
+**Source Control (REQUIRED — always available):**
+- Use `log` capability to get commits in the determined scope (time period, path, or all)
+- Use `log_file` if scoping to a specific path
+- Use `diff_uncommitted` and `diff_staged` to capture any in-progress work
+- Use `blame` selectively if you need to understand ownership for context
+- For each significant commit, note: hash, message, date, files changed, lines added/removed
+- Filter to the current user's commits. Use `git log --author` with the user's git identity
+
+**Change Requests (if configured):**
+- Use `list` to find PRs/CLs authored by the user in the scope period
+- Use `view` to get details (title, description, reviewers, status, merge date)
+- Use `diff` for significant PRs to understand scope of changes
+- Also find PRs the user reviewed (not just authored) — reviewing is impact too
+- Note: authored PRs = delivery impact; reviewed PRs = quality/mentorship impact
+
+**Issue Tracking (if configured):**
+- Use `search_issues` to find issues assigned to or updated by the user in scope
+- Use `fetch_issue` to get details on significant issues
+- Categorize: issues closed/resolved, issues progressed, issues opened
+- Extract business context from issue descriptions and labels
+
+**Knowledge Base / Internal Search (if configured):**
+- Search for documents created or modified by the user in the scope period
+- Note document titles and the kind of knowledge captured
+
+**Documentation (if configured):**
+- Use `search` to find docs the user created or edited
+- Note the documentation's purpose and audience
+
+**Code Search (if configured):**
+- Use code search to find authored changes across repositories if cross-repo tools are available
+- This supplements git log for multi-repo environments
+
+**For each data source, record:**
+- What was queried and the query parameters used
+- The raw results (commits, PRs, issues, docs)
+- Whether the capability was available or not configured
+
+**Do not produce output yet.** This phase is purely about gathering raw material.
+
+---
+
+### Phase 2: Analysis and Categorization
+
+Review all gathered data and organize it by business impact theme — NOT by data source.
+
+**Step 2a: Identify Business Themes**
+
+Scan all raw data and identify recurring themes. Common themes include (but are not limited to):
+
+- **Feature Delivery** — New capabilities shipped to users
+- **Reliability & Uptime** — Bug fixes, error handling, monitoring improvements
+- **Security & Compliance** — Auth changes, vulnerability fixes, audit improvements
+- **Performance & Scalability** — Optimization, caching, load handling
+- **Developer Experience** — Tooling, CI/CD, documentation, testing infrastructure
+- **Technical Debt Reduction** — Refactoring, cleanup, dependency updates
+- **Team Enablement** — Code reviews, mentoring, knowledge sharing, unblocking others
+- **Data & Analytics** — Reporting, metrics, data pipeline work
+- **Infrastructure & Operations** — Deployment, configuration, cloud resources
+
+Assign each piece of work (commit, PR, issue, doc) to one or more themes.
+
+**Step 2b: Rank by Business Impact**
+
+For each theme, assess the business impact of the work on a scale:
+
+- **High**: Directly affects users, revenue, security posture, or team velocity
+- **Medium**: Improves quality, reduces risk, or enables future high-impact work
+- **Low**: Routine maintenance with limited visible impact
+
+**Step 2c: Select Key Wins and Challenge**
+
+- **Key Wins**: Choose exactly 3 items with the highest business impact across all themes. These must span different themes if possible (avoid 3 wins that are all "bug fixes")
+- **Challenge**: Choose exactly 1 significant obstacle encountered. This should be real and substantive — not trivial. Frame it constructively: what the challenge is, what was done about it, and what the path forward looks like
+
+**Step 2d: Business-Impact Translation**
+
+For each Key Win, draft a business-framed narrative. Apply this transformation pattern:
+
+| Technical Description | Business-Impact Framing |
+|---|---|
+| "Refactored the auth module" | "Security & Scalability: Modernized the authentication layer, removing technical debt that was slowing down the mobile team and closing a potential vector for session hijacking." |
+| "Fixed N+1 query in user list" | "Performance: Eliminated a database bottleneck in the user directory, reducing page load time from 3.2s to 400ms for teams with 500+ members." |
+| "Added unit tests for payment flow" | "Reliability: Hardened the payment processing pipeline with comprehensive test coverage, reducing the risk of revenue-impacting regressions during the upcoming pricing rollout." |
+| "Reviewed 5 PRs from junior devs" | "Team Enablement: Mentored junior engineers through 5 code reviews, accelerating their ramp-up on the billing system and distributing critical knowledge beyond a single point of failure." |
+| "Updated README and onboarding docs" | "Developer Experience: Overhauled onboarding documentation, cutting new-engineer setup time and reducing the recurring support burden on senior staff." |
+
+The framing must be honest. Do not inflate. If a fix was small, say "a targeted fix" not "a major overhaul." If a refactoring has no user-facing impact yet, say "laying groundwork" not "delivering value."
+
+**Do not produce the final report yet.**
+
+---
+
+### Phase 3: Synthesis and Drafting
+
+Write the full report following the output format below. This is where all analysis becomes prose.
+
+**Writing Guidelines:**
+- **Newsletter tone**: Confident, concise, forward-looking. Think internal engineering blog post, not status meeting notes
+- **Strong verbs**: "shipped," "eliminated," "hardened," "accelerated," "unblocked" — not "worked on," "made progress on," "continued"
+- **Specific numbers**: Include commit counts, lines changed, PRs merged, issues closed, performance improvements — wherever available
+- **Inline references**: Every claim should have a parenthetical reference to the specific commit, PR, or issue. Example: "...reduced page load time from 3.2s to 400ms (PR #142)"
+- **Short paragraphs**: 2-3 sentences maximum per paragraph in the narrative section
+- **No jargon without context**: If a technical term is necessary, add a brief parenthetical explanation for non-technical readers
+
+---
+
+### Phase 4: Write the Report
+
+Create the final report file. Every section must contain real findings — no placeholder text.
+
+## Output Format
+
+Create a markdown file at `reports/{YYYYMMDDHHMMSS}-what-did-i-do.md` where the timestamp is the current date and time when the report is generated. The file must follow this structure exactly:
+
+```markdown
+# Impact Report
+
+**Period**: {Scope description — e.g., "Week of 2026-02-03 to 2026-02-07"}
+**Generated**: {YYYY-MM-DD HH:MM}
+**Scope**: {What was analyzed — e.g., "All activity" or "src/auth/" or "PROJ-1234"}
+**Author**: Impact Reporter Agent
+
+---
+
+## TL;DR
+
+{2-3 sentences maximum. What was the most important thing accomplished and why does it matter to the business? A busy executive should be able to read only this section and get the point.}
+
+## Key Wins
+
+- **{Theme}: {Headline}** — {1-2 sentence business-impact narrative with inline reference}
+- **{Theme}: {Headline}** — {1-2 sentence business-impact narrative with inline reference}
+- **{Theme}: {Headline}** — {1-2 sentence business-impact narrative with inline reference}
+
+## Challenge
+
+- **{Theme}: {Headline}** — {1-2 sentence description of the obstacle, what was done about it, and the path forward. Include inline reference if applicable.}
+
+## Detailed Narrative
+
+### {Business Theme 1}
+
+{2-3 short paragraphs describing the work in this theme, its business impact, and specific references to commits, PRs, and issues.}
+
+### {Business Theme 2}
+
+{2-3 short paragraphs.}
+
+### {Business Theme 3 (if applicable)}
+
+{2-3 short paragraphs.}
+
+## By the Numbers
+
+| Metric | Count |
+|--------|-------|
+| Commits | {N} |
+| Pull Requests Authored | {N} |
+| Pull Requests Reviewed | {N} |
+| Issues Closed/Resolved | {N} |
+| Issues Progressed | {N} |
+| Lines Added | {N} |
+| Lines Removed | {N} |
+| Documents Created/Updated | {N} |
+
+## References
+
+- {Link or reference to significant PR, issue, commit, or document}
+- {Link or reference}
+- {Link or reference}
+
+## Sources Consulted
+
+| Capability | Status | Notes |
+|------------|--------|-------|
+| Source Control (git) | Used | {Brief note on what was queried} |
+| Change Requests (PRs) | Used / Not Configured | {Brief note} |
+| Issue Tracking | Used / Not Configured | {Brief note} |
+| Knowledge Base | Used / Not Configured | {Brief note} |
+| Documentation | Used / Not Configured | {Brief note} |
+| Code Search | Used / Not Configured | {Brief note} |
+```
+
+## CRITICAL: Report Generation
+
+**YOU MUST CREATE THE REPORT FILE.** This is not optional.
+
+### Final Steps (MANDATORY)
+
+1. **Complete ALL four phases** before writing the report
+2. **Create the report file** using the Write tool at `reports/{YYYYMMDDHHMMSS}-what-did-i-do.md`
+3. **Fill in ALL sections** with real findings from your data gathering — no placeholder text
+4. **Key Wins must be exactly 3 bullet points** — no more, no fewer
+5. **Challenge must be exactly 1 bullet point** — no more, no fewer
+6. **Every claim must have an inline reference** to a commit, PR, issue, or document
+7. **Confirm completion** by telling the user:
+   - "Impact report saved to: [full path]"
+   - The TL;DR from the report
+   - The 3 Key Wins headlines
+
+### Common Mistakes to Avoid
+
+- DO NOT organize the report by data source (commits section, PRs section, issues section) — organize by business theme
+- DO NOT list raw commits or PRs without business framing
+- DO NOT inflate impact — small work framed as transformative damages credibility
+- DO NOT leave placeholder text in any section
+- DO NOT skip querying a configured data source — check every available capability
+- DO NOT produce the report without determining scope first (especially in interactive mode)
+- DO NOT forget the "By the Numbers" section — quantitative data adds credibility
+- DO NOT write vague Key Wins ("made good progress") — be specific about what was delivered and why it matters
+
+### Verification Checklist
+
+Before responding to the user, verify:
+- [ ] Report file created with Write tool
+- [ ] Scope was determined before data gathering began
+- [ ] Every configured pba-workspace-tools capability was queried
+- [ ] Key Wins section has exactly 3 bullet points
+- [ ] Challenge section has exactly 1 bullet point
+- [ ] All wins and challenges are framed in business impact terms
+- [ ] Inline references appear throughout the report
+- [ ] By the Numbers table is populated with real data
+- [ ] Sources Consulted table accurately reflects what was and was not available
+- [ ] Full path provided to user
+
+**Remember**: The report file is the primary deliverable. The chat summary is secondary.
+
+## Important Guidelines
+
+### Business Framing is Non-Negotiable
+- Every technical accomplishment must be translated into business value
+- Ask yourself for each item: "Why would a non-technical stakeholder care?"
+- If the answer is "they wouldn't" — it belongs in Detailed Narrative, not Key Wins
+
+### Intellectual Honesty
+- If the period was quiet, say so. "Consolidation and stability" is a valid narrative
+- If an accomplishment is small, frame it proportionally. "A targeted fix" not "a critical overhaul"
+- If a data source was unavailable, report that in Sources Consulted — do not guess
+- If you cannot determine the user's git identity, ask before proceeding
+
+### Audience Awareness
+- Default audience: the user's direct manager
+- If the user specified a different audience in interactive mode, adjust:
+  - **Skip-level / executive**: More concise, higher-level, heavier business framing
+  - **Cross-functional stakeholder**: Minimize technical jargon, emphasize collaboration
+  - **Self / personal record**: Include more technical detail, can be longer
+- When in doubt, optimize for a smart non-technical reader
+
+### Data Source Priorities
+- Source Control is the backbone — it is always available and always queried first
+- Change Requests are the second priority — PRs carry rich context (descriptions, reviewers, discussions)
+- Issue Tracking is third — it provides the "why" behind the "what"
+- Everything else (docs, knowledge base, code search) is supplementary and adds depth when available
+
+### Handling Edge Cases
+- **No commits found**: Check if the scope or date range is correct. Ask the user to confirm before producing an empty report
+- **Single large PR**: Build the narrative around the PR's lifecycle — from issue to implementation to review to merge
+- **All bug fixes**: Frame as reliability investment. "The team invested heavily in stability this period, resolving N issues that collectively affected X users"
+- **All reviews, no authored code**: Frame as enablement and quality. "Focused on team velocity by unblocking N teammates through thorough code review"
+"""
