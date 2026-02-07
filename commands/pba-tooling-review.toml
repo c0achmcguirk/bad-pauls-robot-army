@@ -11,7 +11,7 @@ Use ONLY the tools listed in the Active Configuration section of pba-workspace-t
 If a capability is not configured, inform the user and continue with available capabilities.
 
 ## Input Parsing
-The user invoked: /tooling-review {{args}}
+The user invoked: /pba-tooling-review {{args}}
 
 Valid scopes:
 - **No argument**: Analyze the entire project

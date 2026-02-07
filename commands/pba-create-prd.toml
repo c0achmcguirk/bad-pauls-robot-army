@@ -8,7 +8,7 @@ Using the pba-product-manager skill, help create a comprehensive product require
 This command is for creating PRDs for features that will be implemented in the EXISTING project/codebase you're currently working in. This is NOT for creating entirely new products from scratch, but rather for planning new features, enhancements, or modules within the current project context.
 
 ## Input Parsing
-The user invoked: /create-prd {optional_initial_description}
+The user invoked: /pba-create-prd {optional_initial_description}
 - If an initial description is provided, use it as the starting point
 - If no description is provided, begin by asking for the feature/enhancement details
 

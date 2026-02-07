@@ -11,15 +11,15 @@ Use ONLY the tools listed in the Active Configuration section of pba-workspace-t
 If a capability is not configured, inform the user and continue with available capabilities.
 
 ## Input Parsing
-The user invoked: /technical-review {{args}}
+The user invoked: /pba-technical-review {{args}}
 
 Examples:
-- `/technical-review reports/proposal-20260205.md` - Review a specific document
-- `/technical-review docs/architecture.md` - Review architecture documentation
-- `/technical-review README.md` - Review the project README
+- `/pba-technical-review reports/proposal-20260205.md` - Review a specific document
+- `/pba-technical-review docs/architecture.md` - Review architecture documentation
+- `/pba-technical-review README.md` - Review the project README
 
 If no document path is provided, inform the user that a document path is required:
-"Usage: /technical-review <path-to-document>"
+"Usage: /pba-technical-review <path-to-document>"
 Do not proceed without a document path.
 
 ## Your Task

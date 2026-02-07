@@ -11,7 +11,7 @@ Use ONLY the tools listed in the Active Configuration section of pba-workspace-t
 If source_control is not configured, inform the user that code history analysis requires source control tools.
 
 ## Input Parsing
-The user invoked: /code-history {{args}}
+The user invoked: /pba-code-history {{args}}
 
 Valid scopes:
 - **No argument**: Analyze the entire project's history
@@ -134,7 +134,7 @@ Analysis Period: {date_range}
 - Technical debt areas: {hotspots with many bug fixes}
 
 ---
-For detailed analysis, use: `/code-history-detailed {scope}`
+For detailed analysis, use: `/pba-code-history-detailed {scope}`
 ```
 
 ## Important Guidelines
@@ -160,5 +160,5 @@ If source_control is not configured in pba-workspace-tools:
 - Inform the user that code history analysis requires source control tools
 - Suggest they configure source_control in their pba-workspace-tools skill
 
-Remember: This is the "executive briefing" version. Leaders want key insights fast. For comprehensive analysis, they can use `/code-history-detailed`.
+Remember: This is the "executive briefing" version. Leaders want key insights fast. For comprehensive analysis, they can use `/pba-code-history-detailed`.
 """

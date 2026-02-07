@@ -8,7 +8,7 @@ Using the pba-product-manager skill, process stakeholder feedback on an existing
 This command helps product managers systematically process feedback from stakeholders (engineering, design, business, customers) and create a revised PRD that addresses concerns, incorporates suggestions, and documents decisions.
 
 ## Input Parsing
-The user invoked: /process-prd-feedback {{args}}
+The user invoked: /pba-process-prd-feedback {{args}}
 - Parse the prd_file_path parameter
 - If no file path provided, list available PRDs and ask user to specify
 

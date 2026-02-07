@@ -5,14 +5,14 @@ First, activate the 'pba-workspace-tools' skill to ensure you have the correct t
 Using the pba-mentor skill, investigate what would be affected by a proposed change, teaching impact analysis and systems thinking through comprehensive dependency mapping and risk assessment.
 
 ## Input Parsing
-The user invoked: /what-would-break {{args}}
+The user invoked: /pba-what-would-break {{args}}
 
 Examples:
-- `/what-would-break if we change the User model schema` - Data model changes
-- `/what-would-break removing the cache layer` - Architectural changes
-- `/what-would-break changing this function signature` - API changes
-- `/what-would-break upgrading React to v19` - Dependency upgrades
-- `/what-would-break` - Interactive mode to discuss potential changes
+- `/pba-what-would-break if we change the User model schema` - Data model changes
+- `/pba-what-would-break removing the cache layer` - Architectural changes
+- `/pba-what-would-break changing this function signature` - API changes
+- `/pba-what-would-break upgrading React to v19` - Dependency upgrades
+- `/pba-what-would-break` - Interactive mode to discuss potential changes
 
 ## Your Task
 

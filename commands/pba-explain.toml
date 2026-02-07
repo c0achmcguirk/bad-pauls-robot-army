@@ -5,14 +5,14 @@ First, activate the 'pba-workspace-tools' skill to ensure you have the correct t
 Using the pba-mentor skill, provide a detailed, customized explanation of the requested topic or code, saving the output to the reports directory.
 
 ## Input Parsing
-The user invoked: /explain {{args}}
+The user invoked: /pba-explain {{args}}
 
 Examples:
-- `/explain src/auth/middleware.ts` - Explain specific file
-- `/explain authentication flow` - Explain a concept
-- `/explain why we use Redis here` - Explain architectural decisions
-- `/explain the testing strategy` - Explain project practices
-- `/explain` - Interactive mode to determine what needs explaining
+- `/pba-explain src/auth/middleware.ts` - Explain specific file
+- `/pba-explain authentication flow` - Explain a concept
+- `/pba-explain why we use Redis here` - Explain architectural decisions
+- `/pba-explain the testing strategy` - Explain project practices
+- `/pba-explain` - Interactive mode to determine what needs explaining
 
 ## Your Task
 

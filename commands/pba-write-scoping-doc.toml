@@ -11,14 +11,14 @@ Use ONLY the tools listed in the Active Configuration section of pba-workspace-t
 If a capability is not configured, inform the user and continue with available capabilities.
 
 ## Input Parsing
-The user invoked: /write-scoping-doc {{args}}
+The user invoked: /pba-write-scoping-doc {{args}}
 
 Examples:
-- `/write-scoping-doc How might we enable the feature described in issue 1234` - Scope a feature from an issue
-- `/write-scoping-doc I want to see what it would take to add an API integration with FooService` - Evaluate an integration
-- `/write-scoping-doc Converting codebase from JavaScript to TypeScript` - Scope a migration
-- `/write-scoping-doc replace Elasticsearch with Typesense for search` - Evaluate a technology swap
-- `/write-scoping-doc` - Interactive mode to gather proposal details
+- `/pba-write-scoping-doc How might we enable the feature described in issue 1234` - Scope a feature from an issue
+- `/pba-write-scoping-doc I want to see what it would take to add an API integration with FooService` - Evaluate an integration
+- `/pba-write-scoping-doc Converting codebase from JavaScript to TypeScript` - Scope a migration
+- `/pba-write-scoping-doc replace Elasticsearch with Typesense for search` - Evaluate a technology swap
+- `/pba-write-scoping-doc` - Interactive mode to gather proposal details
 
 If no input is provided, ask the user what proposal they would like to investigate.
 
@@ -261,7 +261,7 @@ Create a markdown file at `/reports/scoping-doc-{topic}-{timestamp}.md` with:
 {If the recommendation is approved, what happens next? Be specific about actions and who should be involved.}
 
 1. {Next step 1: e.g., "Resolve open question #1 by meeting with the Platform team"}
-2. {Next step 2: e.g., "Create a PRD using /create-prd for the recommended option"}
+2. {Next step 2: e.g., "Create a PRD using /pba-create-prd for the recommended option"}
 3. {Next step 3: e.g., "Prototype the migration path in a time-boxed spike (1 week)"}
 4. {Next step 4: e.g., "Staff the project with N engineers from team X"}
 

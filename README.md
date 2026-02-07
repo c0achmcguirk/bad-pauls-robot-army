@@ -1,4 +1,4 @@
-# Poliver's Bot Army
+# Bad Paul's Robot Army
 
 Your elite development force - a comprehensive suite of specialized AI skills
 and commands for Gemini CLI that supercharge your development workflow. This
@@ -7,37 +7,41 @@ extension brazenly steals the work of Dave Griffith's
 designed for Claude Code. If you love it as much as I do, support his work on
 [Substack](https://davegriffith.substack.com/).
 
-## 🚀 Quick Start
+## Quick Start
 
-**New to the Robot Army?** This collection of tools provides powerful,
-skill-based capabilities directly in your command line.
-
-**Ready to deploy?** Install the commands and skills:
+Install directly from GitHub:
 
 ```bash
-# 1. Run the one-time setup script
-make setup
+gemini extensions install <github-url>
+```
 
-# 2. Install the commands and skills
+Or for local development:
+
+```bash
+git clone <repo-url>
+cd bad-pauls-robot-army
 make install
 ```
 
 After installation, restart Gemini CLI to access your new Robot Army.
 
-## 🎯 What's Inside
+## What's Inside
 
-This repository includes **18 commands** and **21 specialized skills** organized
+This extension includes **42 commands** and **29 specialized skills** organized
 into:
 
-- **Review & Analysis Commands**: Accessibility, API, database, concurrency, and
-  documentation audits.
-- **Code Intelligence Commands**: History analysis, evolution tracking, and
-  codebase understanding.
-- **Development Workflow Commands**: PRD creation and issue decomposition.
+- **Review & Analysis Commands**: Accessibility, API, architecture, database,
+  concurrency, documentation, and more.
+- **Code Intelligence Commands**: History analysis, evolution tracking, codebase
+  understanding, pattern consistency, and impact analysis.
+- **Development Workflow Commands**: PRD creation, issue decomposition,
+  implementation planning, and scoping documents.
 - **Operations Commands**: Build, deployment, cloud, configuration, and tooling
   reviews.
-- **21 Specialized Skills**: Including architect, mentor, debugger,
+- **29 Specialized Skills**: Including architect, mentor, debugger,
   security-master, and more.
+
+Run `/pba-bad-pauls-robot-army` in Gemini CLI for the full command reference.
 
 ## Organizational Customization
 
@@ -47,7 +51,8 @@ file: `skills/pba-workspace-tools/SKILL.md`.
 
 ### Quick Setup
 
-1. After installation, edit `~/.gemini/skills/pba-workspace-tools/SKILL.md`
+1. After installation, edit
+   `~/.gemini/extensions/bad-pauls-robot-army/skills/pba-workspace-tools/SKILL.md`
 2. The file has two sections:
    - **Active Configuration**: Tools that commands will actually use
    - **Templates (NOT ACTIVE)**: Examples you can copy and customize
@@ -81,48 +86,24 @@ When a capability isn't configured:
 
 For detailed instructions, see `skills/pba-workspace-tools/SKILL.md`.
 
+## Migration from Manual Install
+
+If you previously installed using `make install` with the old copy-based
+scripts, remove the old files first:
+
+```bash
+# Remove old pba-* files from ~/.gemini/commands/ and ~/.gemini/skills/
+rm ~/.gemini/commands/pba-*.toml
+rm -rf ~/.gemini/skills/pba-*/
+```
+
+Then install as an extension using the Quick Start instructions above.
+
 ## License
 
 This project is licensed under the Apache License 2.0 - see the
 [LICENSE](LICENSE) file for details.
 
-## 🛠️ Installation Tooling
-
-This repository includes tooling for installing the commands and skills into
-your Gemini CLI configuration directory (`~/.gemini/`).
-
-### Quick Start
-
-```bash
-# Run this first to make scripts executable
-make setup
-
-# Install everything to ~/.gemini/
-make install
-
-# To see what would be installed without changing files
-make dry-run
-
-# To overwrite existing files without being asked
-make install-force
-```
-
-### The Install Script
-
-The core logic is in `scripts/install.sh`. It intelligently copies the command
-(`.toml`) and skill files from this repository to the correct locations in your
-`~/.gemini` directory.
-
-### Safety Features
-
-- **Confirmation Prompts**: The script will ask before overwriting any files
-  that have been modified.
-- **Dry-run Mode**: Use `make dry-run` to see a preview of all actions without
-  making any changes.
-- **Force Mode**: Use `make install-force` to bypass prompts and overwrite
-  existing files, useful for CI/CD or fresh installs.
-
 ---
 
-**Welcome to Poliver's Bot Army, Commander. Your forces await your orders!**
-🫡
+**Welcome to Bad Paul's Robot Army, Commander. Your forces await your orders!**

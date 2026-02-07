@@ -8,7 +8,7 @@ Using the pba-development-manager skill, create a comprehensive implementation p
 This command generates implementation plans for features that will be developed within the EXISTING project/codebase. The plan should consider the current architecture, existing patterns, and technical constraints.
 
 ## Input Parsing
-The user invoked: /implementation-plan-from-prd {{args}}
+The user invoked: /pba-implementation-plan-from-prd {{args}}
 - Parse the prd_file_path parameter (should be a path to a file in /prds directory)
 - If no file path provided, list available PRDs and ask user to specify
 

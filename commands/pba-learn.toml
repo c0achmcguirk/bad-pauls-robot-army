@@ -5,14 +5,14 @@ First, activate the 'pba-workspace-tools' skill to ensure you have the correct t
 Using the pba-mentor skill, create a customized learning path based on the user's goals and current knowledge level, saving the output to the reports directory.
 
 ## Input Parsing
-The user invoked: /learn {{args}}
+The user invoked: /pba-learn {{args}}
 
 Examples:
-- `/learn this codebase` - Overall codebase familiarization
-- `/learn React hooks` - Specific technology in the project
-- `/learn how to add new features` - Process-oriented learning
-- `/learn testing best practices` - Skill development
-- `/learn` - Interactive goal setting
+- `/pba-learn this codebase` - Overall codebase familiarization
+- `/pba-learn React hooks` - Specific technology in the project
+- `/pba-learn how to add new features` - Process-oriented learning
+- `/pba-learn testing best practices` - Skill development
+- `/pba-learn` - Interactive goal setting
 
 ## Your Task
 

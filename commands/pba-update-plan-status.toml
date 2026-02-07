@@ -11,7 +11,7 @@ Use ONLY the tools listed in the Active Configuration section of pba-workspace-t
 If capabilities are not configured, inform the user and use available alternatives.
 
 ## Input Parsing
-The user invoked: /update-plan-status {{args}}
+The user invoked: /pba-update-plan-status {{args}}
 - Path should point to a plan file (typically in /plans directory)
 - If no path provided, list available plan files and ask user to specify
 

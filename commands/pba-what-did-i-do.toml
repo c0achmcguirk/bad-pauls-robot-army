@@ -12,40 +12,40 @@ If a capability is not configured, note it in the Sources Consulted section of t
 
 ## Input Parsing
 
-The user invoked: /what-did-i-do {{args}}
+The user invoked: /pba-what-did-i-do {{args}}
 
 This command supports multiple invocation modes. Parse `{{args}}` to determine the scope:
 
 ### Mode 1: Time Period
-- `/what-did-i-do this week` — Activity from the current calendar week (Monday to now)
-- `/what-did-i-do last week` — Activity from the previous calendar week
-- `/what-did-i-do last 30 days` — Activity from the past 30 days
-- `/what-did-i-do since 2026-01-15` — Activity since a specific date
-- `/what-did-i-do today` — Activity from today
-- `/what-did-i-do yesterday` — Activity from yesterday
+- `/pba-what-did-i-do this week` — Activity from the current calendar week (Monday to now)
+- `/pba-what-did-i-do last week` — Activity from the previous calendar week
+- `/pba-what-did-i-do last 30 days` — Activity from the past 30 days
+- `/pba-what-did-i-do since 2026-01-15` — Activity since a specific date
+- `/pba-what-did-i-do today` — Activity from today
+- `/pba-what-did-i-do yesterday` — Activity from yesterday
 
 **Data gathering strategy**: Use date filters on ALL configured tools. For git, use `--since` and `--until`. For issue tracking and change requests, filter by updated/closed date within the period.
 
 ### Mode 2: Project Scope
-- `/what-did-i-do on project-name` — Activity across the named project
-- `/what-did-i-do on my-service` — Activity in a specific service or repository
+- `/pba-what-did-i-do on project-name` — Activity across the named project
+- `/pba-what-did-i-do on my-service` — Activity in a specific service or repository
 
 **Data gathering strategy**: Identify the project by name. If the current repository matches, scope git queries to this repo. Search issues and change requests with the project name as a filter. If multiple repositories are involved, note this and focus on the current one unless tools allow cross-repo queries.
 
 ### Mode 3: Code Path Scope
-- `/what-did-i-do in src/auth/` — Activity within a specific directory or file path
-- `/what-did-i-do in lib/payments/` — Activity in a code path
+- `/pba-what-did-i-do in src/auth/` — Activity within a specific directory or file path
+- `/pba-what-did-i-do in lib/payments/` — Activity in a code path
 
 **Data gathering strategy**: Use `git log -- {path}` to get commits touching the path. Use `git diff` to understand the scope of changes. Search issues and change requests for references to files in the path. This mode produces a more focused, technically-detailed report.
 
 ### Mode 4: Issue/Ticket Scope
-- `/what-did-i-do on PROJ-1234` — Activity related to a specific issue or ticket
-- `/what-did-i-do on #42` — Activity related to a GitHub issue
+- `/pba-what-did-i-do on PROJ-1234` — Activity related to a specific issue or ticket
+- `/pba-what-did-i-do on #42` — Activity related to a GitHub issue
 
 **Data gathering strategy**: Fetch the issue using the configured issue tracking capability. Find all commits referencing the issue (search commit messages). Find all change requests referencing the issue. Build a narrative around the lifecycle of that specific piece of work.
 
 ### Mode 5: Interactive (No Arguments)
-- `/what-did-i-do` — No arguments provided
+- `/pba-what-did-i-do` — No arguments provided
 
 If no arguments are provided, ask the user the following questions to determine scope:
 

@@ -5,13 +5,13 @@ First, activate the 'pba-workspace-tools' skill to ensure you have the correct t
 Using the pba-mentor skill, approach the specified topic or code area with genuine curiosity and a learning mindset. Generate a thoughtful list of questions to explore and understand the topic deeply, saving the output to the reports directory.
 
 ## Input Parsing
-The user invoked: /beginners-mind {topic_or_code_area}
+The user invoked: /pba-beginners-mind {topic_or_code_area}
 
 Examples:
-- `/beginners-mind authentication flow` - Explore how authentication works
-- `/beginners-mind database optimization` - Learn about query optimization
-- `/beginners-mind refactor this component` - Understand before refactoring
-- `/beginners-mind` - Interactive exploration mode
+- `/pba-beginners-mind authentication flow` - Explore how authentication works
+- `/pba-beginners-mind database optimization` - Learn about query optimization
+- `/pba-beginners-mind refactor this component` - Understand before refactoring
+- `/pba-beginners-mind` - Interactive exploration mode
 
 ## Your Task
 
@@ -63,7 +63,7 @@ Create a markdown file at `/reports/beginners-mind-{topic}-{timestamp}.md` with 
 
 #### Example 1: Authentication Flow
 ```
-User: /beginners-mind authentication flow
+User: /pba-beginners-mind authentication flow
 
 Junior Developer: Let me explore the authentication flow in this codebase and generate some questions to deepen our understanding!
 
@@ -97,7 +97,7 @@ I've found some interesting patterns in our auth implementation. Here are my que
 
 #### Example 2: Database Optimization
 ```
-User: /beginners-mind database optimization
+User: /pba-beginners-mind database optimization
 
 Junior Developer: Let me investigate our database patterns and generate questions to explore optimization opportunities!
 
@@ -131,7 +131,7 @@ I've discovered some interesting patterns in our data layer. Here are my questio
 
 #### Example 3: Component Refactoring
 ```
-User: /beginners-mind refactor UserProfile component
+User: /pba-beginners-mind refactor UserProfile component
 
 Junior Developer: Let me analyze the UserProfile component and generate questions to guide our refactoring approach!
 

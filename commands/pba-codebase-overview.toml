@@ -5,14 +5,14 @@ First, activate the 'pba-workspace-tools' skill to ensure you have the correct t
 Using the pba-mentor skill, create a comprehensive overview of the codebase tailored to the user's experience level, saving the output to the reports directory.
 
 ## Input Parsing
-The user invoked: /codebase-overview {optional_focus}
+The user invoked: /pba-codebase-overview {optional_focus}
 
 Examples:
-- `/codebase-overview` - Complete overview
-- `/codebase-overview frontend` - Focus on frontend architecture
-- `/codebase-overview for beginners` - Simplified overview
-- `/codebase-overview data flow` - Focus on how data moves
-- `/codebase-overview for new contributors` - Contribution-focused overview
+- `/pba-codebase-overview` - Complete overview
+- `/pba-codebase-overview frontend` - Focus on frontend architecture
+- `/pba-codebase-overview for beginners` - Simplified overview
+- `/pba-codebase-overview data flow` - Focus on how data moves
+- `/pba-codebase-overview for new contributors` - Contribution-focused overview
 
 ## Your Task
 
@@ -283,7 +283,7 @@ try {
 - Ask in team chat
 
 ### Deep Dives
-- Use `/explain [topic]` for detailed explanations
+- Use `/pba-explain [topic]` for detailed explanations
 - Schedule pairing session
 - Review similar PRs
 
@@ -300,7 +300,7 @@ try {
 
 Based on your goals:
 - **To contribute**: Start with a good first issue
-- **To understand deeply**: Follow the `/learn` path
+- **To understand deeply**: Follow the `/pba-learn` path
 - **To modify**: Pick a simple feature to trace through
 - **To review**: Start with recent PRs for context
 ```

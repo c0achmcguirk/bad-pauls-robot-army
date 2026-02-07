@@ -1,10 +1,10 @@
-# Poliver's Bot Army - Global Context
+# Bad Paul's Robot Army - Global Context
 
 This file provides guidance to Gemini CLI when working with code in this repository.
 
 ## Repository Overview
 
-This repository serves as a collection of Gemini CLI artifacts including:
+This repository is a Gemini CLI extension providing:
 - **Skills**: Specialized AI skills for various development tasks
 - **Commands**: Slash commands for common operations
 
@@ -14,12 +14,10 @@ This repository serves as a collection of Gemini CLI artifacts including:
 /
 ├── README.md              # Repository documentation
 ├── GEMINI.md              # This file (global context for Gemini CLI)
-├── settings.json          # Gemini CLI settings
-├── Makefile               # Build and install automation
-├── setup.sh               # Initial setup script
+├── gemini-extension.json  # Extension manifest
+├── settings.json.example  # Example Gemini CLI settings
+├── Makefile               # Extension install/uninstall shortcuts
 ├── commands/              # Slash command definitions (.toml files)
-│   ├── arch/              # Architecture review commands
-│   └── ops/               # Operations/DevOps commands
 ├── skills/                # Skill definitions (SKILL.md files)
 │   ├── pba-accessibility-specialist/
 │   ├── pba-api-designer/
@@ -28,21 +26,29 @@ This repository serves as a collection of Gemini CLI artifacts including:
 │   ├── pba-cloud-developer/
 │   ├── pba-code-documentor/
 │   ├── pba-code-historian/
+│   ├── pba-code-modernizer/
 │   ├── pba-concurrency-expert/
 │   ├── pba-configuration-manager/
 │   ├── pba-database-designer/
 │   ├── pba-debugger/
 │   ├── pba-deployment-specialist/
+│   ├── pba-development-manager/
 │   ├── pba-exception-handling-master/
+│   ├── pba-impact-reporter/
+│   ├── pba-internationalization-specialist/
 │   ├── pba-logging-master/
 │   ├── pba-mentor/
 │   ├── pba-performance-optimizer/
 │   ├── pba-product-manager/
+│   ├── pba-quality-assurance-expert/
 │   ├── pba-refactorer/
 │   ├── pba-security-master/
+│   ├── pba-technical-reviewer/
+│   ├── pba-technical-scoper/
 │   ├── pba-test-automator/
-│   └── pba-toolsmith/
-└── scripts/               # Installation and utility scripts
+│   ├── pba-toolsmith/
+│   └── pba-workspace-tools/
+└── scripts/               # Development utility scripts
 ```
 
 ## Development Notes
@@ -51,7 +57,7 @@ As this is a repository for Gemini CLI artifacts rather than a traditional softw
 
 1. Place command definitions in the `commands/` directory as `.toml` files
 2. Place skill definitions in `skills/{skill-name}/SKILL.md`
-3. Follow existing naming conventions
+3. Follow existing naming conventions (use `pba-` prefix)
 4. Document each artifact's purpose and usage in its respective file
 
 ## Working with Artifacts
@@ -65,4 +71,4 @@ When creating or modifying Gemini CLI artifacts in this repository:
 
 ## Installation
 
-Run `make install` to install commands and skills to your Gemini CLI configuration directory.
+Run `gemini extensions link .` to link this extension for local development.

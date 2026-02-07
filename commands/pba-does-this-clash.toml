@@ -5,13 +5,13 @@ First, activate the 'pba-workspace-tools' skill to ensure you have the correct t
 Using the pba-mentor skill, analyze whether specific code aligns with established codebase patterns, conventions, and architectural principles.
 
 ## Input Parsing
-The user invoked: /does-this-clash {{args}}
+The user invoked: /pba-does-this-clash {{args}}
 
 Examples:
-- `/does-this-clash src/services/new-feature.ts` - Check if new code fits patterns
-- `/does-this-clash PR #123` - Review PR for pattern consistency
-- `/does-this-clash this commit` - Check recent changes
-- `/does-this-clash` - Interactive mode to identify what to check
+- `/pba-does-this-clash src/services/new-feature.ts` - Check if new code fits patterns
+- `/pba-does-this-clash PR #123` - Review PR for pattern consistency
+- `/pba-does-this-clash this commit` - Check recent changes
+- `/pba-does-this-clash` - Interactive mode to identify what to check
 
 ## Your Task
 

@@ -5,13 +5,13 @@ First, activate the 'pba-workspace-tools' skill to ensure you have the correct t
 Using the pba-mentor skill, investigate why specific code was implemented in its current form rather than obvious alternatives, combining historical analysis and architectural reasoning to uncover hidden constraints and design decisions.
 
 ## Input Parsing
-The user invoked: /why-this-way {{args}}
+The user invoked: /pba-why-this-way {{args}}
 
 Examples:
-- `/why-this-way src/auth/session.ts` - Why this specific implementation?
-- `/why-this-way why callbacks instead of async/await in parser` - Why this pattern choice?
-- `/why-this-way the manual SQL queries in reports module` - Why not use the ORM?
-- `/why-this-way` - Interactive mode to identify what needs investigation
+- `/pba-why-this-way src/auth/session.ts` - Why this specific implementation?
+- `/pba-why-this-way why callbacks instead of async/await in parser` - Why this pattern choice?
+- `/pba-why-this-way the manual SQL queries in reports module` - Why not use the ORM?
+- `/pba-why-this-way` - Interactive mode to identify what needs investigation
 
 ## Your Task
 

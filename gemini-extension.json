@@ -1,0 +1,6 @@
+{
+  "name": "bad-pauls-robot-army",
+  "version": "1.0.0",
+  "description": "Your elite development force - specialized AI skills and commands for code review, architecture, testing, mentoring, and the full development lifecycle. Inspired by Dave Griffith's bad-daves-robot-army for Claude Code (https://github.com/dgriffith/bad-daves-robot-army).",
+  "contextFileName": "GEMINI.md"
+}
