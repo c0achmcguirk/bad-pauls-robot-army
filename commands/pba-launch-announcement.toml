@@ -246,15 +246,15 @@ Create a markdown file at `reports/{YYYYMMDDHHMMSS}-launch-announcement.md` wher
 
 {Specific, evidence-based shout-outs to individuals. Do NOT write "thanks to the team." Every line names a person and what they did.}
 
-- **@{username}**: {Specific contribution — e.g., "Led the infrastructure-as-code migration, authoring N change requests and ensuring zero-downtime deployment"}
-- **@{username}**: {Specific contribution}
-- **@{username}**: {Specific contribution}
+- **<username>**: {Specific contribution — e.g., "Led the infrastructure-as-code migration, authoring N change requests and ensuring zero-downtime deployment"}
+- **<username>**: {Specific contribution}
+- **<username>**: {Specific contribution}
 
 {Cross-functional acknowledgments:}
-- **@{username} (QA/DevOps/Product/Design)**: {What they contributed to the launch}
+- **<username> (QA/DevOps/Product/Design)**: {What they contributed to the launch}
 
 {If additional contributors were discovered during research:}
-- **Additional contributors**: @{username}, @{username} — {brief note on their involvement}
+- **Additional contributors**: <username>, <username> — {brief note on their involvement}
 
 ## What's Next & Feedback
 
