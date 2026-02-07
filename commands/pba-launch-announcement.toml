@@ -1,0 +1,373 @@
+description = "Research a project launch across all configured tools and produce a celebratory engineering launch announcement with technical highlights, metrics, and individual credit"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Using the pba-launch-announcer skill, research a project launch across all configured data sources, identify key wins and contributors, and produce a polished engineering launch announcement.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the pba-workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of pba-workspace-tools.
+If a capability is not configured, note it in the Sources Consulted section of the announcement and continue with available capabilities.
+Do NOT hardcode tool names — always use the capability names from pba-workspace-tools (e.g., `log`, `search_issues`, `list`, `view`, `diff`). This ensures the command works regardless of whether the organization uses Git or Mercurial, GitHub or Jira, PRs or Gerrit CLs.
+
+## Input Parsing
+
+The user invoked: /pba-launch-announcement {{args}}
+
+Parse `{{args}}` for any information the user provided upfront. The user may have included a project name, issue numbers, usernames, or file paths. Extract what you can and ask for the rest.
+
+## Your Task
+
+This is a **phased workflow** that gathers input, researches across data sources, analyzes findings, and produces a polished launch announcement. Do not skip phases or combine them. Each phase has a distinct purpose.
+
+---
+
+### Phase 1: Scope & Input Gathering
+
+Before any research, you need to understand the launch. Ask the user the following questions, skipping any already answered via `{{args}}`:
+
+1. **Project name**: "What project or launch are you announcing?"
+   — This is the primary search term across all tools. Required before proceeding.
+
+2. **Key documentation**: "Can you point to any key documents that will help me understand this launch? (design docs, launch plans, PRDs, spreadsheets, wiki pages — provide file paths or URLs)"
+   — These are primary sources. Read them thoroughly in Phase 2.
+
+3. **Bugs/issues**: "Do you have a bug hotlist, parent bug, or set of issues tied to this project? (issue numbers, labels, milestones, or a search query)"
+   — Used to find the issues the team worked on. Can be a parent issue whose children are the work items, a label/milestone, or explicit issue numbers.
+
+4. **Key people**: "Who are the key people who worked on this project? (provide ldaps/usernames, comma-separated)"
+   — Used to filter source control, change requests, and issues by author/assignee. These are the people who will appear in the Wall of Gratitude.
+
+5. **Dashboards/metrics**: "Are there any dashboards, metrics links, or before/after data you'd like referenced in the announcement? (provide URLs or descriptions)"
+   — Included directly in the Impact & Metrics section.
+
+**Parse any information from `{{args}}` first.** If `{{args}}` contains a project name and usernames (e.g., `/pba-launch-announcement Project Phoenix @sarah @james @devon`), extract them and ask only the remaining questions.
+
+**Do not proceed to Phase 2 until you have at minimum:**
+- A project name
+- At least one of: key people, bugs/issues, or key documentation
+
+If the user provides only a project name with no other context, ask for at least one additional input. A launch announcement without people to credit or issues to reference will be hollow.
+
+---
+
+### Phase 2: Cross-Source Research
+
+Systematically query every configured capability in pba-workspace-tools. The goal is to collect raw data about the launch — do not analyze or draft yet.
+
+**Source Control (use configured capabilities):**
+
+For each key person provided:
+- Use the `log` capability filtered by author/username to find their commits related to the project
+- Look for commits whose messages reference the project name, issue numbers, or related keywords
+
+For the project overall:
+- Use `log` to search commit messages for the project name and related terms
+- If specific code paths are known (from documentation or issues), use `log_file` to trace changes
+- Use `blame` selectively to understand ownership of critical files
+- For each significant commit, note: identifier, message, date, author, files changed
+
+**Issue Tracking (if configured):**
+
+- Use `search_issues` with the project name, labels, or milestone as query
+- If the user provided a parent issue, use `fetch_issue` to get it and find its children/linked issues
+- If specific issue numbers were provided, use `fetch_issue` for each
+- For each key person, use `search_issues` filtered by assignee
+- For each issue found, extract: title, status, assignee, description, labels, resolution
+- Identify which issues represent the most significant work (by complexity, user impact, or effort)
+
+**Change Requests (if configured):**
+
+- Use `list` to find change requests by each key person in the project's timeframe
+- Use `view` to get details on significant change requests (title, description, reviewers, status)
+- Use `diff` for the most important change requests to understand scope
+- Note who reviewed whose code — reviewers deserve credit too
+- Identify the largest, most complex, or most impactful change requests
+
+**Knowledge Base (if configured):**
+
+- Search for documents related to the project name
+- Look for design docs, architecture decisions, launch plans, post-mortems
+- Extract key decisions, metrics targets, and technical context
+
+**Documentation (if configured):**
+
+- Search for docs created or modified in relation to the project
+- Note documentation that was created as part of the launch (user guides, API docs, runbooks)
+
+**Code Search (if configured):**
+
+- Search for code related to the project across repositories
+- Useful for understanding the breadth of changes in multi-repo launches
+
+**User-Provided Documents:**
+
+- Read every document the user pointed to in Phase 1 (file paths, URLs)
+- Extract: project goals, success metrics, key decisions, timeline, challenges mentioned
+- These are your richest source of context — treat them as primary sources
+
+**For each data source, record:**
+- What capability was used and the query parameters
+- The raw results
+- Whether the capability was available or not configured
+
+**Do not produce output yet.** This phase is purely about gathering raw material.
+
+---
+
+### Phase 3: Analysis & Win Selection
+
+Review all gathered data and identify the story of this launch.
+
+**Step 3a: Map Contributions to People**
+
+For each key person, compile a contribution profile:
+- Commits authored (count and key ones)
+- Change requests authored and merged
+- Change requests reviewed (reviewers are contributors too)
+- Issues closed or resolved
+- Documents authored or key decisions made
+- Notable technical achievements (complex changes, critical bug fixes, architectural work)
+
+Also identify any contributors who were NOT in the user's initial list but appear frequently in the data. Mention them as "additional contributors discovered during research."
+
+**Step 3b: Identify 4-6 Key Wins**
+
+Scan all raw data and select wins that demonstrate:
+- **Impact**: What changed for users, the system, or the team?
+- **Technical excellence**: What was technically impressive or hard?
+- **Collaboration**: What required cross-functional or cross-team effort?
+
+Each win must have:
+- A clear headline
+- Specific evidence (commit, change request, issue, or document reference)
+- Attribution to the person or people responsible
+- Business or technical impact framing
+
+Spread wins across different categories. Avoid picking 6 wins that are all bug fixes or all performance improvements. Good categories include:
+- Core feature delivery
+- Performance or scalability improvement
+- Reliability or quality improvement
+- Developer experience or tooling
+- Architecture or infrastructure
+- Cross-team collaboration
+
+**Step 3c: Extract Technical Highlights**
+
+From the research, identify:
+- Architectural wins (new systems, migrations, design patterns)
+- Hard bugs conquered (race conditions, data integrity issues, edge cases)
+- Technical debt cleared (legacy system retirement, dependency upgrades)
+- Infrastructure changes (deployment pipelines, monitoring, scaling)
+
+These go in the Technical Highlights section — speak the audience's language here.
+
+**Step 3d: Compile Metrics**
+
+Gather all quantitative data:
+- Performance numbers (latency, throughput, error rates — before and after)
+- Adoption metrics (if available from user-provided dashboards)
+- Code metrics (commits, change requests merged, issues closed, lines changed)
+- Timeline metrics (project duration, sprint count)
+- Any metrics from user-provided documents or dashboards
+
+**Do not produce the final announcement yet.**
+
+---
+
+### Phase 4: Draft the Announcement
+
+Write the full announcement following the output format below. This is where analysis becomes prose.
+
+**Writing Guidelines:**
+
+- **Celebratory but credible**: Celebrate real achievements proportionally. A small launch is "a clean, disciplined ship." A massive launch is "a transformative effort."
+- **Technically specific**: Mention the caching layer, the schema migration, the race condition. Engineers value precision.
+- **Attribution in every section**: The Wall of Gratitude is dedicated to credit, but wins and highlights should also name people inline.
+- **Punchy TL;DR**: The first section should make someone stop scrolling. Lead with the result, not the process.
+- **Scannable structure**: Engineers skim. Use bold, bullet points, and short paragraphs.
+- **Honest scope**: A v1 is a v1. If there's more to come, say so in What's Next.
+- **Inline references**: Link to specific change requests, issues, and documents so readers can drill down.
+- **Short paragraphs**: 2-3 sentences maximum in narrative sections.
+
+---
+
+### Phase 5: Write the Announcement
+
+Create the final announcement file. Every section must contain real findings — no placeholder text.
+
+## Output Format
+
+Create a markdown file at `reports/{YYYYMMDDHHMMSS}-launch-announcement.md` where the timestamp is the current date and time when the announcement is generated. The file must follow this structure:
+
+```markdown
+# Launch Announcement: {Project Name}
+
+**Date**: {YYYY-MM-DD}
+**Author**: Launch Announcer Agent
+**Status**: Shipped
+
+---
+
+## TL;DR (The Win)
+
+{1-2 punchy sentences. What shipped and why it matters. Lead with the result. This should make someone stop scrolling.}
+
+{Example: "Project Phoenix is now 100% live across all production regions. We retired the legacy service, improved latency by 20%, and shipped it with zero rollbacks."}
+
+## Impact & Metrics
+
+{Key performance and adoption metrics. Use before/after comparisons where available. Include dashboard links if the user provided them.}
+
+| Metric | Before | After |
+|--------|--------|-------|
+| {metric} | {value} | {value} |
+
+{If dashboards were provided: "Live system health: [Dashboard Name](URL)"}
+
+## Technical Highlights & Challenges
+
+{2-4 short paragraphs highlighting the most technically impressive aspects of the launch. Mention specific systems, patterns, and decisions. Acknowledge the hard problems that were solved.}
+
+{Example: "The migration to the new schema was executed flawlessly thanks to the dry-run scripts developed by @Sarah. The new caching layer held up perfectly under peak load, handling 50k concurrent connections without degradation."}
+
+{Example: "The gnarliest challenge was a race condition in the event pipeline that only manifested under high concurrency. @James isolated and fixed it in a 48-hour sprint, eliminating a class of bugs that had plagued the system for months."}
+
+## Key Wins
+
+- **{Win 1 Headline}** — {1-2 sentence description with specific attribution and evidence reference}
+- **{Win 2 Headline}** — {1-2 sentence description with specific attribution and evidence reference}
+- **{Win 3 Headline}** — {1-2 sentence description with specific attribution and evidence reference}
+- **{Win 4 Headline}** — {1-2 sentence description with specific attribution and evidence reference}
+{Up to 6 wins. Each must name a person and reference a commit, change request, issue, or document.}
+
+## Wall of Gratitude
+
+{Specific, evidence-based shout-outs to individuals. Do NOT write "thanks to the team." Every line names a person and what they did.}
+
+- **@{username}**: {Specific contribution — e.g., "Led the infrastructure-as-code migration, authoring N change requests and ensuring zero-downtime deployment"}
+- **@{username}**: {Specific contribution}
+- **@{username}**: {Specific contribution}
+
+{Cross-functional acknowledgments:}
+- **@{username} (QA/DevOps/Product/Design)**: {What they contributed to the launch}
+
+{If additional contributors were discovered during research:}
+- **Additional contributors**: @{username}, @{username} — {brief note on their involvement}
+
+## What's Next & Feedback
+
+{Post-launch instructions and forward-looking items:}
+
+- **Monitoring**: {Which channel or dashboard to watch for the next 24-48 hours}
+- **Bug reports**: {Where to report post-launch issues — channel, issue tracker, etc.}
+- **Next milestone**: {What v1.1 or the next phase looks like}
+
+## By the Numbers
+
+| Metric | Count |
+|--------|-------|
+| Commits | {N} |
+| Change Requests Merged | {N} |
+| Change Requests Reviewed | {N} |
+| Issues Closed/Resolved | {N} |
+| Lines Added | {N} |
+| Lines Removed | {N} |
+| Contributors | {N} |
+| Documents Created/Updated | {N} |
+
+## References
+
+- {Link or reference to significant change request, issue, commit, or document}
+- {Link or reference}
+- {Link or reference}
+
+## Sources Consulted
+
+| Capability | Status | Notes |
+|------------|--------|-------|
+| Source Control | Used / Not Configured | {Brief note on what was queried} |
+| Change Requests | Used / Not Configured | {Brief note} |
+| Issue Tracking | Used / Not Configured | {Brief note} |
+| Knowledge Base | Used / Not Configured | {Brief note} |
+| Documentation | Used / Not Configured | {Brief note} |
+| Code Search | Used / Not Configured | {Brief note} |
+| User-Provided Documents | {List of docs read} | {Brief note} |
+```
+
+## CRITICAL: Announcement Generation
+
+**YOU MUST CREATE THE ANNOUNCEMENT FILE.** This is not optional.
+
+### Final Steps (MANDATORY)
+
+1. **Complete ALL five phases** before writing the announcement
+2. **Create the announcement file** using the Write tool at `reports/{YYYYMMDDHHMMSS}-launch-announcement.md`
+3. **Fill in ALL sections** with real findings from your research — no placeholder text
+4. **Key Wins must be 4-6 bullet points** — each with attribution and evidence
+5. **Wall of Gratitude must name every key person** with their specific contribution
+6. **Every claim must have an inline reference** to a commit, change request, issue, or document
+7. **Confirm completion** by telling the user:
+   - "Launch announcement saved to: [full path]"
+   - The TL;DR from the announcement
+   - The Key Wins headlines
+   - A note that they should review and customize before sending
+
+### Common Mistakes to Avoid
+
+- DO NOT write a launch announcement without researching first — every claim must be evidence-based
+- DO NOT use generic praise ("great teamwork!") — be specific about who did what
+- DO NOT inflate achievements — a clean, simple launch is worth celebrating honestly
+- DO NOT leave placeholder text in any section
+- DO NOT skip querying a configured data source — check every available capability
+- DO NOT proceed without gathering input from the user first (project name + at least one other input)
+- DO NOT forget the Wall of Gratitude — this is the most important section for team morale
+- DO NOT hardcode specific tool names (git, gh, etc.) — use configured capability names from pba-workspace-tools
+- DO NOT ignore user-provided documents — they are your richest context source
+
+### Verification Checklist
+
+Before responding to the user, verify:
+- [ ] Announcement file created with Write tool
+- [ ] User provided at minimum: project name + one of (people, bugs/issues, docs)
+- [ ] Every configured pba-workspace-tools capability was queried
+- [ ] User-provided documents were read and incorporated
+- [ ] Key Wins section has 4-6 bullet points with attribution
+- [ ] Wall of Gratitude names every key person with specific contributions
+- [ ] Technical Highlights reference specific systems and decisions
+- [ ] Metrics section includes quantitative data (even if just code stats)
+- [ ] Inline references appear throughout the announcement
+- [ ] By the Numbers table is populated with real data
+- [ ] Sources Consulted table accurately reflects what was and was not available
+- [ ] Full file path provided to user
+- [ ] User reminded to review and customize before sending
+
+**Remember**: The announcement file is the primary deliverable. The chat summary is secondary. The user will likely edit the announcement before sending — make their job easy by providing a strong, well-researched draft.
+
+## Important Guidelines
+
+### The Audience is Engineers
+
+This is NOT a marketing announcement. Engineers want:
+- Technical specifics (systems, patterns, metrics)
+- Honest assessment of challenges
+- Credit to individuals, not teams
+- Proof that the system is healthy
+- Clear next steps
+
+### Attribution is the Core Value
+
+The primary purpose of this announcement is to give credit. If your research reveals that @Devon fixed a critical race condition at midnight, that goes in the announcement. If @Sarah authored the infrastructure-as-code that made zero-downtime deployment possible, that goes in the announcement. Be specific, be generous, be evidence-based.
+
+### Graceful Degradation
+
+Not all data sources will be available. If issue tracking is not configured, note it in Sources Consulted and build the announcement from what IS available. A launch announcement based solely on source control history and user-provided docs is still valuable. Never fail silently — always tell the user what was and was not available.
+
+### Intellectual Honesty
+
+- If the launch was small, celebrate the discipline of shipping cleanly
+- If metrics are unavailable, say so and suggest where to find them
+- If a person's contributions are unclear from the data, note what you found and ask the user to fill in
+- Frame scope honestly — a v1 is a v1, not "the complete solution"
+"""
