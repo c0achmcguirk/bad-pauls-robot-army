@@ -1,5 +1,5 @@
-description = "Read a document and produce an annotated reviewed copy with section-by-section commentary"
-prompt = """
+description = "Read a document (local file or Google Docs/Sheets/Slides URL) and produce an annotated reviewed copy with section-by-section commentary"
+prompt = '''
 First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
 
 Using the technical-reviewer skill, read a document, verify its claims, and produce an annotated reviewed copy with section-by-section commentary and an overall assessment.
@@ -11,16 +11,157 @@ Use ONLY the tools listed in the Active Configuration section of pba-workspace-t
 If a capability is not configured, inform the user and continue with available capabilities.
 
 ## Input Parsing
+
 The user invoked: /pba-technical-review {{args}}
 
-Examples:
-- `/pba-technical-review reports/proposal-20260205.md` - Review a specific document
-- `/pba-technical-review docs/architecture.md` - Review architecture documentation
-- `/pba-technical-review README.md` - Review the project README
+The argument can be either a **local file path** or a **Google Docs/Sheets/Slides URL**.
 
-If no document path is provided, inform the user that a document path is required:
-"Usage: /pba-technical-review <path-to-document>"
-Do not proceed without a document path.
+Examples:
+- `/pba-technical-review reports/proposal-20260205.md` - Review a local document
+- `/pba-technical-review docs/architecture.md` - Review local architecture documentation
+- `/pba-technical-review README.md` - Review the project README
+- `/pba-technical-review https://docs.google.com/document/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms/edit` - Download and review a Google Doc
+- `/pba-technical-review https://docs.google.com/spreadsheets/d/1abc123def/edit` - Download and review a Google Sheet
+- `/pba-technical-review https://docs.google.com/presentation/d/1xyz789ghi/edit` - Download and review Google Slides
+
+If no argument is provided, inform the user:
+```
+Usage: /pba-technical-review <path-to-document-or-google-url>
+
+Supports:
+- Local file paths: reports/proposal.md, docs/architecture.md
+- Google Docs: https://docs.google.com/document/d/{ID}/...
+- Google Sheets: https://docs.google.com/spreadsheets/d/{ID}/...
+- Google Slides: https://docs.google.com/presentation/d/{ID}/...
+```
+Do not proceed without an argument.
+
+### Classify the input
+
+- If the argument contains `docs.google.com/document/`, `docs.google.com/spreadsheets/`, or `docs.google.com/presentation/` — it is a **Google URL**. Proceed to **Phase 0**.
+- Otherwise — it is a **local file path**. Skip Phase 0 and proceed directly to Phase 1.
+
+---
+
+## Phase 0: Google Document Preprocessing
+
+This phase downloads a Google document, converts it to markdown, and saves it locally. After this phase completes, all subsequent phases operate on the local converted file identically to a local file path input.
+
+### Step 0a: URL Classification and ID Extraction
+
+Identify the document type and extract the document ID from the URL:
+
+| URL contains | Document Type | Export format |
+|---|---|---|
+| `docs.google.com/document/d/{ID}` | Google Doc | HTML |
+| `docs.google.com/spreadsheets/d/{ID}` | Google Sheet | CSV |
+| `docs.google.com/presentation/d/{ID}` | Google Slides | Plain text |
+
+The document ID is the string between `/d/` and the next `/` (or the end of the URL if there is no trailing path). It is typically a long alphanumeric string with hyphens and underscores.
+
+If the URL does not match any of these patterns, inform the user:
+"This URL does not appear to be a Google Docs, Sheets, or Slides URL. Please provide a recognized Google URL or a local file path."
+Do not proceed.
+
+### Step 0b: Download the Document
+
+Construct the export URL based on document type:
+- **Google Doc**: `https://docs.google.com/document/d/{ID}/export?format=html`
+- **Google Sheet**: `https://docs.google.com/spreadsheets/d/{ID}/export?format=csv`
+- **Google Slides**: `https://docs.google.com/presentation/d/{ID}/export?format=txt`
+
+**Attempt 1 — Public access:**
+```bash
+curl -sL -w '%{http_code}' -o /tmp/gdoc_export_raw "EXPORT_URL"
+```
+Check the HTTP status code. Also check whether the downloaded content is a Google sign-in page (contains "accounts.google.com" or "ServiceLogin") rather than actual document content. If the status is 200 and the content is not a sign-in page, the download succeeded.
+
+**Attempt 2 — Authenticated access (if Attempt 1 failed):**
+Check if `gcloud` is available and authenticated:
+```bash
+gcloud auth print-access-token 2>/dev/null
+```
+If a token is returned, retry with authentication:
+```bash
+curl -sL -H "Authorization: Bearer $(gcloud auth print-access-token)" -o /tmp/gdoc_export_raw "EXPORT_URL"
+```
+
+**If both attempts fail**, inform the user:
+```
+Unable to access the Google document. The document may be private or require authentication.
+
+Possible solutions:
+1. Make the document accessible via "Anyone with the link" sharing
+2. Ensure gcloud CLI is installed and authenticated (gcloud auth login)
+3. Download the document manually and provide a local file path instead
+```
+Do not proceed to Phase 1.
+
+### Step 0c: Extract Document Title
+
+**For Google Docs (HTML export):**
+Parse the `<title>` tag from the downloaded HTML file. Strip any trailing " - Google Docs" suffix.
+
+**For Google Sheets and Slides:**
+Fetch the document's web page to extract the title:
+```bash
+curl -sL "ORIGINAL_URL" | grep -oP '<title>\K[^<]+'
+```
+Strip any trailing " - Google Sheets" or " - Google Slides" suffix.
+
+**Fallback:** If the title cannot be extracted by any method, use `GoogleDoc_{first8chars of document ID}` as the title.
+
+### Step 0d: Convert to Markdown
+
+**Google Docs (HTML):**
+1. Check if pandoc is installed: `which pandoc`
+2. If pandoc is available:
+   ```bash
+   pandoc -f html -t markdown --wrap=none /tmp/gdoc_export_raw -o /tmp/gdoc_converted.md
+   ```
+3. If pandoc is NOT available: Read the HTML file, then produce equivalent markdown manually. Preserve headings, lists, tables, links, bold/italic formatting. Strip all HTML tags, style attributes, and Google-specific markup. Inform the user: "Note: pandoc is not installed. Performing manual HTML-to-markdown conversion. For best results, install pandoc."
+
+**Google Sheets (CSV):**
+Read the CSV file and convert it to a markdown table:
+```
+| Header1 | Header2 | Header3 |
+|---------|---------|---------|
+| value1  | value2  | value3  |
+```
+Note: The CSV export only includes the first sheet. If the spreadsheet has multiple sheets, inform the user.
+
+**Google Slides (plain text):**
+Format the text content with `## Slide N` headings for each slide boundary. Preserve bullet points as markdown lists. Add horizontal rules (`---`) between slides.
+
+### Step 0e: Save Converted File
+
+**Naming convention:** `reports/YYYYMMDD_HHMM_<SanitizedTitle>_converted.md`
+
+Generate the timestamp:
+```bash
+date +%Y%m%d_%H%M
+```
+
+**Title sanitization rules:**
+1. Remove spaces to form CamelCase (capitalize the first letter of each word, remove spaces)
+2. Remove all characters that are not alphanumeric or underscores
+3. Truncate to 50 characters if longer
+
+Examples:
+- "My Design Document" → `MyDesignDocument`
+- "Q4 2026 Revenue Projections" → `Q42026RevenueProjections`
+- Title unavailable, ID `1BxiMVs0XRA5n...` → `GoogleDoc_1BxiMVs0`
+
+**Save the file:**
+1. Create the `reports/` directory if it does not exist
+2. Write the converted markdown content to `reports/YYYYMMDD_HHMM_<SanitizedTitle>_converted.md`
+3. Inform the user: "Google document downloaded and converted to: [full path]"
+
+**Set DOCUMENT_PATH** to this new local file path. From this point forward, all phases use DOCUMENT_PATH as the document to review, identically to a local file path input.
+
+Store the original Google URL as GOOGLE_SOURCE_URL for use in the metadata header.
+
+---
 
 ## Your Task
 
@@ -115,6 +256,7 @@ Create the reviewed document as a new file **adjacent to the original** with `-r
 - `reports/proposal-20260205.md` → `reports/proposal-20260205-reviewed.md`
 - `docs/architecture.md` → `docs/architecture-reviewed.md`
 - `README.md` → `README-reviewed.md`
+- `reports/20260209_1645_MyDesignDocument_converted.md` → `reports/20260209_1645_MyDesignDocument_converted-reviewed.md`
 
 The file must begin with a metadata header:
 
@@ -122,7 +264,8 @@ The file must begin with a metadata header:
 # Technical Review: {Original Document Title or Filename}
 
 **Reviewed**: {YYYY-MM-DD}
-**Original**: {path to original document}
+**Original**: {path to original/converted document}
+**Source**: {Original Google URL — include this line ONLY if the input was a Google URL}
 **Reviewer**: Technical Reviewer Agent
 
 ---
@@ -130,7 +273,7 @@ The file must begin with a metadata header:
 
 Followed by the interleaved original text and blockquote commentary from Phase 3, and the overall assessment from Phase 4.
 
-**The original file must not be modified.**
+**The original file (or converted file) must not be modified.**
 
 ## CRITICAL: Report Generation
 
@@ -138,18 +281,19 @@ Followed by the interleaved original text and blockquote commentary from Phase 3
 
 ### Final Steps (MANDATORY)
 
-1. **Complete ALL four phases** before writing the reviewed file
+1. **Complete ALL phases** (Phase 0 if Google URL, then Phases 1-4) before writing the reviewed file
 2. **Create the reviewed file** using the Write tool at the path described above
 3. **Fill in ALL commentary** with real findings from your verification — no placeholder text
 4. **Verify the original file is untouched** — do not modify it
 5. **Confirm completion** by telling the user:
    - "Review saved to: [full path]"
+   - If input was a Google URL: "Converted document saved to: [converted file path]"
    - Brief summary of key findings
    - The verification counts and recommendation
 
 ### Common Mistakes to Avoid
 
-- DO NOT modify the original document
+- DO NOT modify the original document (or converted document)
 - DO NOT leave placeholder text in commentary
 - DO NOT skip the verification phase — actually look things up
 - DO NOT write vague commentary ("this seems wrong") — be specific
@@ -165,6 +309,9 @@ Before responding to the user, verify:
 - [ ] Overall assessment section is present with verification counts
 - [ ] File path follows the `-reviewed` naming convention
 - [ ] Full path provided to user
+- [ ] If input was a Google URL: converted markdown file created in reports/
+- [ ] If input was a Google URL: `**Source**` field present in metadata header with original URL
+- [ ] If input was a Google URL: user informed of converted file location
 
 **Remember**: The reviewed file is the primary deliverable. The chat summary is secondary.
 
@@ -177,4 +324,4 @@ Before responding to the user, verify:
 - **Direct and professional tone** — Be frank without being hostile. The goal is to help the author, not to demonstrate superiority
 - **Intellectual honesty** — If you cannot verify a claim, say so. If you are uncertain about a correction, express that uncertainty. Never present speculation as fact
 - **Never hallucinate sources** — If you cannot find a source, do not invent one. Say what you checked and that you could not confirm the claim
-"""
+'''
