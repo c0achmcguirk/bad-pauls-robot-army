@@ -439,6 +439,14 @@ Followed by the interleaved original text and blockquote commentary from Phase 3
 
 **The original file (or converted file) must not be modified.**
 
+## Post-Processing
+
+Before writing the final markdown file, activate the 'pba-linkify' skill:
+
+1. **Linkify**: Apply link patterns from pba-workspace-tools and wrap bare URLs in markdown link syntax
+2. **Write the file**: Write the linkified content using the Write tool
+3. **Format**: If `mdformat` is installed (`which mdformat`), run `mdformat --wrap 80 <filepath>` on the written file. If not installed, skip formatting silently.
+
 ## CRITICAL: Report Generation
 
 **YOU MUST CREATE THE REVIEWED FILE.** This is not optional.

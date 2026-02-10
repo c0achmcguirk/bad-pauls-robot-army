@@ -105,6 +105,14 @@ Brief overview of code quality state and key findings
 
 Remember: DO NOT make any changes. Only analyze and report.
 
+## Post-Processing
+
+Before writing the final markdown file, activate the 'pba-linkify' skill:
+
+1. **Linkify**: Apply link patterns from pba-workspace-tools and wrap bare URLs in markdown link syntax
+2. **Write the file**: Write the linkified content using the Write tool
+3. **Format**: If `mdformat` is installed (`which mdformat`), run `mdformat --wrap 80 <filepath>` on the written file. If not installed, skip formatting silently.
+
 ## CRITICAL: Report Generation
 
 **YOU MUST CREATE THE REPORT FILE.** This is not optional.

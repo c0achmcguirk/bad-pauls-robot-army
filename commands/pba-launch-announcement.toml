@@ -296,6 +296,14 @@ Create a markdown file at `reports/{YYYYMMDDHHMMSS}-launch-announcement.md` wher
 | User-Provided Documents | {List of docs read} | {Brief note} |
 ```
 
+## Post-Processing
+
+Before writing the final markdown file, activate the 'pba-linkify' skill:
+
+1. **Linkify**: Apply link patterns from pba-workspace-tools and wrap bare URLs in markdown link syntax
+2. **Write the file**: Write the linkified content using the Write tool
+3. **Format**: If `mdformat` is installed (`which mdformat`), run `mdformat --wrap 80 <filepath>` on the written file. If not installed, skip formatting silently.
+
 ## CRITICAL: Announcement Generation
 
 **YOU MUST CREATE THE ANNOUNCEMENT FILE.** This is not optional.

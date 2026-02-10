@@ -1,0 +1,89 @@
+description = "Linkify shorthand references and bare URLs in markdown files, and optionally format to 80-character width"
+prompt = """
+Activate the 'pba-linkify' skill and the 'pba-workspace-tools' skill.
+
+## Input Parsing
+
+The user invoked: /pba-linkify {{args}}
+
+The argument can be one or more **file paths** or **directory paths**.
+
+Examples:
+- `/pba-linkify reports/my-report.md` — Process a single markdown file
+- `/pba-linkify reports/` — Process all .md files in the reports directory
+- `/pba-linkify prds/ reports/` — Process all .md files in multiple directories
+- `/pba-linkify *.md` — Process all .md files matching a glob pattern
+
+If no argument is provided, inform the user:
+```
+Usage: /pba-linkify <file-or-directory> [file-or-directory...]
+
+Processes markdown files by:
+1. Linkifying shorthand references (b/123, go/foo-bar, etc.) using patterns
+   configured in pba-workspace-tools
+2. Wrapping bare URLs in markdown link syntax
+3. Formatting to 80-character width (if mdformat is installed)
+
+Examples:
+  /pba-linkify reports/my-report.md
+  /pba-linkify reports/
+  /pba-linkify prds/ reports/
+```
+Do not proceed without an argument.
+
+## Your Task
+
+### Step 1: Resolve File List
+
+For each argument:
+- If it is a **file path**: Add it to the processing list (verify it exists and is a .md file)
+- If it is a **directory path**: Find all `.md` files in the directory (non-recursive) and add them to the processing list
+- If a path does not exist, warn the user and skip it
+
+If the processing list is empty after resolving all arguments, inform the user that no markdown files were found.
+
+### Step 2: Read Link Patterns
+
+Check the pba-workspace-tools skill for a **Link Patterns** table under
+**Active Configuration**.
+
+- If present, extract the patterns for use in Step 3
+- If not present, skip custom linkification (bare URL linkification still applies)
+
+### Step 3: Process Each File
+
+For each file in the processing list:
+
+1. **Read** the file content
+2. **Apply custom link patterns** (if configured) — following the rules in the pba-linkify skill
+3. **Apply bare URL linkification** — wrap `http://` and `https://` URLs not already in markdown link syntax
+4. **Write** the transformed content back to the same file path
+5. **Format** — check if mdformat is installed (`which mdformat`). If installed, run `mdformat --wrap 80 <filepath>`. If not installed, skip silently.
+6. **Report**: "Processed: <filepath>"
+
+### Step 4: Summary
+
+After processing all files, report:
+- Total files processed
+- Whether mdformat was available for formatting
+- If link patterns were configured or not
+
+## Important Rules
+
+Follow ALL rules defined in the pba-linkify skill:
+- Never linkify inside code blocks or inline code
+- Never double-linkify existing markdown links
+- Never linkify inside existing `[label](url)` syntax
+- Never change document content beyond adding link markup
+- Preserve original text as the link label
+- Apply custom patterns first, then bare URL linkification
+
+## Verification Checklist
+
+Before responding to the user, verify:
+- [ ] All specified files/directories were resolved
+- [ ] Each file was read, transformed, and written back
+- [ ] No content was changed beyond link markup
+- [ ] mdformat was run if available (or skipped silently)
+- [ ] Summary was provided to the user
+"""

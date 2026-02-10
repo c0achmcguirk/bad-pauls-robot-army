@@ -71,6 +71,14 @@ Create a markdown file at `/reports/explanation-{topic}-{timestamp}.md`
 **Intermediate**: Focus on patterns and best practices, compare approaches
 **Advanced**: Dive into implementation details, discuss performance and trade-offs
 
+## Post-Processing
+
+Before writing the final markdown file, activate the 'pba-linkify' skill:
+
+1. **Linkify**: Apply link patterns from pba-workspace-tools and wrap bare URLs in markdown link syntax
+2. **Write the file**: Write the linkified content using the Write tool
+3. **Format**: If `mdformat` is installed (`which mdformat`), run `mdformat --wrap 80 <filepath>` on the written file. If not installed, skip formatting silently.
+
 ## Important Guidelines
 
 1. Never assume knowledge - Check understanding first

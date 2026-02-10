@@ -27,7 +27,7 @@ After installation, restart Gemini CLI to access your new Robot Army.
 
 ## What's Inside
 
-This extension includes **42 commands** and **29 specialized skills** organized
+This extension includes **43 commands** and **30 specialized skills** organized
 into:
 
 - **Review & Analysis Commands**: Accessibility, API, architecture, database,
@@ -74,6 +74,7 @@ file: `skills/pba-workspace-tools/SKILL.md`.
 | Change Requests | GitHub PRs                  | Gerrit CLs, Phabricator          |
 | Knowledge Base  | Not configured              | Internal search tools            |
 | Code Search     | Not configured              | Internal code search             |
+| Link Patterns   | Not configured              | `b/123`, `go/foo`, `jira/84`     |
 
 ### Graceful Degradation
 

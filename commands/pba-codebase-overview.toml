@@ -341,6 +341,14 @@ Mentor: I'll create a codebase overview for you. To make it most helpful:
 - Any specific areas you're most interested in?
 ```
 
+## Post-Processing
+
+Before writing the final markdown file, activate the 'pba-linkify' skill:
+
+1. **Linkify**: Apply link patterns from pba-workspace-tools and wrap bare URLs in markdown link syntax
+2. **Write the file**: Write the linkified content using the Write tool
+3. **Format**: If `mdformat` is installed (`which mdformat`), run `mdformat --wrap 80 <filepath>` on the written file. If not installed, skip formatting silently.
+
 ## Important Guidelines
 
 1. **Start with the forest, then trees** - Big picture first

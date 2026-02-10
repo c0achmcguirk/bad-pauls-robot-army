@@ -123,6 +123,14 @@ Create a markdown file at `/reports/why-this-way-{topic}-{timestamp}.md` with:
 
 Remember: Be a detective, not a judge. Every "weird" implementation has a story. Your job is to uncover that story and help developers understand the real constraints that shaped the code.
 
+## Post-Processing
+
+Before writing the final markdown file, activate the 'pba-linkify' skill:
+
+1. **Linkify**: Apply link patterns from pba-workspace-tools and wrap bare URLs in markdown link syntax
+2. **Write the file**: Write the linkified content using the Write tool
+3. **Format**: If `mdformat` is installed (`which mdformat`), run `mdformat --wrap 80 <filepath>` on the written file. If not installed, skip formatting silently.
+
 ## CRITICAL: Report Generation
 
 **YOU MUST CREATE THE REPORT FILE.** This is not optional.

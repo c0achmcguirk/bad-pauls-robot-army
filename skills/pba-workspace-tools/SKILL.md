@@ -169,3 +169,20 @@ When searching internal knowledge, use these tools based on query type:
 | search | `search_docs` (MCP) | Search internal documentation |
 | fetch | `render_doc` (MCP) | Render a specific doc |
 | create | `create_doc` (MCP) | Create new documentation |
+
+### Link Patterns (TEMPLATE)
+
+These are TEMPLATES ONLY. They are NOT active.
+To use, COPY this section to the Active Configuration area above and customize
+with your organization's URL patterns.
+
+Configure shorthand link patterns that appear in documents. Each row maps a
+prefix pattern to a full URL. Use `{id}` as the placeholder for the variable
+part that follows the prefix slash.
+
+| Pattern | URL Template | Example |
+|---------|-------------|---------|
+| `b/{id}` | `http://bugsystem.corp.somesite.com/bugs/{id}` | b/123 -> [b/123](http://bugsystem.corp.somesite.com/bugs/123) |
+| `go/{id}` | `http://go/{id}` | go/foo-bar -> [go/foo-bar](http://go/foo-bar) |
+| `jira/{id}` | `https://jira.onsitehost.corp.com/{id}` | jira/84 -> [jira/84](https://jira.onsitehost.corp.com/84) |
+| `cl/{id}` | `https://critique.corp.somesite.com/{id}` | cl/456789 -> [cl/456789](https://critique.corp.somesite.com/456789) |
