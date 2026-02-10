@@ -187,16 +187,46 @@ Systematically verify the claims cataloged in Phase 1. Consult pba-workspace-too
 
 - **Web search** for external facts, statistics, and references
 - **Internal search tools and knowledge bases** (if configured) for organizational context, policies, and internal references
-- **Codebase exploration** for technical claims about code, architecture, or system behavior
 - **Source control history** for historical claims about when changes were made, who made them, or why
 - **Issue tracking** for referenced issues, bugs, or feature requests
 - **Cross-reference between sections** for internal consistency
+- **DEEP codebase verification** for technical claims about code, architecture, or system behavior — follow the full Deep Code Verification Sub-Protocol below
+
+#### Deep Codebase Verification Sub-Protocol
+
+For EVERY technical claim about code, apply the Deep Code Verification Protocol defined in the pba-technical-reviewer skill. This is not optional.
+
+**Step 1: Claim Decomposition**
+Break compound technical claims into atomic assertions. A single sentence like "UserService fetches from UserRepository and caches in RedisCache" contains at least 7 individually verifiable assertions (existence of each component, imports between them, method calls, execution order). List them out before verifying.
+
+**Step 2: Red Flag Detection**
+Scan for phrases requiring mandatory Level 3+ verification: "calls", "invokes", "triggers", "passes to", "returns", "directly", "simply", "handles", "integrates with", "uses", "will use", "will call". Flag every instance. Existence-only verification of these claims is FAILED verification.
+
+**Step 3: Progressive Verification (all five levels)**
+For each atomic assertion, verify through all applicable levels:
+
+- **Level 1 — Existence**: Use Glob to find files. Use Read to confirm classes/modules exist. This is the STARTING POINT, not the conclusion.
+- **Level 2 — Relationships**: Use Grep to find import statements and references between components. Use Read to inspect dependency injection, constructor parameters, and configuration. Confirm that ComponentA actually references ComponentB as claimed.
+- **Level 3 — Interfaces**: Use Read to examine class/interface definitions. Verify that claimed methods exist with the correct signatures (parameter names, types, return types). If the document says "calls FetBaz(userId)", confirm FetBaz exists and accepts a userId parameter.
+- **Level 4 — Behavior**: Read implementation code and trace call chains across files. Verify that the described flow matches the actual code. Check for intermediary layers, proxies, or adapters the document omits. Check for preconditions and postconditions not mentioned.
+- **Level 5 — Completeness**: Read surrounding context and check for additional dependencies. Identify interactions, side effects, or failure modes the document does not mention but that are present in the code.
+
+**Step 4: Evidence Collection**
+For each verification level passed, record:
+- The specific file path and line number(s) where evidence was found
+- The exact code snippet or reference that confirms or contradicts the claim
+- The highest verification level achieved (1-5)
+
+**Step 5: Shallow Verification Rejection**
+If verification stops at Level 1 (existence only) for a claim that contains red flag patterns, the claim is NOT verified. Mark it explicitly:
+
+> **Reviewer's remarks:** This claim uses the word "calls", which requires Level 3+ verification. I could only confirm that the file exists (Level 1). I attempted to verify the actual method call but [state what was checked and why verification stopped]. This claim remains UNVERIFIED at the required depth.
 
 For each claim, record:
-- Whether it is **verified** (with source), **incorrect** (with correction and source), or **unverifiable** (with honest explanation)
+- Whether it is **verified** (with verification level achieved and source), **incorrect** (with correction and source), or **unverifiable** (with honest explanation of what level was attempted and why deeper verification was not possible)
 - Any additional context that strengthens or weakens the claim
 
-Do not skip claims because they seem obviously true. Verify them anyway.
+Do not skip claims because they seem obviously true. Verify them anyway through appropriate levels.
 
 ---
 
@@ -239,9 +269,11 @@ After the section-by-section review, add a final section with:
 - [Specific area with actionable suggestion]
 
 ### Verification Summary
-- **Claims verified**: N
+- **Claims verified (Deep — Level 3+)**: N — Verified with interface, behavioral, or completeness checks
+- **Claims verified (Shallow — Level 1-2 only)**: N — Existence or relationship checks only (insufficient for interaction claims)
 - **Claims found incorrect**: N
 - **Claims unverifiable**: N
+- **Verification depth score**: X% — Percentage of code interaction claims verified to Level 3+. Target: 70%+ for code-heavy documents
 
 ### Recommendation
 [One of: Ready as-is | Minor corrections needed | Needs revision | Significant rework required]
@@ -296,6 +328,7 @@ Followed by the interleaved original text and blockquote commentary from Phase 3
 - DO NOT modify the original document (or converted document)
 - DO NOT leave placeholder text in commentary
 - DO NOT skip the verification phase — actually look things up
+- DO NOT treat "file exists" as verification for claims about code interactions — verify imports, method signatures, and call sites
 - DO NOT write vague commentary ("this seems wrong") — be specific
 - DO NOT forget the overall assessment section
 
@@ -306,7 +339,9 @@ Before responding to the user, verify:
 - [ ] Original file is unchanged
 - [ ] All sections have reviewer commentary
 - [ ] Claims were actually verified (web search, codebase checks, etc.)
-- [ ] Overall assessment section is present with verification counts
+- [ ] Code interaction claims verified to Level 3+ — NO "file exists = verified" shortcuts
+- [ ] Red flag patterns ("calls", "uses", "integrates with", etc.) verified to Level 3+
+- [ ] Overall assessment section is present with verification counts and depth score
 - [ ] File path follows the `-reviewed` naming convention
 - [ ] Full path provided to user
 - [ ] If input was a Google URL: converted markdown file created in reports/
