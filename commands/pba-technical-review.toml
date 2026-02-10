@@ -1,4 +1,4 @@
-description = "Read a document (local file or Google Docs/Sheets/Slides URL) and produce an annotated reviewed copy with section-by-section commentary"
+description = "Read a document (local file or Google Docs/Sheets/Slides URL) and produce a deeply verified, annotated review with 5-level code verification, claim-by-claim fact-checking, and verification trails"
 prompt = '''
 First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
 

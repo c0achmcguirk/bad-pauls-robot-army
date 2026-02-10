@@ -24,7 +24,7 @@ Inspired by Dave Griffith's [bad-daves-robot-army](https://github.com/dgriffith/
 - `/pba-quality-review` - Quality assurance practices
 - `/pba-refactor-review` - Code quality and refactoring plan
 - `/pba-security-review` - Security vulnerability analysis
-- `/pba-technical-review` - Document review with section-by-section commentary
+- `/pba-technical-review` - Deep-verification document review with 5-level code claim tracing and verification trails
 - `/pba-test-review` - Test coverage and testing strategy
 
 ### Code Intelligence Commands
@@ -88,7 +88,7 @@ All commands leverage specialized skills that can also be activated directly:
 | pba-quality-assurance-expert | Testing strategies, quality metrics |
 | pba-refactorer | Code restructuring, design improvement |
 | pba-security-master | Security vulnerabilities, secure coding |
-| pba-technical-reviewer | Document and proposal review |
+| pba-technical-reviewer | Deep-verification document review with 5-level code verification protocol |
 | pba-technical-scoper | Technical proposal scoping |
 | pba-test-automator | Testing strategies, coverage |
 | pba-toolsmith | Developer experience, tooling |
