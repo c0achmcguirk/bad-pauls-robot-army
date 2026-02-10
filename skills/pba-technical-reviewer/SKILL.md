@@ -213,6 +213,75 @@ requiring Level 3+. This is an unacceptable verification.
 > **Result**: Claim is accurate but incomplete. The ValidateUser() precondition
 > call is omitted from the description.
 
+**PARTIAL (trail documented — DO this when you hit a dead end):**
+> **Claim**: "The FooController fetches data from FooService, which retrieves
+> it from the Foo database table"
+>
+> **Verification trail:**
+> 1. `FooController.getFoo()` in `src/controllers/FooController.ts`, line 225
+>    — calls `fooService.fetchData(id)`
+> 2. `FooService.fetchData()` in `src/services/FooService.ts`, line 147
+>    — calls `fooClient.getResults(id)`
+> 3. `FooClient.getResults()` in `src/clients/FooClient.java`, line 152
+>    — makes HTTP call to `/api/foo/{id}`, server handler is `FooActions`
+> 4. `FooActions.handleGet()` in `src/server/foo/FooActions.java`, line 814
+>    — delegates to `this.processRequest(request)` on line 820
+> 5. **Trail goes cold here** — `processRequest()` is not defined in
+>    `FooActions.java` and may be inherited. I cannot find where this method
+>    reads from a database
+>
+> **Tips to continue verification:**
+> - Check the parent class of `FooActions` — look for `extends` on line 12
+>   of `FooActions.java`
+> - Search for `Foo.*Repository` or `Foo.*Dao` in `src/server/foo/` and
+>   `src/data/`
+> - Search for `Foo.*Entity` or `Foo.*Model` in `src/server/models/`
+> - Search for SQL or ORM references containing `foo` table name
+>
+> **Result**: Verified to Level 4 (client → service → server handler) but
+> could not confirm the database access claim. The trail above shows where
+> a human reviewer should pick up.
+
+### Verification Trail
+
+When verification cannot reach the required depth, you MUST leave a detailed
+breadcrumb trail showing exactly how far you got. Never just say "I couldn't
+verify this" — show your work.
+
+**Verification trail format:**
+
+1. **Numbered steps**: Each hop in the code trace gets a numbered entry with:
+   - The method or function name
+   - The exact file path
+   - The exact line number
+   - What the code does at that step (calls, delegates to, returns, etc.)
+
+2. **Dead-end marker**: The step where the trail goes cold gets a bold
+   **"Trail goes cold here"** prefix with an explanation of why verification
+   stopped (method not found, code is generated, external dependency, etc.)
+
+3. **Continuation tips**: A **"Tips to continue verification"** block with
+   concrete, actionable suggestions:
+   - Specific grep/search patterns to try (e.g., `Foo.*Repository`)
+   - Specific directories to look in
+   - Naming conventions that might help locate the missing code
+   - Parent classes or interfaces to check
+   - Configuration files that might wire components together
+
+**When to leave a trail:**
+- Verification stops before reaching the required level for a red flag claim
+- A call chain crosses into generated code, external libraries, or code you
+  cannot access
+- A method is inherited and you cannot locate the parent class definition
+- The code uses dynamic dispatch, reflection, or configuration-driven wiring
+  that obscures the call path
+- You run out of leads but have partially traced the path
+
+**The trail is the deliverable for incomplete verifications.** A reviewer who
+says "I couldn't verify this" is unhelpful. A reviewer who shows exactly where
+they traced to and where the trail went cold gives the document author something
+actionable to work with.
+
 ## Output Format
 
 Produce an annotated copy of the original document with:

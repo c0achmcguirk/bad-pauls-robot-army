@@ -228,6 +228,34 @@ For each claim, record:
 
 Do not skip claims because they seem obviously true. Verify them anyway through appropriate levels.
 
+**Step 6: Verification Trail for Incomplete Verifications**
+When you cannot verify a claim to the required depth, you MUST leave a detailed **verification trail** — a numbered breadcrumb path showing exactly how far you traced through the code. Never just say "I couldn't verify this." Show your work.
+
+The trail must include:
+1. **Numbered steps** — each hop in the code trace with the method/function name, exact file path, and line number
+2. **Dead-end marker** — the step where the trail goes cold, prefixed with **"Trail goes cold here"** and an explanation of why (method not found, inherited from unknown parent, generated code, external dependency, etc.)
+3. **"Tips to continue verification"** block — concrete suggestions for a human reviewer to pick up where you left off:
+   - Specific search patterns to try (e.g., `Foo.*Repository`, `Foo.*Dao`)
+   - Directories to look in
+   - Parent classes or interfaces to check
+   - Configuration files that might wire components together
+   - Naming conventions used in the codebase
+
+Example:
+> **Reviewer's remarks:** I traced this claim but could not verify the database layer:
+>
+> **Verification trail:**
+> 1. `FooController.getFoo()` in `src/controllers/FooController.ts`, line 225 — calls `fooService.fetchData(id)`
+> 2. `FooService.fetchData()` in `src/services/FooService.ts`, line 147 — calls `fooClient.getResults(id)`
+> 3. `FooClient.getResults()` in `src/clients/FooClient.java`, line 152 — HTTP call to `/api/foo/{id}`
+> 4. `FooActions.handleGet()` in `src/server/foo/FooActions.java`, line 814 — delegates to `this.processRequest()`
+> 5. **Trail goes cold here** — `processRequest()` is not defined in FooActions.java and may be inherited
+>
+> **Tips to continue verification:**
+> - Check the parent class of FooActions — look for `extends` on line 12 of FooActions.java
+> - Search for `Foo.*Repository` or `Foo.*Dao` in `src/server/foo/` and `src/data/`
+> - Search for SQL or ORM references containing the `foo` table name
+
 ---
 
 ### Phase 3: Section-by-Section Review
@@ -329,6 +357,7 @@ Followed by the interleaved original text and blockquote commentary from Phase 3
 - DO NOT leave placeholder text in commentary
 - DO NOT skip the verification phase — actually look things up
 - DO NOT treat "file exists" as verification for claims about code interactions — verify imports, method signatures, and call sites
+- DO NOT say "I couldn't verify this" without leaving a verification trail showing exactly where you traced to and where you got stuck
 - DO NOT write vague commentary ("this seems wrong") — be specific
 - DO NOT forget the overall assessment section
 
@@ -341,6 +370,7 @@ Before responding to the user, verify:
 - [ ] Claims were actually verified (web search, codebase checks, etc.)
 - [ ] Code interaction claims verified to Level 3+ — NO "file exists = verified" shortcuts
 - [ ] Red flag patterns ("calls", "uses", "integrates with", etc.) verified to Level 3+
+- [ ] Incomplete verifications include verification trails with numbered code pointers and continuation tips
 - [ ] Overall assessment section is present with verification counts and depth score
 - [ ] File path follows the `-reviewed` naming convention
 - [ ] Full path provided to user
