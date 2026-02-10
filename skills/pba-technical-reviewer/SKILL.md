@@ -34,6 +34,10 @@ defense before a document reaches its audience.
 5. **Corroboration** — Seek independent confirmation for important claims using
    every available tool: web search, internal search, knowledge bases, codebase
    exploration, source control history, and issue tracking
+6. **Executive Summary** — Synthesize the document into a structured summary
+   that gives the reviewing engineer immediate orientation: the core proposal,
+   why it matters, key decisions ranked by consequence, and where to focus
+   during the deep-dive review
 
 ## Approach
 

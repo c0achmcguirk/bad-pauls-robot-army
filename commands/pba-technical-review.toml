@@ -309,6 +309,104 @@ After the section-by-section review, add a final section with:
 [Brief justification for the recommendation]
 ```
 
+---
+
+### Phase 5: Executive Summary
+
+After completing all previous phases, generate a **Summary of Review** that gives the human reviewer immediate orientation before they read the detailed commentary. This summary is placed at the top of the output document (after the metadata header) but is generated LAST because it requires the full context of the review.
+
+**Every line** of the summary must be blockquoted with `>` so it is visually distinct from the original document content. Use `>` on blank lines between sections too so the blockquote is unbroken.
+
+The summary must reflect your actual findings from Phases 1-4. Do not write generic boilerplate. Every sentence should be specific to this document.
+
+**Format:**
+
+```markdown
+> # Summary of Review
+>
+> ## Overall Objective
+>
+> <Single sentence: what is this proposal trying to achieve?>
+>
+> ## Why This Is Needed
+>
+> <The problems being solved. For each problem:>
+> <- What the problem is>
+> <- Why it matters (impact in dollars, time, resources, risk, etc.)>
+> <- What happens if we don't fix it>
+>
+> ## What's Being Proposed
+>
+> <A brief, accessible description of the solution. Use an analogy if it helps
+> clarify the core mechanism. Stay at the right altitude — specific enough to
+> be useful, abstract enough to scan quickly.>
+>
+> <Examples of what FITS here:>
+> <"Add two new RPCs to FooService, addRequirements and removeRequirements">
+> <"Switch from PostgreSQL to Redis for session storage">
+> <"Rip out the Impression logic from the BarService interface">
+>
+> <Examples of what DOES NOT fit here:>
+> <Listing exact code changes to specific functions>
+> <Enumerating all 14 files to delete by name>
+>
+> **In scope:**
+> <- Bulleted list of specific components, services, or areas that WILL be modified or created>
+>
+> **Out of scope:**
+> <- Bulleted list of related areas the document explicitly defers or excludes>
+>
+> ## Key Decisions
+>
+> <Identify 3-5 of the most consequential decisions in the document. Rank them
+> from MOST controversial/consequential to LEAST. For each decision:>
+>
+> **KD1: <Decision title>** *(Most controversial/consequential)*
+>
+> <What the decision is and why it was made>
+> - Implication: <A significant downstream effect of this choice>
+> - Implication: <Another significant downstream effect>
+> - Caution: <Why this might be contested, risky, or deserves pushback>
+>
+> **KD2: <Decision title>**
+>
+> <...same structure...>
+>
+> ## Strongest Ideas
+>
+> <What are the best ideas in this proposal? What should the team be most
+> excited about? Be specific about why these ideas are strong — reference
+> concrete aspects of the design, not vague praise.>
+>
+> ## Review Focus Areas
+>
+> <Prioritized areas the reviewing engineer should focus on during their
+> deep-dive read, each with a critical question to investigate:>
+>
+> - **<Focus area>** (e.g., "Integration between Service A and Service B")
+>   - *Question:* "<A specific, pointed question the reviewer should try to answer>"
+> - **<Focus area>** (e.g., "Scalability of the proposed indexing strategy")
+>   - *Question:* "<A specific question>"
+> - **<Focus area>**
+>   - *Question:* "<A specific question>"
+>
+> ## Outstanding Questions
+>
+> <3-5 questions raised by the document but left unanswered, ranked by urgency:>
+>
+> 1. **Must be answered before approval:** <Question> — <Why this is blocking>
+> 2. **Should be answered, can be deferred:** <Question> — <Why it matters but can wait>
+> 3. **Likely covered elsewhere:** <Question> — <Where to look for the answer>
+```
+
+**Guidelines for the executive summary:**
+
+- **Be opinionated.** The summary should save the reviewer time by telling them where to focus, not just restating the document
+- **Be concrete.** "The migration to Redis" is useful. "The proposed changes" is not
+- **Rank decisions honestly.** If a decision is risky, say so. If it is a slam dunk, say that too
+- **Strongest ideas section matters.** The reviewer needs to know what to protect during the review, not just what to attack. Identify what is genuinely good and why
+- **Outstanding questions should be actionable.** Each should make clear who needs to answer it and what blocks on the answer
+
 ## Output Format
 
 Create the reviewed document as a new file **adjacent to the original** with `-reviewed` appended to the basename:
@@ -318,7 +416,7 @@ Create the reviewed document as a new file **adjacent to the original** with `-r
 - `README.md` → `README-reviewed.md`
 - `reports/20260209_1645_MyDesignDocument_converted.md` → `reports/20260209_1645_MyDesignDocument_converted-reviewed.md`
 
-The file must begin with a metadata header:
+The file must begin with a metadata header, followed by the executive summary from Phase 5, then the detailed review:
 
 ```markdown
 # Technical Review: {Original Document Title or Filename}
@@ -327,6 +425,12 @@ The file must begin with a metadata header:
 **Original**: {path to original/converted document}
 **Source**: {Original Google URL — include this line ONLY if the input was a Google URL}
 **Reviewer**: Technical Reviewer Agent
+
+---
+
+> # Summary of Review
+>
+> [Full blockquoted executive summary from Phase 5]
 
 ---
 ```
@@ -341,7 +445,7 @@ Followed by the interleaved original text and blockquote commentary from Phase 3
 
 ### Final Steps (MANDATORY)
 
-1. **Complete ALL phases** (Phase 0 if Google URL, then Phases 1-4) before writing the reviewed file
+1. **Complete ALL phases** (Phase 0 if Google URL, then Phases 1-5) before writing the reviewed file
 2. **Create the reviewed file** using the Write tool at the path described above
 3. **Fill in ALL commentary** with real findings from your verification — no placeholder text
 4. **Verify the original file is untouched** — do not modify it
@@ -366,6 +470,11 @@ Followed by the interleaved original text and blockquote commentary from Phase 3
 Before responding to the user, verify:
 - [ ] Reviewed file created with Write tool
 - [ ] Original file is unchanged
+- [ ] Executive summary is present after metadata header, before section-by-section review
+- [ ] Executive summary uses `>` blockquote formatting on every line (including blank lines between sections)
+- [ ] Key decisions in summary are ranked by consequence/controversy
+- [ ] Outstanding questions in summary are ranked by urgency tier
+- [ ] Summary reflects actual review findings — no generic boilerplate
 - [ ] All sections have reviewer commentary
 - [ ] Claims were actually verified (web search, codebase checks, etc.)
 - [ ] Code interaction claims verified to Level 3+ — NO "file exists = verified" shortcuts
