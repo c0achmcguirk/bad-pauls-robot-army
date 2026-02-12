@@ -27,7 +27,7 @@ After installation, restart Gemini CLI to access your new Robot Army.
 
 ## What's Inside
 
-This extension includes **43 commands** and **30 specialized skills** organized
+This extension includes **45 commands** and **32 specialized skills** organized
 into:
 
 - **Review & Analysis Commands**: Accessibility, API, architecture, database,
@@ -38,8 +38,8 @@ into:
   implementation planning, and scoping documents.
 - **Operations Commands**: Build, deployment, cloud, configuration, and tooling
   reviews.
-- **29 Specialized Skills**: Including architect, mentor, debugger,
-  security-master, and more.
+- **32 Specialized Skills**: Including architect, mentor, debugger,
+  security-master, kudos-writer, launch-announcer, and more.
 
 Run `/pba-bad-pauls-robot-army` in Gemini CLI for the full command reference.
 

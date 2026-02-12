@@ -7,7 +7,7 @@ First, activate the 'pba-workspace-tools' skill to ensure you have the correct t
 Your elite development force - a comprehensive suite of specialized AI skills and commands for Gemini CLI.
 Inspired by Dave Griffith's [bad-daves-robot-army](https://github.com/dgriffith/bad-daves-robot-army) for Claude Code.
 
-## Available Commands (42 commands)
+## Available Commands (45 commands)
 
 ### Review & Analysis Commands
 - `/pba-accessibility-review` - WCAG compliance and a11y analysis
@@ -43,6 +43,9 @@ Inspired by Dave Griffith's [bad-daves-robot-army](https://github.com/dgriffith/
 - `/pba-decompose-issue` - Break down large issues into sub-tasks
 - `/pba-implement-issue` - Automatically implement an issue end-to-end
 - `/pba-implementation-plan-from-prd` - Create implementation plan from PRD
+- `/pba-kudos` - Research contributions and produce evidence-based kudos
+- `/pba-launch-announcement` - Research a project launch and produce a celebratory announcement
+- `/pba-linkify` - Apply link patterns and URL wrapping to markdown files
 - `/pba-plan` - Enter plan mode to architect a solution before coding
 - `/pba-process-implementation-plan-feedback` - Process team feedback on implementation plans
 - `/pba-process-prd-feedback` - Process stakeholder feedback on PRDs
@@ -58,7 +61,7 @@ Inspired by Dave Griffith's [bad-daves-robot-army](https://github.com/dgriffith/
 - `/pba-deployment-review` - Deployment process review
 - `/pba-tooling-review` - Developer tooling analysis
 
-## Available Skills (29 skills)
+## Available Skills (32 skills)
 
 All commands leverage specialized skills that can also be activated directly:
 
@@ -81,6 +84,9 @@ All commands leverage specialized skills that can also be activated directly:
 | pba-exception-handling-master | Error handling, resilience |
 | pba-impact-reporter | Cross-functional activity reports |
 | pba-internationalization-specialist | i18n, localization |
+| pba-kudos-writer | Evidence-based peer recognition |
+| pba-launch-announcer | Celebratory launch announcements |
+| pba-linkify | Markdown link patterns and URL wrapping |
 | pba-logging-master | Observability, logging strategies |
 | pba-mentor | Teaching, codebase explanation |
 | pba-performance-optimizer | Bottleneck analysis, optimization |

@@ -36,6 +36,7 @@ This repository is a Gemini CLI extension providing:
 │   ├── pba-exception-handling-master/
 │   ├── pba-impact-reporter/
 │   ├── pba-internationalization-specialist/
+│   ├── pba-kudos-writer/
 │   ├── pba-launch-announcer/
 │   ├── pba-linkify/
 │   ├── pba-logging-master/
