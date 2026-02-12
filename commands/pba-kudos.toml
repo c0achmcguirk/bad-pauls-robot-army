@@ -1,0 +1,299 @@
+description = "Research someone's contributions across all configured tools and produce an evidence-based kudos message with impact callouts and inline links"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Using the pba-kudos-writer skill, research a person's contributions across all configured data sources, verify attribution, and produce a genuine, evidence-backed kudos message.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the pba-workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of pba-workspace-tools.
+If a capability is not configured, note it in the Sources Consulted section of the report and continue with available capabilities.
+Do NOT hardcode tool names — always use the capability names from pba-workspace-tools (e.g., `log`, `search_issues`, `list`, `view`, `diff`). This ensures the command works regardless of whether the organization uses Git or Mercurial, GitHub or Jira, PRs or Gerrit CLs.
+
+## Input Parsing
+
+The user invoked: /pba-kudos {{args}}
+
+Parse `{{args}}` to extract whatever the user provided. The input may contain some or all of:
+
+- **Username/LDAP**: A string ending in `@` (e.g., `foobar@`) or a plain username
+- **Specific reference**: Preceded by "for" — a bug (`b/123`), code submission (`cl/456`), PR (`PR #789`), issue (`#42`), doc path, or project name
+- **Time period**: "last N weeks", "last N days", "since YYYY-MM-DD"
+- **Additional info**: Free-text context the user wants incorporated into the kudos
+
+### Parsing Modes
+
+**Mode 1: No Arguments**
+- `/pba-kudos`
+- Nothing is known. Ask for the username/LDAP first, then ask optional clarifying questions.
+
+**Mode 2: Username Only**
+- `/pba-kudos foobar@`
+- Username is known. Ask optional clarifying questions:
+  1. "Is there a specific bug, code submission, doc, or project you'd like me to focus on? (e.g., b/123, cl/456, a project name — or I can search broadly)"
+  2. "What time period should I look at? (default: last 4 weeks)"
+  3. "Any additional context or praise you'd like me to incorporate?"
+
+**Mode 3: Username + Specific Reference**
+- `/pba-kudos foobar@ for b/123`
+- `/pba-kudos foobar@ for cl/456`
+- `/pba-kudos foobar@ for #42`
+- `/pba-kudos foobar@ for PR #789`
+- `/pba-kudos foobar@ for project-phoenix`
+- Username and a specific reference are known. **Do NOT ask clarifying questions.** Proceed directly to research, focusing on the referenced artifact and the person's involvement with it. Use the default time period (last 4 weeks) for supplementary context.
+
+**Mode 4: Username + Time Period**
+- `/pba-kudos foobar@ for last 2 weeks`
+- `/pba-kudos foobar@ last 30 days`
+- `/pba-kudos foobar@ since 2026-01-15`
+- Username and time period are known. **Do NOT ask clarifying questions.** Perform a broad search across all configured tools for the person within the specified time period.
+
+**Mode 5: Time Period Only (No Username)**
+- `/pba-kudos last 2 weeks`
+- Time period is known but no username. Ask for the username/LDAP, then proceed without further questions.
+
+**Mode 6: Username + Reference + Additional Info**
+- `/pba-kudos foobar@ for b/123 they stayed late three nights in a row to fix this`
+- Everything after the reference that doesn't match a time period pattern is additional context. Incorporate it into the kudos, spruced up to sound polished.
+
+### Argument Parsing Rules
+
+1. **Username detection**: Look for a token ending in `@` or a token that looks like an LDAP/username (alphanumeric, possibly with hyphens or dots). If ambiguous, ask.
+2. **Reference detection**: Look for `for` followed by a reference pattern:
+   - Bug: `b/{number}`, `bug/{number}`, `bug {number}`
+   - Code submission: `cl/{number}`, `CL/{number}`
+   - GitHub issue: `#{number}`
+   - GitHub PR: `PR #{number}`, `pr #{number}`
+   - Project name: Any non-pattern token after `for` that is not a time expression
+   - Doc path: A file path (contains `/` and an extension like `.md`)
+3. **Time period detection**: Look for patterns like `last N weeks`, `last N days`, `since YYYY-MM-DD`, `past N weeks`
+4. **Additional info**: Any remaining text after the username, reference, and time period have been extracted
+5. **Default time period**: If no time period is specified, use the last 4 weeks
+
+**Do not proceed to research until you have at minimum a username/LDAP.**
+
+## Your Task
+
+This is a **phased workflow** that gathers input, researches contributions, analyzes impact, drafts kudos, and verifies attribution. Do not skip phases or combine them.
+
+---
+
+### Phase 1: Scope & Input Gathering
+
+Parse `{{args}}` using the modes above. If you have a username AND at least one of (specific reference, time period), proceed immediately. Otherwise, ask only the questions needed to fill in the gaps.
+
+**Questions to ask (skip any already answered via args):**
+
+1. **Username/LDAP** (REQUIRED): "Who should I write kudos for? (provide their username or LDAP)"
+2. **Focus area** (optional): "Is there a specific bug, code submission, doc, or project you'd like me to focus on? (e.g., b/123, cl/456, a project name — or I can search broadly)"
+3. **Time period** (optional): "What time period should I look at? (default: last 4 weeks)"
+4. **Additional context** (optional): "Any additional context or praise you'd like me to incorporate? (I'll polish it up)"
+
+**Do not proceed to Phase 2 until you have a username.**
+
+---
+
+### Phase 2: Cross-Source Research
+
+Systematically query every configured capability in pba-workspace-tools, filtered by the target person. The goal is to collect raw contribution data.
+
+**Source Control (use configured capabilities):**
+
+- Use `log` filtered by author/username to find the person's commits within the time period
+  - Use `--author={username}` or equivalent for the configured source control
+  - Apply date filters (`--since`, `--until`) based on the determined time period
+- If a specific reference was provided, also search commit messages for that reference
+- For each significant commit, note: identifier, message, date, files changed
+- Use `log_file` if you need to trace specific file histories
+
+**Issue Tracking (if configured):**
+
+- Use `search_issues` to find issues assigned to or resolved by the person
+- If a specific issue reference was provided, use `fetch_issue` to get its details
+  - **Verify the person's involvement**: Check assignee, resolver, commenters
+- For each issue found: title, status, assignee, description, labels, resolution date
+- Note how long each issue was open before resolution (impact metric)
+
+**Change Requests (if configured):**
+
+- Use `list` filtered by author to find the person's PRs/CLs in the time period
+- Use `view` to get details on significant change requests
+- If a specific CL/PR reference was provided, fetch it directly
+  - **Verify the person is the author**
+- Also find change requests the person reviewed — reviewing is a contribution too
+- Note: who reviewed their code (collaboration context)
+
+**Knowledge Base / Documentation (if configured):**
+
+- Search for documents created or modified by the person
+- Note document titles and purpose
+
+**If specific references were provided:**
+
+- Fetch the referenced artifact directly (bug, CL, PR, issue)
+- Verify the target person's involvement with that artifact
+- Use the artifact as the primary focus, supplementing with broader search for context
+
+**For each data source, record:**
+- What capability was used and the query parameters
+- The raw results
+- Whether the capability was available or not configured
+
+**Do not draft kudos yet.** This phase is purely about gathering raw data.
+
+---
+
+### Phase 3: Impact Analysis
+
+For each significant contribution found, assess its impact. This is what transforms a list of commits into compelling kudos.
+
+**For each contribution, answer:**
+
+- **Duration**: How long was the bug/issue open before they resolved it?
+- **Effort**: How many commits or code submissions did it take?
+- **Difficulty**: Was this technically complex? (concurrency, distributed systems, data migration, etc.)
+- **Blast radius**: Did this unblock other people, teams, or projects?
+- **User/business impact**: Did this affect reliability, performance, security, user experience, or revenue?
+- **Scope**: How many files changed? How many lines? Across how many services?
+
+**Quantify wherever possible:**
+- "Fixed a bug that had been open for 6 weeks"
+- "Required 5 code submissions across 3 services"
+- "Reduced page load time from 3.2s to 400ms"
+- "Unblocked the payments team's Q1 launch"
+
+**If a user provided additional context**, factor it into the impact analysis. The user may know context that is not visible in the data (e.g., "they mentored a junior engineer through this fix").
+
+---
+
+### Phase 4: Draft Kudos
+
+Write the kudos message following the tone and format guidelines in the pba-kudos-writer skill.
+
+**Writing Guidelines:**
+
+- **Start with a direct thank-you** — do not bury the lead
+- **Link to evidence inline** — every bug, CL, PR, doc, or issue gets a markdown link
+- **Weave in impact naturally** — "This bug had been open for six weeks" not "Impact: bug was open for 42 days"
+- **Be specific** — mention the system, the service, the API, the table name. Engineers value precision
+- **Be proportional** — a single bug fix gets a focused paragraph. A month of varied work gets a longer narrative
+- **Incorporate user-provided context** — if the user said "they stayed late three nights," work that in naturally, polished up to sound PR-friendly
+- **Use strong verbs** — "tracked down," "eliminated," "architected," "unblocked," "redesigned" — not "worked on," "helped with," "was involved in"
+- **End warmly** — a forward-looking note or a genuine closing sentiment
+
+**Tone calibration:**
+- Thankful and genuine, not corporate or stiff
+- Compelling but not flowery — no "amazing incredible outstanding"
+- Specific enough that the person reading it thinks "they actually looked at what I did"
+- Professional enough to paste into a recognition system
+
+**If the user provided additional info to include:**
+- Incorporate it naturally into the narrative
+- Polish the language to sound professional
+- Preserve the original intent and specific details
+
+---
+
+### Phase 5: Verify Attribution
+
+This is the most critical phase. Re-read the drafted kudos and verify every claim.
+
+**For each statement in the kudos:**
+
+1. Does this person actually appear as the author/assignee/resolver in the data?
+2. Can I point to a specific artifact (commit, PR, issue) that proves this claim?
+3. Am I attributing the right action? (authored vs. reviewed vs. filed vs. fixed)
+4. Have I confused this person with another contributor?
+
+**If any claim fails verification:**
+- Remove it from the kudos immediately
+- If it was a significant claim, note it for the user: "I found [reference] but couldn't confirm [person]'s involvement"
+
+**If the research yielded limited results:**
+- Write kudos based only on what you can verify
+- Tell the user: "I could only verify contributions from [sources]. You may want to add context about their work on [area] if you have additional information"
+
+---
+
+### Phase 6: Write the File
+
+Create the final kudos file.
+
+**File path**: `reports/YYYYMMDD_kudos_username.md`
+- `YYYYMMDD` is the current date (e.g., `20260212`)
+- `username` is the target person's LDAP without the `@` suffix (e.g., `foobar`)
+- Example: `reports/20260212_kudos_foobar.md`
+
+**Steps:**
+
+1. **Linkify**: Activate the 'pba-linkify' skill. Apply link patterns from pba-workspace-tools and wrap bare URLs in markdown link syntax
+2. **Write the file**: Write the linkified content using the Write tool
+3. **Format**: If `mdformat` is installed (`which mdformat`), run `mdformat --wrap 80 <filepath>` on the written file. If not installed, skip formatting silently
+
+## CRITICAL: Kudos Generation
+
+**YOU MUST CREATE THE KUDOS FILE.** This is not optional.
+
+### Final Steps (MANDATORY)
+
+1. **Complete ALL six phases** before writing the file
+2. **Create the kudos file** using the Write tool at `reports/YYYYMMDD_kudos_username.md`
+3. **Every piece of praise must be verified** — no hallucinated contributions
+4. **Links to bugs, CLs, docs must be inline** in the kudos text
+5. **Impact must be called out** for each major contribution
+6. **Jokes section must be present** after a clear separator
+7. **Confirm completion** by telling the user:
+   - "Kudos saved to: [full path]"
+   - A brief summary of what the kudos covers
+   - Any contributions you found but couldn't verify attribution for
+   - A reminder to review before submitting
+
+### Verification Checklist
+
+Before responding to the user, verify:
+- [ ] Kudos file created with Write tool
+- [ ] Username was confirmed before research began
+- [ ] Every configured pba-workspace-tools capability was queried
+- [ ] Every piece of praise maps to a verified contribution by this specific person
+- [ ] Inline links to bugs, CLs, docs, issues are present throughout
+- [ ] Impact is called out for each major contribution
+- [ ] Tone is thankful and compelling, not corporate or flowery
+- [ ] User-provided additional context is incorporated (if any)
+- [ ] Suggested Jokes & Quips section is present after a separator
+- [ ] No hallucinated or unverified contributions remain
+- [ ] Sources Consulted section accurately reflects what was available
+- [ ] Full file path provided to user
+
+### Common Mistakes to Avoid
+
+- DO NOT write kudos without researching first — every claim must be evidence-based
+- DO NOT include contributions you cannot verify belong to this person
+- DO NOT use generic praise ("great work!") — be specific about what they did and why it mattered
+- DO NOT inflate achievements — proportional, honest praise is more credible and more meaningful
+- DO NOT leave placeholder text in any section
+- DO NOT skip the jokes section — it is part of the deliverable
+- DO NOT forget to link to supporting evidence — bare references without links are incomplete
+- DO NOT proceed without a confirmed username
+- DO NOT confuse reviewing a PR with authoring it — credit the right action
+- DO NOT skip the attribution verification phase — this is the most important quality check
+
+### Sources Consulted
+
+Include a Sources Consulted section at the end of the kudos file:
+
+```markdown
+## Sources Consulted
+
+| Capability | Status | Notes |
+|------------|--------|-------|
+| Source Control | Used / Not Configured | {Brief note on what was queried} |
+| Change Requests | Used / Not Configured | {Brief note} |
+| Issue Tracking | Used / Not Configured | {Brief note} |
+| Knowledge Base | Used / Not Configured | {Brief note} |
+| Documentation | Used / Not Configured | {Brief note} |
+| Code Search | Used / Not Configured | {Brief note} |
+```
+
+**Remember**: The kudos file is the primary deliverable. The chat summary is secondary. The user will likely edit the kudos before submitting — make their job easy by providing a strong, well-researched, and verified draft.
+"""
