@@ -1,0 +1,357 @@
+description = "Prepare thoroughly for an upcoming meeting: pull calendar data, research attendees, fetch attached documents, discover relevant internal resources, and produce a comprehensive pre-meeting brief"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Using the pba-meeting-prep skill, identify an upcoming meeting, research all of its participants and documents, discover relevant materials, and produce a comprehensive meeting preparation report.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the pba-workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of pba-workspace-tools.
+If a capability is not configured, note it in the Sources Consulted section and continue with available capabilities.
+Do NOT hardcode tool names — always use the capability names from pba-workspace-tools.
+
+## Input Parsing
+
+The user invoked: /pba-meeting-prep {{args}}
+
+### Mode 1: No Arguments
+
+If `{{args}}` is empty or whitespace:
+
+1. Check if `calendar` capability is configured in pba-workspace-tools
+2. **If calendar IS configured**: Use the `list_upcoming` capability to fetch meetings in the next 7 days. Display them as a numbered list:
+   ```
+   Upcoming meetings (next 7 days):
+   1. [Day, Date] [HH:MM] — [Meeting Title] (organized by [Name])
+   2. [Day, Date] [HH:MM] — [Meeting Title] (organized by [Name])
+   ...
+   Which meeting would you like to prepare for? (enter a number)
+   ```
+   Wait for the user to respond before proceeding.
+3. **If calendar is NOT configured**: Tell the user:
+   ```
+   Calendar is not configured. To enable calendar lookup, add the Calendar
+   capability to your pba-workspace-tools skill.
+
+   In the meantime, please provide the meeting details:
+   - Meeting title:
+   - Date and time (with timezone):
+   - Duration:
+   - Organizer name/email:
+   - Attendees (names and/or emails):
+   - Meeting description or agenda (paste it):
+   - Attached document links (if any):
+   ```
+   Wait for the user to provide this information before proceeding.
+
+### Mode 2: Meeting Title Hint
+
+If `{{args}}` contains text (a full or partial meeting title or description):
+
+1. Check if `calendar` capability is configured in pba-workspace-tools
+2. **If calendar IS configured**:
+   - Use the `list_upcoming` capability to fetch meetings in the next 7 days
+   - Fuzzy-match `{{args}}` against each meeting title and description
+   - Compute a confidence score for each match (consider substring match, word overlap, topic similarity)
+   - **If one meeting scores ≥80% confidence**: Proceed immediately with that meeting. Announce: "Preparing for: [Meeting Title] on [Day, Date] at [HH:MM]"
+   - **If no meeting scores ≥80% confidence**: Display the full list (same format as Mode 1) and ask the user to choose
+3. **If calendar is NOT configured**: Follow the same manual input fallback as Mode 1
+
+**Do not proceed to Phase 2 until a single meeting is identified.**
+
+---
+
+## Your Task
+
+This is a **phased research workflow** that gathers calendar data, researches people and documents, and synthesizes everything into a comprehensive brief. Do not skip phases or combine them.
+
+---
+
+### Phase 1: Meeting Identification
+
+Resolve to a single meeting event using the input modes above. Confirm by announcing:
+
+```
+Preparing for: [Meeting Title]
+[Day, Month DD YYYY] at [HH:MM TZ] · [duration]
+[N] attendees · [N] attached documents
+```
+
+If the meeting was identified manually (no calendar), note: "Meeting details provided manually."
+
+---
+
+### Phase 2: Calendar Data Extraction
+
+Extract and record all available information from the meeting event:
+
+- **Title**: Full meeting name
+- **Date and time**: Include timezone
+- **Duration**: In minutes or hours
+- **Organizer**: Name and email
+- **Attendees**: Full list — names, emails, RSVP status if available
+- **Description / agenda**: The full text of the meeting body, if any
+- **Attached documents**: URLs or file paths to any documents linked in the event
+
+Note: Some calendar systems surface attachments as URLs in the description. Parse the description for links — look for http/https URLs, Google Docs URLs, or internal doc URLs.
+
+**Do not proceed to Phase 3 until this data is fully extracted.**
+
+---
+
+### Phase 3: Attendee Research
+
+For EACH attendee (start with the organizer, then process the rest):
+
+**Step 1: People directory lookup**
+If `lookup_person` is configured in pba-workspace-tools, use it to look up the person by name or email. Record: title, team, department, contact info.
+
+**Step 2: Web search fallback** (if directory not configured or returned incomplete results)
+Search: `"[full name]" "[company or org name]"` — look for title, team, current role.
+Also try: `"[full name]" site:linkedin.com` if web search is available.
+
+**Step 3: Source control activity**
+If source control is configured, search recent commits by the person's email or username:
+- `git log --author="[email]" --since="3 months ago" --oneline`
+- Note: what areas of the codebase have they been working on?
+
+**Step 4: Issue/PR activity**
+If issue tracking and change requests are configured, search for their recent work:
+- Issues assigned to them or filed by them in the last 3 months
+- PRs authored by them in the last 3 months
+- Note: what have they been focused on?
+
+**Step 5: Knowledge base / wiki search**
+If knowledge base or documentation is configured, search for docs authored by this person that are related to the meeting topic.
+
+**Synthesize for each attendee:**
+- Name, title (or "Title not confirmed — inferred as [role] based on [evidence]")
+- 1-2 sentences: what they do, why they are likely in this meeting
+- For the organizer specifically: why they likely called this meeting
+
+**Do not proceed to Phase 4 until all attendees have been researched.**
+
+---
+
+### Phase 4: Document Research
+
+Run two tracks:
+
+#### Track A: Attached Documents
+
+For EACH document URL or file path found in Phase 2:
+
+**Google Docs** (`docs.google.com/document/`):
+- Extract the document ID from the URL (string between `/d/` and the next `/`)
+- Attempt: `curl -sL "https://docs.google.com/document/d/{ID}/export?format=html" -o /tmp/meeting_doc_{N}.html`
+- Check HTTP status; if it returns a sign-in page (contains "accounts.google.com"), note: "Could not retrieve — authentication required"
+- If successful, convert HTML to readable text (use pandoc if available: `pandoc -f html -t plain /tmp/meeting_doc_{N}.html`, otherwise strip HTML tags manually)
+
+**Google Sheets** (`docs.google.com/spreadsheets/`):
+- `curl -sL "https://docs.google.com/spreadsheets/d/{ID}/export?format=csv" -o /tmp/meeting_doc_{N}.csv`
+- Read the CSV and note what data it contains
+
+**Google Slides** (`docs.google.com/presentation/`):
+- `curl -sL "https://docs.google.com/presentation/d/{ID}/export?format=txt" -o /tmp/meeting_doc_{N}.txt`
+
+**Other URLs**: Use WebFetch with the prompt: "What is this document about, what does it cover, and what are the key points?"
+
+**Local file paths**: Read directly using the Read tool.
+
+For each successfully retrieved document, produce:
+- Title (from document content or URL)
+- 2-3 sentence summary
+- Why it's relevant to this meeting
+
+If a document cannot be retrieved: include it in the Attached Docs section with a note: "Could not retrieve — [reason]. Open manually: [URL]"
+
+#### Track B: Relevant Document Discovery
+
+Search configured knowledge bases, wikis, intranet, and documentation systems for documents related to the meeting topic. Use 3-5 different keyword queries derived from:
+- The meeting title
+- Key themes or topics identified in the meeting description
+- Technical terms, project names, or initiatives mentioned
+- Attendee team names or focus areas
+
+For each document candidate:
+1. Retrieve or preview enough content to understand what it's about
+2. Ask: Is this directly relevant to what will be discussed in this meeting?
+3. **Include only if**: It provides essential background, context, or information that would help the attendee understand or contribute to the meeting discussion
+4. **Do NOT include just because**: An attendee authored it (unless it's directly about the meeting topic), it mentions a keyword tangentially, or it needs to pad the count
+
+**Rank by relevance**: Most directly useful documents first.
+
+Target 3-5 documents, up to 10 if genuinely warranted. Quality over quantity — 2 excellent docs beats 5 mediocre ones.
+
+**Do not proceed to Phase 5 until both tracks are complete.**
+
+---
+
+### Phase 5: Synthesis
+
+Now synthesize all gathered material into four elements:
+
+#### 5a: Meeting Description
+
+Write 1-3 paragraphs describing what this meeting is, why it's happening, and what's expected. Use this hierarchy:
+- If the calendar event has a detailed agenda: summarize it faithfully, then add context from the docs
+- If the calendar event has a sparse description: infer from the title, attendees, and attached/relevant docs. Explicitly state: "The calendar description is brief; this context was inferred from [sources]."
+- If no description at all: infer entirely from title + attendees + docs. Note this clearly.
+
+Do not be generic. Say "This appears to be a working session to finalize the data migration timeline, driven by the upcoming Q3 deadline" not "This is a meeting about data migration."
+
+#### 5b: Meeting Will Be a Success If...
+
+Classify the meeting type and state success concretely:
+- **Decision meeting**: "The team reaches a decision on [specific options] and assigns an owner to execute."
+- **Working session**: "The group produces [specific deliverable] — a draft, a decision, a list of next steps."
+- **Informational briefing**: "All attendees leave with a clear understanding of [specific topic/change/initiative]."
+- **Alignment meeting**: "The team reaches shared understanding of [specific issue/direction] and agrees on [specific next steps]."
+- **Kickoff**: "Roles and responsibilities are clear, initial milestones are set, and the team is unblocked to begin."
+- If the meeting type is ambiguous, say so and give 2 success criteria for the most likely types.
+
+#### 5c: Questions to Consider in This Meeting
+
+Look at: the agenda (if any), the attached docs, the relevant docs, the attendees' recent work, and the meeting type. Surface 3-7 outstanding questions that:
+- Are directly relevant to the meeting topic
+- Can realistically be answered by the people in this room
+- Are not already answered in the attached/relevant docs
+- Would move the meeting forward or prevent a missed decision
+
+Do NOT include: rhetorical questions, questions the meeting can't answer, questions already answered in the prep materials, or generic questions ("what are the next steps?").
+
+#### 5d: To Have the Most Impact in This Meeting, You Should
+
+Think laterally. What can the person running this prompt uniquely contribute to make this meeting better? Look for:
+- A potential solution visible in the docs that the group might not have considered
+- A connection between two attendees' recent work that could unblock something
+- An open question that could be resolved with a specific tool, approach, or data that exists
+- A risk visible in the materials that might not be on the agenda
+- A way to focus a sprawling agenda on the highest-impact item
+
+Write 3-5 specific, constructive, actionable suggestions. Each should:
+- Be something the person can actually do or say in the meeting
+- Be positive and collaborative — not gotcha questions or criticism
+- Reference specific context from the research (cite a document, a recent PR, a specific attendee's work)
+
+**Do not proceed to Phase 6 until all four synthesis elements are complete.**
+
+---
+
+### Phase 6: Write the Report
+
+Create the meeting prep report.
+
+**File naming:**
+- Generate timestamp: `date +%Y%m%d%H%M%S`
+- Derive a 2-4 word kebab-case slug from the meeting title (e.g., `quarterly-planning`, `api-design-review`, `data-migration-kickoff`)
+- Path: `reports/{timestamp}-meeting-prep-{slug}.md`
+- Example: `reports/20260304143022-meeting-prep-api-design-review.md`
+
+**Report structure** (fill every section — no placeholders):
+
+```markdown
+# Meeting Prep: {Meeting Title}
+
+**Date**: {Day, Month DD YYYY} at {HH:MM TZ} · {duration}
+**Organizer**: {Name}
+**Prepared**: {YYYY-MM-DD HH:MM}
+
+---
+
+{Meeting description paragraphs from Phase 5a}
+
+## Meeting will be a success if...
+
+{Success criteria from Phase 5b}
+
+## Questions to consider in this meeting
+
+{Bulleted list of questions from Phase 5c}
+
+## To have the most impact in this meeting, you should
+
+{Bulleted list of contributions from Phase 5d}
+
+## Attendees
+
+{For each attendee: **Name**, Title — Why they're here}
+
+## Attached docs
+
+{For each attached doc: [Title](URL) — Summary and relevance. If could not retrieve: note that.}
+
+## Relevant docs
+
+{For each relevant doc ranked by relevance: [Title](URL) — Brief description. *Relevant because: [rationale].*}
+
+---
+
+## Sources Consulted
+
+| Capability | Status | Notes |
+|------------|--------|-------|
+| Calendar | Used / Not Configured | {What was queried} |
+| People Directory | Used / Not Configured | {What was queried} |
+| Knowledge Base | Used / Not Configured | {What was queried} |
+| Documentation | Used / Not Configured | {What was queried} |
+| Web Search | Used / Not Used | {Queries run} |
+| Source Control | Used / Not Configured | {What was queried} |
+| Issue Tracking | Used / Not Configured | {What was queried} |
+```
+
+**Post-processing steps:**
+1. Create the `reports/` directory if it doesn't exist
+2. **Linkify**: Activate the 'pba-linkify' skill. Apply link patterns from pba-workspace-tools and wrap bare URLs in markdown link syntax
+3. **Write the file**: Write the linkified content using the Write tool
+4. **Format**: If `mdformat` is installed (`which mdformat`), run `mdformat --wrap 80 <filepath>` on the written file. If not installed, skip silently
+
+---
+
+## CRITICAL: Report Generation
+
+**YOU MUST CREATE THE REPORT FILE.** This is not optional.
+
+### Final Steps (MANDATORY)
+
+1. **Complete ALL six phases** before writing the report
+2. **Create the report file** using the Write tool
+3. **Fill every section** with real findings — no placeholder text, no "N/A" without explanation
+4. **Confirm completion** by telling the user:
+   - "Meeting prep saved to: [full path]"
+   - Meeting title and date
+   - How many attendees were profiled
+   - How many attached docs were retrieved
+   - How many relevant docs were found
+   - Any documents that could not be retrieved
+
+### Verification Checklist
+
+Before responding to the user, verify:
+- [ ] Report file created with Write tool
+- [ ] A single meeting was identified and confirmed before research began
+- [ ] All attendees have a name, title (or honest inference), and reason-for-attending
+- [ ] All attached docs were attempted — each appears in the Attached Docs section
+- [ ] Relevant docs were discovered via search — not just attendee-authored docs
+- [ ] Meeting description is specific, not generic
+- [ ] Success criteria match the meeting type (decision/working/informational/alignment)
+- [ ] Questions are answerable by the attendees in this meeting
+- [ ] Impact suggestions reference specific context from the research
+- [ ] Sources Consulted table reflects actual tool usage
+- [ ] No hallucinated titles, documents, or meeting details
+- [ ] Full file path provided in confirmation message
+
+### Common Mistakes to Avoid
+
+- DO NOT invent attendee job titles — state "not found" and infer with a note
+- DO NOT include documents in "Relevant docs" that you haven't verified exist and are on-topic
+- DO NOT pad "Relevant docs" to meet the 3-5 target — fewer excellent docs is better
+- DO NOT write a generic meeting description — be specific about what THIS meeting is about
+- DO NOT ask questions in the "Questions to consider" section that the attendees can't answer
+- DO NOT suggest confrontational or critical contributions in the "impact" section — be constructive
+- DO NOT skip the Sources Consulted section
+- DO NOT forget to note when docs could not be retrieved
+
+**Remember**: The person using this report is walking into a meeting. Make it good enough that they feel ready.
+"""

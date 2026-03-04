@@ -7,7 +7,7 @@ First, activate the 'pba-workspace-tools' skill to ensure you have the correct t
 Your elite development force - a comprehensive suite of specialized AI skills and commands for Gemini CLI.
 Inspired by Dave Griffith's [bad-daves-robot-army](https://github.com/dgriffith/bad-daves-robot-army) for Claude Code.
 
-## Available Commands (46 commands)
+## Available Commands (47 commands)
 
 ### Review & Analysis Commands
 - `/pba-accessibility-review` - WCAG compliance and a11y analysis
@@ -46,6 +46,7 @@ Inspired by Dave Griffith's [bad-daves-robot-army](https://github.com/dgriffith/
 - `/pba-implementation-plan-from-prd` - Create implementation plan from PRD
 - `/pba-kudos` - Research contributions and produce evidence-based kudos
 - `/pba-launch-announcement` - Research a project launch and produce a celebratory announcement
+- `/pba-meeting-prep` - Prepare thoroughly for an upcoming meeting with attendee profiles, attached docs, relevant materials, and impact suggestions
 - `/pba-linkify` - Apply link patterns and URL wrapping to markdown files
 - `/pba-plan` - Enter plan mode to architect a solution before coding
 - `/pba-process-implementation-plan-feedback` - Process team feedback on implementation plans
@@ -62,7 +63,7 @@ Inspired by Dave Griffith's [bad-daves-robot-army](https://github.com/dgriffith/
 - `/pba-deployment-review` - Deployment process review
 - `/pba-tooling-review` - Developer tooling analysis
 
-## Available Skills (33 skills)
+## Available Skills (34 skills)
 
 All commands leverage specialized skills that can also be activated directly:
 
@@ -90,6 +91,7 @@ All commands leverage specialized skills that can also be activated directly:
 | pba-launch-announcer | Celebratory launch announcements |
 | pba-linkify | Markdown link patterns and URL wrapping |
 | pba-logging-master | Observability, logging strategies |
+| pba-meeting-prep | Meeting preparation, attendee research, document discovery |
 | pba-mentor | Teaching, codebase explanation |
 | pba-performance-optimizer | Bottleneck analysis, optimization |
 | pba-product-manager | PRD creation, requirements |

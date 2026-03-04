@@ -170,6 +170,47 @@ When searching internal knowledge, use these tools based on query type:
 | fetch | `render_doc` (MCP) | Render a specific doc |
 | create | `create_doc` (MCP) | Create new documentation |
 
+### Calendar: Google Calendar via gcalcli (TEMPLATE)
+
+Used by `/pba-meeting-prep` to look up upcoming meetings and fetch event details.
+
+| Capability | Tool | Notes |
+|------------|------|-------|
+| list_upcoming | `gcalcli agenda "now" "1 week" --tsv` | List events in the next 7 days (tab-separated) |
+| get_event | `gcalcli calinfo "{title}"` | Get full event details including description and attendees |
+| search_events | `gcalcli agenda --tsv "{query}"` | Search events by keyword |
+
+**Notes**:
+- Requires `gcalcli` installed and authenticated: `pip install gcalcli && gcalcli init`
+- Event descriptions often contain attached document URLs — parse them from the description text
+- For other calendar systems (Outlook, internal), replace with your calendar CLI or MCP tool
+
+### People Directory (TEMPLATE)
+
+Used by `/pba-meeting-prep` and `/pba-kudos` to look up attendee titles and team information.
+
+| Capability | Tool | Notes |
+|------------|------|-------|
+| lookup_person | `lookup_person` (MCP) | Look up a person by name or email — returns title, team, department |
+| search_people | `search_people` (MCP) | Search directory by name, team, or keyword |
+
+**Notes**:
+- Replace `lookup_person` and `search_people` with your organization's people directory MCP tool names
+- If no people directory is available, commands fall back to web search and source control activity
+
+### Email Search (TEMPLATE)
+
+Used by `/pba-meeting-prep` to find relevant email threads related to a meeting topic.
+
+| Capability | Tool | Notes |
+|------------|------|-------|
+| search_email | `search_email` (MCP) | Search email threads by keyword, sender, or date range |
+| get_thread | `get_thread` (MCP) | Fetch a specific email thread by ID or subject |
+
+**Notes**:
+- Replace `search_email` and `get_thread` with your email MCP tool names (e.g., Gmail MCP, Outlook MCP)
+- If not configured, meeting prep commands skip email search and note it in Sources Consulted
+
 ### Link Patterns (TEMPLATE)
 
 These are TEMPLATES ONLY. They are NOT active.
