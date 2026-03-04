@@ -7,7 +7,7 @@ First, activate the 'pba-workspace-tools' skill to ensure you have the correct t
 Your elite development force - a comprehensive suite of specialized AI skills and commands for Gemini CLI.
 Inspired by Dave Griffith's [bad-daves-robot-army](https://github.com/dgriffith/bad-daves-robot-army) for Claude Code.
 
-## Available Commands (45 commands)
+## Available Commands (46 commands)
 
 ### Review & Analysis Commands
 - `/pba-accessibility-review` - WCAG compliance and a11y analysis
@@ -34,6 +34,7 @@ Inspired by Dave Griffith's [bad-daves-robot-army](https://github.com/dgriffith/
 - `/pba-codebase-overview` - Beginner-friendly codebase overview
 - `/pba-does-this-clash` - Check code against established patterns
 - `/pba-explain` - Personalized explanation of code or concepts
+- `/pba-investigate` - Deep-dive investigation of questions from a chat thread or email, with code pointers and suggested replies
 - `/pba-learn` - Personalized learning path for the codebase
 - `/pba-what-would-break` - Blast radius analysis for potential changes
 - `/pba-why-this-way` - Investigate why code was built a certain way
@@ -61,7 +62,7 @@ Inspired by Dave Griffith's [bad-daves-robot-army](https://github.com/dgriffith/
 - `/pba-deployment-review` - Deployment process review
 - `/pba-tooling-review` - Developer tooling analysis
 
-## Available Skills (32 skills)
+## Available Skills (33 skills)
 
 All commands leverage specialized skills that can also be activated directly:
 
@@ -83,6 +84,7 @@ All commands leverage specialized skills that can also be activated directly:
 | pba-development-manager | Implementation planning from PRDs |
 | pba-exception-handling-master | Error handling, resilience |
 | pba-impact-reporter | Cross-functional activity reports |
+| pba-investigate | Deep-dive question investigation with code pointers |
 | pba-internationalization-specialist | i18n, localization |
 | pba-kudos-writer | Evidence-based peer recognition |
 | pba-launch-announcer | Celebratory launch announcements |

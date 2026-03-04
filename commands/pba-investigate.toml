@@ -1,0 +1,213 @@
+description = "Investigate questions from a chat thread or email using all configured tools — codebase, git history, wikis, knowledge bases, issue trackers — and produce a cited investigation report with code pointers and suggested replies"
+prompt = """
+First, activate the 'pba-workspace-tools' skill to ensure you have the correct tool mappings for this environment.
+
+Using the pba-investigate skill, extract every question from a chat thread or email, research each one exhaustively across all configured resources, and produce a structured investigation report with code pointers, footnote citations, and ready-to-paste suggested replies.
+
+## Tool Configuration
+
+**IMPORTANT**: Consult the pba-workspace-tools skill for your organization's configured tools.
+Use ONLY the tools listed in the Active Configuration section of pba-workspace-tools.
+If a capability is not configured, note it in the Sources Consulted section and continue with available capabilities.
+Do NOT hardcode tool names — always use the capability names from pba-workspace-tools.
+
+## Input Parsing
+
+The user invoked: /pba-investigate {{args}}
+
+`{{args}}` may be:
+- **Empty** — No input provided. Ask the user to paste the thread.
+- **A file path** — A path to a local file containing the thread (e.g., `threads/slack-2026-03-04.txt`, `email.md`). Read it.
+- **Inline text** — The thread content pasted directly as the argument.
+
+### Mode 1: No Arguments
+
+If `{{args}}` is empty or whitespace only:
+
+Tell the user:
+```
+I'm ready to investigate. Please paste the chat thread or email content, or provide a path to a file containing it.
+
+You can also provide context after the thread — for example:
+  /pba-investigate <paste thread here>
+  /pba-investigate threads/my-thread.txt
+```
+
+Do not proceed until input is provided.
+
+### Mode 2: File Path
+
+If `{{args}}` looks like a file path (contains `/` or `.` and is a short string without newlines that ends in a known extension like `.md`, `.txt`, `.log`, `.eml`):
+- Read the file using the Read tool
+- If the file doesn't exist, inform the user and stop
+- Treat the file contents as the thread
+
+### Mode 3: Inline Thread Text
+
+If `{{args}}` contains newlines or is clearly conversational text (longer than ~100 chars with no file extension), treat it directly as the thread content.
+
+**When in doubt between Mode 2 and Mode 3**: Try reading it as a file first. If the read fails, treat it as inline text.
+
+---
+
+## Your Task
+
+This is a **phased investigation** that parses the thread, researches every question, and produces a comprehensive report. Do not skip phases or combine them.
+
+---
+
+### Phase 1: Thread Parsing
+
+Read the full thread carefully. Extract every question — both explicit questions (sentences ending with `?`) and implicit questions (statements like "I'm not sure how X works", "does anyone know where Y is", "can someone explain Z", "I can't find the code for...").
+
+**Before proceeding:**
+- List the questions you found, numbered Q1, Q2, Q3, etc.
+- Note the speaker for each question if identifiable from the thread
+- Announce: "Found N questions. Investigating..."
+
+Do not begin research until you have completed this inventory.
+
+---
+
+### Phase 2: Research Planning
+
+For each question, determine which investigation strategies and tools are most relevant (follow the Investigation Strategies by Question Type section in the pba-investigate skill):
+
+- Code location questions → Glob, Grep, Read
+- Behavior/design questions → Read implementation, trace call chains, check tests
+- History/ownership questions → git log, git blame, PR/issue search
+- Policy/process questions → knowledge base, wiki, intranet search
+- Documentation questions → search docs, search wiki, Grep in *.md files
+
+Plan which pba-workspace-tools capabilities to use for each question.
+
+---
+
+### Phase 3: Deep Investigation
+
+For EACH question, execute the research plan from Phase 2. Use multiple search strategies — do not stop at the first result.
+
+**For code questions:**
+1. Search for file names with Glob using multiple patterns
+2. Grep for class/function/symbol names
+3. Read the most relevant files
+4. Check git log on those files for historical context
+5. Search issues/PRs for discussions of the topic
+
+**For each piece of evidence found, record:**
+- The exact file path and line number
+- What was found there and why it's relevant
+- The confidence level (definitive / supporting / tangential)
+
+**For each question, track:**
+- Strong evidence (directly answers the question)
+- Weak evidence (suggests a direction but not conclusive)
+- Contradictory evidence (points in different directions)
+- No evidence found (what you searched, what came up empty)
+
+Do not draft answers yet. This phase is purely about gathering raw evidence.
+
+---
+
+### Phase 4: Answer Synthesis
+
+For each question, synthesize the evidence into one of three answer types:
+
+**Type A: Clear Answer**
+- Strong, unambiguous evidence exists
+- Write a direct prose answer citing evidence with [N] footnotes
+- List code pointers below the answer
+
+**Type B: Ambiguous Answer**
+- Evidence is mixed, incomplete, or points in multiple directions
+- Present 2-3 possible answers with confidence labels:
+  - **Probable** — Most evidence supports this. Best working assumption.
+  - **Likely** — Plausible with some support but not the strongest reading.
+  - **Unlikely but possible** — Weak evidence, included to surface the edge case.
+- Each possibility should have at least one code pointer or reference
+
+**Type C: Not Found**
+- Searched extensively, found nothing conclusive
+- State what you searched and what came up empty
+- Offer a concrete suggestion for how a human could continue the investigation
+- Do NOT label this "Probable" or "Likely" — be honest that you don't know
+
+---
+
+### Phase 5: Draft Suggested Replies
+
+For each question, write a ready-to-paste reply the user could send back in the chat thread. These should be:
+- Concise and direct — under 5 sentences unless absolutely necessary
+- Written in first person as if the user found the answer
+- Include the most important code pointer or reference inline
+- Honest about confidence level if the answer is ambiguous
+
+Example format:
+> The Throbbers are initialized in `src/config/throbbers.py` [link], sorted by `created_at` descending. The initialization happens at app startup via `ThrobberRegistry.load()` in `src/app.py:83`.
+
+---
+
+### Phase 6: Write the Report
+
+Create the investigation report file.
+
+**File naming:**
+- Derive a 2-4 word kebab-case topic slug from the thread (e.g., `throbber-init`, `auth-flow`, `payment-service-questions`)
+- Generate the timestamp: `date +%Y%m%d%H%M%S`
+- Path: `reports/{timestamp}-investigate-{slug}.md`
+- Example: `reports/20260304143022-investigate-throbber-init.md`
+
+**Steps:**
+1. Create the `reports/` directory if it doesn't exist
+2. **Linkify**: Activate the 'pba-linkify' skill. Apply link patterns from pba-workspace-tools and wrap bare URLs in markdown link syntax
+3. **Write the file**: Write the linkified content using the Write tool
+4. **Format**: If `mdformat` is installed (`which mdformat`), run `mdformat --wrap 80 <filepath>` on the written file. If not installed, skip formatting silently
+
+**The report must follow the output format defined in the pba-investigate skill exactly.** Every section must be filled with real findings — no placeholder text.
+
+---
+
+## CRITICAL: Report Generation
+
+**YOU MUST CREATE THE REPORT FILE.** This is not optional.
+
+### Final Steps (MANDATORY)
+
+1. **Complete ALL six phases** before writing the file
+2. **Create the report file** using the Write tool at `reports/{timestamp}-investigate-{slug}.md`
+3. **Every question must be addressed** — no skipping, even if the answer is "not found"
+4. **Every code pointer must be verified** — run Glob or Grep to confirm each file exists before citing it
+5. **Confirm completion** by telling the user:
+   - "Investigation report saved to: [full path]"
+   - A brief summary: how many questions were found, how many have clear answers vs. ambiguous vs. not found
+   - The top finding (most interesting or actionable answer)
+
+### Verification Checklist
+
+Before responding to the user, verify:
+- [ ] Report file created with Write tool
+- [ ] All questions from the thread are addressed (none skipped)
+- [ ] Every question is quoted verbatim in a blockquote
+- [ ] Every code pointer was verified with Glob or Grep before inclusion
+- [ ] File paths include line numbers where possible
+- [ ] Ambiguous answers have exactly 2-3 labeled possibilities (Probable / Likely / Unlikely but possible)
+- [ ] Suggested Replies section is present with one reply per question
+- [ ] Code Pointers & Resources table lists all referenced evidence
+- [ ] Sources Consulted section reflects what was searched
+- [ ] No hallucinated file paths, function names, or URLs
+- [ ] Full file path provided to user in confirmation message
+
+### Common Mistakes to Avoid
+
+- DO NOT write answers without searching first — every claim needs evidence
+- DO NOT cite file paths or line numbers you haven't confirmed exist
+- DO NOT say "I don't know" without explaining what you searched
+- DO NOT skip questions because they seem hard — give a Type C answer if needed
+- DO NOT use generic answers — be specific about system names, file paths, function names
+- DO NOT invent URLs or issue references — only cite ones you've verified
+- DO NOT leave placeholder text in any section
+- DO NOT forget the Suggested Replies section — it is part of the deliverable
+- DO NOT skip Sources Consulted — the user needs to know what was searched
+
+**Remember**: The investigation report is the primary deliverable. The user will use it to respond to their colleagues. Make it good enough that they can send the suggested replies with confidence.
+"""
